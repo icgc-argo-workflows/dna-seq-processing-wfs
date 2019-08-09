@@ -1,0 +1,12 @@
+cpus: 1
+input_bam:
+  - class: File
+    path: input/C0HVY_2.lane.bam
+  - class: File
+    path: input/D0RE2_1.lane.bam
+  - class: File
+    path: input/D0RH0_2.lane.bam
+ref_genome_gz:
+  class: File
+  path: reference/tiny-grch38-chr11-530001-537000.fa.gz
+aligned_lane_prefix: "grch38-aligned"

@@ -1,0 +1,2 @@
+type	program	submitter_id	sample_submitter_id	sequencing_center	platform	platform_model	library_strategy	sequencing_date	read_group_count
+sequencing_experiment	TEST-PRO	TEST_EXP	HCC1143_BAM_INPUT	EXT	Illumina	HiSeq 2000	WGS	2014-12-12	3

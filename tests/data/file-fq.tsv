@@ -1,0 +1,7 @@
+name	size	read_group_submitter_id	checksum	checksum_type	local_path	format	type
+C0HVY.2_r1.fq	133684363564	C0HVY.2	e4fe8353ae62045642a2124909c5cfa5	md5	song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	FASTQ	sequencing_file
+C0HVY.2_r2.fq	133684363564	C0HVY.2	e4fe8353ae62045642a2124909c5cfa5	md5	song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	FASTQ	sequencing_file
+D0RE2.1_r1.fq	133684363564	D0RE2.1	e4fe8353ae62045642a2124909c5cfa5	md5	song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	FASTQ	sequencing_file
+D0RE2.1_r2.fq	133684363564	D0RE2.1	e4fe8353ae62045642a2124909c5cfa5	md5	song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	FASTQ	sequencing_file
+D0RH0.2_r1.fq	133684363564	D0RH0.2	e4fe8353ae62045642a2124909c5cfa5	md5	song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	FASTQ	sequencing_file
+D0RH0.2_r2.fq	133684363564	D0RH0.2	e4fe8353ae62045642a2124909c5cfa5	md5	song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	FASTQ	sequencing_file

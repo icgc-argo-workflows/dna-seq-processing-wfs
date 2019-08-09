@@ -1,0 +1,4 @@
+type	submitter_id	platform_unit	is_paired_end	read_length_r1	read_length_r2	insert_size	sample_barcode	library_name	experiment_submitter_id
+read_group	C0HVY.2	74_8	True	150	150	298		Pond-147580	TEST_EXP
+read_group	D0RE2.1	74_8	True	150	150	298		Pond-147580	TEST_EXP
+read_group	D0RH0.2	74_8	True	150	150	298		Pond-147580	TEST_EXP
