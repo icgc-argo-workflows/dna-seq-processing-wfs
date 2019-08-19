@@ -4,7 +4,7 @@
 
 workflow:
   name:  dna-seq-alignment
-  version: "0.1.0"
+  version: "0.2.0a1"
 
   env_var:  # JT will not pass these as parameters for tasks, instead, JT may check existence of the env variable
     SCORE_TOKEN:
@@ -38,8 +38,11 @@ workflow:
     seq_rg_json_name:
       type: string
       default: "seq_rg.json"
-    seq_files_dir:
-      type: string
+    seq_files:
+      type: arrary
+      items:
+        type: string
+        is_file: true
       is_required: true
     cpus:
       type: integer
@@ -58,6 +61,10 @@ workflow:
       type: string
       is_file: true
       default: "[metadata-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tools/metadata-validation/metadata-validation.cwl"
+    sequence_download.tool_url:
+      type: string
+      is_file: true
+      default: "[metadata-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.init/tools/score-download/score-download.cwl"
     sequence_validation.tool_url:
       type: string
       is_file: true
@@ -74,6 +81,35 @@ workflow:
       type: string
       is_file: true
       default: "[bam-merge-sort-markdup.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl"
+    payload_gen_and_s3_submit_wf.tool_url:
+      type: string
+      is_file: true
+      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.download-and-metadata/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
+    s3_upload.tool_url:
+      type: string
+      is_file: true
+      default: "[s3-upload.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/s3-upload.init/tools/s3-upload/s3-upload.cwl"
+    lane_seq_sub_bundle_type:
+      type: string
+      defult: "lane_seq_submission"
+    aligned_seq_bundle_type:
+      type: string
+      defult: "dna_alignment"
+    endpoint_url:
+      type: string
+      default: "https://object.cancercollaboratory.org:9080"
+    bucket_name:
+      type: string
+      default: "argo-test"
+    credentials_file:
+      type: string
+      is_file: true
+    score_token_file:
+      type: string
+      is_file: true
+    payload_schema_version:
+      type: string
+      default: "0.1.0-rc.1"
     ref_genome_gz_amb:
       type: string
       is_file: true
@@ -127,24 +163,62 @@ workflow:
         seq_rg_json_name: seq_rg_json_name
         tool_url: metadata_validation.tool_url
 
+    sequence_download:
+      tool: sequence_download
+      input:
+        seq_files: seq_files
+        file_tsv: file_tsv
+        repository: seq_source_repository
+        token_file: score_token_file
+        tool_url: sequence_download.tool_url
+
     sequence_validation:
       tool: sequence_validation
       input:
         seq_format: input_format@metadata_validation
         seq_rg_json: seq_rg_json@metadata_validation
-        seq_files_dir: seq_files_dir
+        seq_files: seq_files@sequence_download
         tool_url: sequence_validation.tool_url
 
     preprocess:
       tool: preprocess
       input:
-        seq_files_dir: seq_files_dir
+        seq_files: seq_files@sequence_download
         seq_rg_json: seq_rg_json@metadata_validation
         seq_format: input_format@metadata_validation
         picard_jar: picard_jar
         tool_url: preprocess.tool_url
       depends_on:
         - completed@sequence_validation
+
+    lane_seq_payload_gen_and_s3_submit_wf:
+      tool: payload_gen_and_s3_submit_wf
+      input:
+        bundle_type: lane_seq_sub_bundle_type
+        payload_schema_version: payload_schema_version
+        files_to_upload: lane_bams@preprocess
+        lane_seq_metadata: seq_rg_json@metadata_validation
+        credentials_file: credentials_file
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        tool_url: payload_gen_and_s3_submit_wf.tool_url
+
+    lane_seq_s3_upload:
+      scatter:
+        input:
+          file_to_upload:
+            with_items: lane_bams@preprocess
+      tasks:
+        lane_seq_s3_upload_scatter:
+          tool: s3_upload
+          input:
+            endpoint_url: endpoint_url
+            bucket_name: bucket_name
+            s3_credential_file: credentials_file
+            bundle_type: lane_seq_sub_bundle_type
+            payload_jsons: payload@lane_seq_payload_gen_and_s3_submit_wf
+            upload_files: file_to_upload
+            tool_url: s3_upload.tool_url
 
     alignment_wf:
       tool: alignment_wf
@@ -172,6 +246,51 @@ workflow:
         cram: cram
         tool_url: markdup.tool_url
 
+    aligned_bam_payload_gen_and_s3_submit_wf:
+      tool: payload_gen_and_s3_submit_wf
+      input:
+        bundle_type: aligned_seq_bundle_type
+        payload_schema_version: payload_schema_version
+        files_to_upload: aligned_bam@markdup
+        aligned_seq_metadata: seq_rg_json@metadata_validation
+        credentials_file: credentials_file
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        tool_url: payload_gen_and_s3_submit_wf.tool_url
+
+    aligned_bam_s3_upload:
+      tool: s3_upload
+      input:
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        s3_credential_file: credentials_file
+        bundle_type: aligned_seq_bundle_type
+        payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
+        upload_files: aligned_bam@markdup
+        tool_url: s3_upload.tool_url
+
+    aligned_cram_payload_gen_and_s3_submit_wf:
+      tool: payload_gen_and_s3_submit_wf
+      input:
+        bundle_type: aligned_seq_bundle_type
+        payload_schema_version: payload_schema_version
+        files_to_upload: aligned_cram@markdup
+        aligned_seq_metadata: seq_rg_json@metadata_validation
+        credentials_file: credentials_file
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        tool_url: payload_gen_and_s3_submit_wf.tool_url
+
+    aligned_cram_s3_upload:
+      tool: s3_upload
+      input:
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        s3_credential_file: credentials_file
+        bundle_type: aligned_seq_bundle_type
+        payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
+        upload_files: aligned_cram@markdup
+        tool_url: s3_upload.tool_url
 
 # A workflow is made up with one or more tools
 # Each tool can have its own docker imagine if desirable
@@ -207,6 +326,32 @@ tools:
         type: string
         is_file: true
 
+  sequence_download:
+    command: cwltool_launcher.py
+    input:
+      seq_files:
+        type: array
+        items:
+          type: string
+          is_file: true
+      file_tsv:
+        type: string
+        is_file: true
+      repository:
+        type: string
+      token_file:
+        type: string
+        is_file: true
+      tool_url:
+        type: string
+        is_file: true
+    output:
+      seq_files:
+        type: array
+        items:
+          type: string
+          is_file: true
+
   sequence_validation:
     command: cwltool_launcher.py
 
@@ -216,8 +361,11 @@ tools:
       seq_rg_json:
         type: string
         is_file: true
-      seq_files_dir:
-        type: string
+      seq_files:
+        type: array
+        items:
+          type: string
+          is_file: true
       tool_url:
         type: string
         is_file: true
@@ -235,8 +383,11 @@ tools:
       seq_rg_json:
         type: string
         is_file: true
-      seq_files_dir:
-        type: string
+      seq_files:
+        type: array
+        items:
+          type: string
+          is_file: true
       picard_jar:
         type: string
         is_file: true
@@ -253,6 +404,25 @@ tools:
           glob_pattern: "*.bam"
       aligned_basename:
         type: string
+
+    s3_upload:
+      command: cwltool_launcher.py
+      input:
+        endpoint_url:
+          type: string
+        bucket_name:
+          type: string
+        bundle_type:
+          type: string
+        payload_jsons:
+          type: array
+          items:
+            type: string
+            is_file: true
+        s3_credential_file:
+          type: File
+        upload_files:
+          type: File[]
 
   alignment_wf:
     command: cwltool_launcher.py
