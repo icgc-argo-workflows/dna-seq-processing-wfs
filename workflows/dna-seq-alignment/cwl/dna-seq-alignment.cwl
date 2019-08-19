@@ -93,7 +93,7 @@ steps:
       [ lane_bams, aligned_basename ]
 
   alignment:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/master/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.1.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
     in:
       input_bam: preprocess/lane_bams
       ref_genome_gz: ref_genome_gz
