@@ -1,8 +1,10 @@
 {
     "type": "sequencing_experiment",
     "program": "TEST-PRO",
+    "input_seq_format": "BAM",
     "submitter_id": "TEST_EXP",
-    "sample_submitter_id": "HCC1143_BAM_INPUT",
+    "submitter_donor_id": "HCC1143",
+    "submitter_sample_id": "HCC1143_BAM_INPUT",
     "sequencing_center": "EXT",
     "platform": "Illumina",
     "platform_model": "HiSeq 2000",
