@@ -4,6 +4,7 @@ from glob import glob
 import shutil
 import subprocess
 
+is_travis = os.environ.get('TRAVIS')
 
 def pytest_generate_tests(metafunc):
     if 'app' in metafunc.fixturenames:
@@ -24,6 +25,10 @@ def pytest_generate_tests(metafunc):
 
             for test_job in glob(os.path.join(app_dir, 'tests', '*.yaml')):
                 test_dir = os.path.dirname(test_job)
+                test_file_name = os.path.basename(test_job)
+                if is_travis and test_file_name.startswith('local-'):
+                    continue
+
                 apps.append([
                     os.path.basename(app_def[0]),
                     test_dir,
@@ -52,7 +57,7 @@ def test_app(app, rootDir):
 
     os.makedirs(cwl_outdir)
 
-    cmd = "cwltool --non-strict --outdir %s %s %s" % \
+    cmd = "cwltool --non-strict --no-read-only --outdir %s %s %s" % \
         (cwl_outdir, cwl_file, test_job_file)
 
     p = subprocess.Popen(
