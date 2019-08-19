@@ -53,7 +53,10 @@ steps:
         endpoint_url: string
         bucket_name: string
 
-      outputs: [ ]
+      outputs:
+        payload:
+          type: File
+          outputSource: payload_s3_submit/payload
 
       steps:
         payload_gen:
@@ -75,4 +78,4 @@ steps:
             bucket_name: bucket_name
           out: [ payload ]
 
-    out: [ payload_s3_submit/payload ]
+    out: [ payload ]
