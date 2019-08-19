@@ -5,6 +5,7 @@
     "submitter_id": "TEST_EXP",
     "submitter_donor_id": "HCC1143",
     "submitter_sample_id": "HCC1143_BAM_INPUT",
+    "specimen_type": "tumour",
     "sequencing_center": "EXT",
     "platform": "Illumina",
     "platform_model": "HiSeq 2000",

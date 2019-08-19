@@ -1,7 +1,9 @@
 bundle_type: lane_seq_submission
 files_to_upload:
-- class: File
-  path: input/C0HVY_2.lane.bam
+  - class: File
+    path: input/C0HVY_2.lane.bam
+  - class: File
+    path: input/D0RE2_1.lane.bam
 payload_schema_version: 0.1.0-rc.1
 input_metadata_lane_seq:
   class: File
