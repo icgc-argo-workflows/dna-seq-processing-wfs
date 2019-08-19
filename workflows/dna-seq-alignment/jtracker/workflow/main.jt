@@ -203,22 +203,22 @@ workflow:
         bucket_name: bucket_name
         tool_url: payload_gen_and_s3_submit_wf.tool_url
 
-    lane_seq_s3_upload:
-      scatter:
-        input:
-          file_to_upload:
-            with_items: lane_bams@preprocess
-      tasks:
-        lane_seq_s3_upload_scatter:
-          tool: s3_upload
-          input:
-            endpoint_url: endpoint_url
-            bucket_name: bucket_name
-            s3_credential_file: credentials_file
-            bundle_type: lane_seq_sub_bundle_type
-            payload_jsons: payload@lane_seq_payload_gen_and_s3_submit_wf
-            upload_files: file_to_upload
-            tool_url: s3_upload.tool_url
+    #lane_seq_s3_upload:
+    #  scatter:
+    #    input:
+    #      file_to_upload:
+    #        with_items: lane_bams@preprocess
+    #  tasks:
+    #    lane_seq_s3_upload_scatter:
+    #      tool: s3_upload
+    #      input:
+    #        endpoint_url: endpoint_url
+    #        bucket_name: bucket_name
+    #        s3_credential_file: credentials_file
+    #        bundle_type: lane_seq_sub_bundle_type
+    #        payload_jsons: payload@lane_seq_payload_gen_and_s3_submit_wf
+    #        upload_files: file_to_upload
+    #        tool_url: s3_upload.tool_url
 
     alignment_wf:
       tool: alignment_wf
