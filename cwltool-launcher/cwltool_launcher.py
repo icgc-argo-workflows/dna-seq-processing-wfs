@@ -54,7 +54,7 @@ if os.path.exists(cwl_outdir):  # remove  if exist
 os.makedirs(cwl_outdir)
 
 # launch cwltool
-cmd = "cwltool --non-strict --debug --outdir %s %s job.json" % (cwl_outdir, cwl_document)
+cmd = "cwltool --non-strict --debug --no-read-only --outdir %s %s job.json" % (cwl_outdir, cwl_document)
 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
 stdout, stderr = p.communicate()
