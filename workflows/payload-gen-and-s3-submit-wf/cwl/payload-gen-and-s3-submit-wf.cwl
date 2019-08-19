@@ -17,12 +17,15 @@ inputs:
       - .crai?
   payload_schema_version: string
   input_metadata_lane_seq: File
-  input_metadata_aligned_seq: File?
+  input_metadata_aligned_seq: File[]?
   credentials_file: File
   endpoint_url: string
   bucket_name: string
 
-outputs: [ ]
+outputs:
+  payload:
+    type: File[]
+    outputSource: subwf/payload
 
 steps:
   subwf:
@@ -48,7 +51,7 @@ steps:
           secondaryFiles: [ ".bai?", ".crai?" ]
         payload_schema_version: string
         input_metadata_lane_seq: File?
-        input_metadata_aligned_seq: File?
+        input_metadata_aligned_seq: File[]?
         credentials_file: File
         endpoint_url: string
         bucket_name: string
