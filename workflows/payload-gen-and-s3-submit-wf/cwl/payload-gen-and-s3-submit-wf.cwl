@@ -16,8 +16,8 @@ inputs:
       - .bai?
       - .crai?
   payload_schema_version: string
-  lane_seq_metadata: File?
-  aligned_seq_bundle: File?
+  input_metadata_lane_seq: File?
+  input_metadata_aligned_seq: File?
   credentials_file: File
   endpoint_url: string
   bucket_name: string
@@ -30,8 +30,8 @@ steps:
       bundle_type: bundle_type
       file_to_upload: files_to_upload
       payload_schema_version: payload_schema_version
-      lane_seq_metadata: lane_seq_metadata
-      aligned_seq_bundle: aligned_seq_bundle
+      input_metadata_lane_seq: input_metadata_lane_seq
+      input_metadata_aligned_seq: input_metadata_aligned_seq
       credentials_file: credentials_file
       endpoint_url: endpoint_url
       bucket_name: bucket_name
@@ -47,8 +47,8 @@ steps:
           type: File
           secondaryFiles: [ ".bai?", ".crai?" ]
         payload_schema_version: string
-        lane_seq_metadata: File?
-        aligned_seq_bundle: File?
+        input_metadata_lane_seq: File?
+        input_metadata_aligned_seq: File?
         credentials_file: File
         endpoint_url: string
         bucket_name: string
@@ -62,15 +62,13 @@ steps:
             bundle_type: bundle_type
             payload_schema_version: payload_schema_version
             file_to_upload: file_to_upload
-            lane_seq_metadata: lane_seq_metadata
-            aligned_seq_bundle: aligned_seq_bundle
+            input_metadata_lane_seq: input_metadata_lane_seq
+            input_metadata_aligned_seq: input_metadata_aligned_seq
           out: [ payload ]
         payload_s3_submit:
           run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.initial/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
-            metadata:
-              source: [ lane_seq_metadata, aligned_seq_bundle ]
-              linkMerge: merge_flattened
+            metadata: input_metadata_lane_seq
             payload: payload_gen/payload
             credentials_file: credentials_file
             endpoint_url: endpoint_url
