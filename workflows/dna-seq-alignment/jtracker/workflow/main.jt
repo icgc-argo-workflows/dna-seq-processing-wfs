@@ -68,7 +68,7 @@ workflow:
     sequence_validation.tool_url:
       type: string
       is_file: true
-      default: "[seq-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tools/seq-validation/seq-validation.cwl"
+      default: "[seq-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/sequence_validation.update/tools/seq-validation/seq-validation.cwl"
     preprocess.tool_url:
       type: string
       is_file: true
@@ -89,6 +89,10 @@ workflow:
       type: string
       is_file: true
       default: "[s3-upload.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/s3-upload.init/tools/s3-upload/s3-upload.cwl"
+    s3_upload_wf.tool_url:
+      type: string
+      is_file: true
+      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.download-and-metadata/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
     lane_seq_sub_bundle_type:
       type: string
       defult: "lane_seq_submission"
@@ -203,22 +207,16 @@ workflow:
         bucket_name: bucket_name
         tool_url: payload_gen_and_s3_submit_wf.tool_url
 
-    #lane_seq_s3_upload:
-    #  scatter:
-    #    input:
-    #      file_to_upload:
-    #        with_items: lane_bams@preprocess
-    #  tasks:
-    #    lane_seq_s3_upload_scatter:
-    #      tool: s3_upload
-    #      input:
-    #        endpoint_url: endpoint_url
-    #        bucket_name: bucket_name
-    #        s3_credential_file: credentials_file
-    #        bundle_type: lane_seq_sub_bundle_type
-    #        payload_jsons: payload@lane_seq_payload_gen_and_s3_submit_wf
-    #        upload_files: file_to_upload
-    #        tool_url: s3_upload.tool_url
+    lane_seq_s3_upload
+      tool: s3_upload_wf
+      input:
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        s3_credential_file: credentials_file
+        bundle_type: aligned_seq_bundle_type
+        payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
+        upload_files: lane_bams@preprocess
+        tool_url: s3_upload_wf.tool_url
 
     alignment_wf:
       tool: alignment_wf
@@ -267,7 +265,7 @@ workflow:
         s3_credential_file: credentials_file
         bundle_type: aligned_seq_bundle_type
         payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
-        upload_files: aligned_bam@markdup
+        upload_file: aligned_bam@markdup
         tool_url: s3_upload.tool_url
 
     aligned_cram_payload_gen_and_s3_submit_wf:
@@ -291,7 +289,7 @@ workflow:
         s3_credential_file: credentials_file
         bundle_type: aligned_seq_bundle_type
         payload_jsons: payload@aligned_cram_payload_gen_and_s3_submit_wf
-        upload_files: aligned_cram@markdup
+        upload_file: aligned_cram@markdup
         tool_url: s3_upload.tool_url
 
 # A workflow is made up with one or more tools
@@ -407,7 +405,7 @@ tools:
       aligned_basename:
         type: string
 
-  s3_upload:
+  s3_upload_wf:
     command: cwltool_launcher.py
     input:
       endpoint_url:
@@ -425,6 +423,25 @@ tools:
         type: File
       upload_files:
         type: File[]
+
+  s3_upload:
+    command: cwltool_launcher.py
+    input:
+      endpoint_url:
+        type: string
+      bucket_name:
+        type: string
+      bundle_type:
+        type: string
+      payload_jsons:
+        type: array
+        items:
+          type: string
+          is_file: true
+      s3_credential_file:
+        type: File
+      upload_file:
+        type: File
 
   payload_gen_and_s3_submit_wf:
     command: cwltool_launcher.py
