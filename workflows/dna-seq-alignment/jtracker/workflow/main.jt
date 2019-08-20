@@ -203,7 +203,7 @@ workflow:
         bucket_name: bucket_name
         s3_credential_file: credentials_file
         bundle_type: bundle_type@preprocess
-        payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
+        payload_jsons: payload@lane_seq_payload_gen_and_s3_submit_wf
         upload_files: lane_bams@preprocess
         tool_url: s3_upload_wf.tool_url
 
