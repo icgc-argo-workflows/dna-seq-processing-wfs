@@ -171,11 +171,12 @@ workflow:
         repository: seq_source_repository
         token_file: score_token_file
         tool_url: sequence_download.tool_url
+      depends_on:
+        - completed@metadata_validation
 
     sequence_validation:
       tool: sequence_validation
       input:
-        seq_format: input_format@metadata_validation
         seq_rg_json: seq_rg_json@metadata_validation
         seq_files: seq_files@sequence_download
         tool_url: sequence_validation.tool_url
@@ -185,7 +186,6 @@ workflow:
       input:
         seq_files: seq_files@sequence_download
         seq_rg_json: seq_rg_json@metadata_validation
-        seq_format: input_format@metadata_validation
         tool_url: preprocess.tool_url
       depends_on:
         - completed@sequence_validation
@@ -312,8 +312,6 @@ tools:
         is_file: true
 
     output:
-      input_format:
-        type: string
       seq_exp_json:
         type: string
         is_file: true
@@ -351,8 +349,6 @@ tools:
     command: cwltool_launcher.py
 
     input:
-      seq_format:
-        type: string
       seq_rg_json:
         type: string
         is_file: true
@@ -373,8 +369,6 @@ tools:
     command: cwltool_launcher.py
 
     input:
-      seq_format:
-        type: string
       seq_rg_json:
         type: string
         is_file: true
