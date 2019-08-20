@@ -1,0 +1,41 @@
+{
+  "type": "lane_seq_submission",
+  "program": "TEST-PRO",
+  "id": "c3ec531b-c2c9-4c77-894a-5b80dd18241e",
+  "inputs": {
+    "read_group_submitter_id": "C0HVY.2",
+    "files": {
+      "bam": {
+        "name": "test_rg_3.bam",
+        "size": 133684363564,
+        "read_group_submitter_id": [
+          "C0HVY.2",
+          "D0RH0.2",
+          "D0RE2.1"
+        ],
+        "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+        "checksum_type": "md5",
+        "local_path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
+        "format": "BAM",
+        "type": "sequencing_file"
+      }
+    }
+  },
+  "files": {
+    "bam_file": {
+      "type": "lane_seq_submission.bam_file.data_object",
+      "name": "C0HVY_2.lane.bam",
+      "local_path": "/var/lib/cwl/stgf12233dd-cace-4fea-8918-53312f96ce4d/C0HVY_2.lane.bam",
+      "size": 4018,
+      "checksum": "8d0070078bd2a5695225bbf42a0f85d1",
+      "checksum_type": "md5",
+      "object_id": "0ee0d7f2-e96c-4e8c-be55-91267e74670b"
+    }
+  },
+  "info": {
+    "library_strategy": "WGS",
+    "sample_submitter_id": "HCC1143_BAM_INPUT",
+    "donor_submitter_id": "HCC1143",
+    "specimen_type": "Cell line - derived from tumour"
+  }
+}

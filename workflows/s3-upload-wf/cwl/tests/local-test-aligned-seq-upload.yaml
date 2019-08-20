@@ -1,0 +1,12 @@
+endpoint_url: "https://object.cancercollaboratory.org:9080"
+bucket_name: "argo-test"
+bundle_type: "dna_alignment"
+payload_jsons:
+- class: File
+  path: input/dna_alignment.test.json
+s3_credential_file:
+  class: File
+  path: input/fake_credential
+upload_files:
+- class: File
+  path: input/HCC1143.3.20190726.wgs.grch38.bam

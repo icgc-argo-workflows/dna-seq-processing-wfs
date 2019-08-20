@@ -1,0 +1,103 @@
+{
+  "type": "dna_alignment",
+  "program": "TEST-PRO",
+  "id": "23a74103-1a9d-4bf3-8e06-0e8c33e8419e",
+  "inputs": {
+    "reference_genome": {
+    },
+    "lane_seq": [
+      {
+        "lane_seq_submission_id": "c3ec531b-c2c9-4c77-894a-5b80dd18241e",
+        "files": {
+          "lane_seq": {
+            "type": "lane_seq_submission.bam_file.data_object",
+            "name": "C0HVY_2.lane.bam",
+            "local_path": "/var/lib/cwl/stgf12233dd-cace-4fea-8918-53312f96ce4d/C0HVY_2.lane.bam",
+            "size": 4018,
+            "checksum": "8d0070078bd2a5695225bbf42a0f85d1",
+            "checksum_type": "md5",
+            "object_id": "0ee0d7f2-e96c-4e8c-be55-91267e74670b",
+            "bundle_id": "c3ec531b-c2c9-4c77-894a-5b80dd18241e"
+          }
+        }
+      },
+      {
+        "lane_seq_submission_id": "02adbffc-c6f1-49d0-9518-e2d6d0c86f33",
+        "files": {
+          "lane_seq": {
+            "type": "lane_seq_submission.bam_file.data_object",
+            "name": "D0RE2_1.lane.bam",
+            "local_path": "/var/lib/cwl/stgcdf099fa-26d7-414c-9287-b786a4eb2bb9/D0RE2_1.lane.bam",
+            "size": 4600,
+            "checksum": "e6800701dda4aebc0f34a248a10a547d",
+            "checksum_type": "md5",
+            "object_id": "4032dea0-60ec-4094-8805-16723de70e3f",
+            "bundle_id": "02adbffc-c6f1-49d0-9518-e2d6d0c86f33"
+          }
+        }
+      },
+      {
+        "lane_seq_submission_id": "a64548d3-9ed9-4ad4-913e-0b7b94658265",
+        "files": {
+          "lane_seq": {
+            "type": "lane_seq_submission.bam_file.data_object",
+            "name": "D0RH0_2.lane.bam",
+            "local_path": "/var/lib/cwl/stga0fb59a5-6a99-4fc3-8208-1e84c8604e92/D0RH0_2.lane.bam",
+            "size": 3705,
+            "checksum": "4a45a72a66b3e21f0c5e37b941c5e134",
+            "checksum_type": "md5",
+            "object_id": "ffcd79d6-a7fb-47ba-81d9-f9cd2a63c84f",
+            "bundle_id": "a64548d3-9ed9-4ad4-913e-0b7b94658265"
+          }
+        }
+      }
+    ]
+  },
+  "analysis": {
+    "analysis_type": "DNA alignment",
+    "reference_genome": "GRCh38",
+    "tool": {
+      "id": "87450266-33b5-45ea-97c6-6e621498b066",
+      "name": "dna_alignment",
+      "version": "0.1.0",
+      "included_apps": [
+        "bwa mem",
+        "samtools",
+        "biobambam"
+      ]
+    },
+    "execution": {
+      "runner_name": "cwltool",
+      "runner_version": "1.0.20190618201008",
+      "job_id": "1427c458-6954-46ca-a780-a9fe5ccdd62f",
+      "started_at": "2019-07-05T08:15:30+00:00",
+      "completed_at": "2019-07-05T08:15:30+00:00"
+    }
+  },
+  "files": {
+    "aligned_seq": {
+      "type": "dna_alignment.aligned_seq.data_object",
+      "name": "HCC1143.3.20190726.wgs.grch38.bam",
+      "local_path": "/var/lib/cwl/stg2fd25978-132b-4c01-bb47-2809eb78da2a/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam",
+      "size": 13198,
+      "checksum": "9f8bd59e0ab446bb01a367689cbb0467",
+      "checksum_type": "md5",
+      "object_id": "e2fccb90-9eac-4664-9dd2-f2517bba1bdb"
+    },
+    "aligned_seq_index": {
+      "type": "dna_alignment.aligned_seq_index.data_object",
+      "name": "HCC1143.3.20190726.wgs.grch38.bam.bai",
+      "local_path": "/var/lib/cwl/stg2fd25978-132b-4c01-bb47-2809eb78da2a/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam.bai",
+      "size": 352,
+      "checksum": "c532221edfc6bed662cf944e1aa887ac",
+      "checksum_type": "md5",
+      "object_id": "79c196c7-62c8-44d7-ba8d-2c1980046ac3"
+    }
+  },
+  "info": {
+    "library_strategy": "WGS",
+    "sample_submitter_id": "HCC1143_BAM_INPUT",
+    "donor_submitter_id": "HCC1143",
+    "specimen_type": "Cell line - derived from tumour"
+  }
+}
