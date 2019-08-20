@@ -22,7 +22,11 @@ inputs:
   seq_rg_json_name:
     type: string
   seq_files:
-    type: File[]
+    type: File[]?
+  repository:
+    type: string?
+  token_file:
+    type: File?
   ref_genome_gz:
     type: File
     secondaryFiles:
@@ -86,11 +90,20 @@ steps:
     out:
       [ seq_exp_json, seq_rg_json ]
 
+  sequence_download:
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.init/tools/score-download/score-download.cwl
+    in:
+      seq_files: seq_files
+      files_tsv: file_tsv
+      repository: repository
+      token_file: token_file
+    out: [ seq_files ]
+
   sequence_validation:
     run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/sequence_validation.update/tools/seq-validation/seq-validation.cwl
     in:
       seq_rg_json: metadata_validation/seq_rg_json
-      seq_files: seq_files
+      seq_files: sequence_download/seq_files
     out:
       [  ]
 
@@ -98,7 +111,7 @@ steps:
     run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.update/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl
     in:
       seq_rg_json: metadata_validation/seq_rg_json
-      seq_files: seq_files
+      seq_files: sequence_download/seq_files
     out:
       [ lane_bams, aligned_basename, bundle_type ]
 
