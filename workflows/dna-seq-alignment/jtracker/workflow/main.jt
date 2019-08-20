@@ -89,12 +89,6 @@ workflow:
       type: string
       is_file: true
       default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.download-and-metadata/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
-    lane_seq_sub_bundle_type:
-      type: string
-      defult: "lane_seq_submission"
-    aligned_seq_bundle_type:
-      type: string
-      defult: "dna_alignment"
     endpoint_url:
       type: string
       default: "https://object.cancercollaboratory.org:9080"
@@ -193,7 +187,7 @@ workflow:
     lane_seq_payload_gen_and_s3_submit_wf:
       tool: payload_gen_and_s3_submit_wf
       input:
-        bundle_type: lane_seq_sub_bundle_type
+        bundle_type: bundle_type@preprocess
         payload_schema_version: payload_schema_version
         files_to_upload: lane_bams@preprocess
         input_metadata_lane_seq: seq_rg_json@metadata_validation
@@ -208,7 +202,7 @@ workflow:
         endpoint_url: endpoint_url
         bucket_name: bucket_name
         s3_credential_file: credentials_file
-        bundle_type: aligned_seq_bundle_type
+        bundle_type: bundle_type@preprocess
         payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
         upload_files: lane_bams@preprocess
         tool_url: s3_upload_wf.tool_url
@@ -242,7 +236,7 @@ workflow:
     aligned_bam_payload_gen_and_s3_submit_wf:
       tool: payload_gen_and_s3_submit_wf
       input:
-        bundle_type: aligned_seq_bundle_type
+        bundle_type: bundle_type@markdup
         payload_schema_version: payload_schema_version
         files_to_upload: aligned_bam@markdup
         input_metadata_lane_seq: seq_rg_json@metadata_validation
@@ -258,7 +252,7 @@ workflow:
         endpoint_url: endpoint_url
         bucket_name: bucket_name
         s3_credential_file: credentials_file
-        bundle_type: aligned_seq_bundle_type
+        bundle_type: bundle_type@markdup
         payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
         upload_file: aligned_bam@markdup
         tool_url: s3_upload.tool_url
@@ -266,7 +260,7 @@ workflow:
     aligned_cram_payload_gen_and_s3_submit_wf:
       tool: payload_gen_and_s3_submit_wf
       input:
-        bundle_type: aligned_seq_bundle_type
+        bundle_type: bundle_type@markdup
         payload_schema_version: payload_schema_version
         files_to_upload: aligned_cram@markdup
         input_metadata_lane_seq: seq_rg_json@metadata_validation
@@ -282,7 +276,7 @@ workflow:
         endpoint_url: endpoint_url
         bucket_name: bucket_name
         s3_credential_file: credentials_file
-        bundle_type: aligned_seq_bundle_type
+        bundle_type: bundle_type@markdup
         payload_jsons: payload@aligned_cram_payload_gen_and_s3_submit_wf
         upload_file: aligned_cram@markdup
         tool_url: s3_upload.tool_url
