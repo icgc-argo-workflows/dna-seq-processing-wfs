@@ -207,7 +207,7 @@ workflow:
         bucket_name: bucket_name
         tool_url: payload_gen_and_s3_submit_wf.tool_url
 
-    lane_seq_s3_upload
+    lane_seq_s3_upload:
       tool: s3_upload_wf
       input:
         endpoint_url: endpoint_url
