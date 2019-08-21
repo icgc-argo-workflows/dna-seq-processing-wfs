@@ -1,0 +1,16 @@
+endpoint_url: "https://object.cancercollaboratory.org:9080"
+bucket_name: "argo-test"
+bundle_type: "lane_seq_submission"
+payload_jsons:
+- class: File
+  path: input/lane_seq_submission.C0HVY_2.json
+- class: File
+  path: input/lane_seq_submission.D0RE2_1.json
+s3_credential_file:
+  class: File
+  path: input/fake_credential
+upload_files:
+- class: File
+  path: input/C0HVY_2.lane.bam
+- class: File
+  path: input/D0RE2_1.lane.bam

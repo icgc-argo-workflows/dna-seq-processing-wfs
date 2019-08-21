@@ -36,6 +36,16 @@ for i in input_template:
                         'path': f
                     }
                 )
+
+    elif isinstance(input_template[i], list) and \
+        isinstance(task_input[i], str):  # convert single value to a list with one element
+        input_json[i] = [
+            {
+                'class': 'File',
+                'path': task_input[i]
+            }
+        ]
+
     elif isinstance(input_template[i], dict):
         input_json[i] = input_template[i]
         if input_json[i].get('class') in ['File', 'Directory']:

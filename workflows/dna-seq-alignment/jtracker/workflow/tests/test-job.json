@@ -1,8 +1,16 @@
 {
-  "exp_tsv": "[experiment.tsv]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tests/data/experiment.tsv",
-  "rg_tsv":  "[read_group.tsv]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tests/data/read_group.tsv",
-  "file_tsv": "[file.tsv]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tests/data/file.tsv",
-  "seq_files_dir": "file:///input/seq/files/dir",
+  "exp_tsv": "[experiment.tsv]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.update/tools/metadata-validation/tests/input/experiment-fq.tsv",
+  "rg_tsv":  "[read_group.tsv]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.update/tools/metadata-validation/tests/input/read_group-fq.tsv",
+  "file_tsv": "[file.tsv]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.update/tools/metadata-validation/tests/input/file-fq.tsv",
+  "credentials_file": "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/credentials_file",
+  "seq_files": [
+          "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/C0HVY.2_r1.fq",
+          "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/C0HVY.2_r2.fq",
+          "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/D0RE2.1_r1.fq",
+          "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/D0RE2.1_r2.fq",
+          "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/D0RH0.2_r1.fq",
+          "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/D0RH0.2_r2.fq"
+  ],
   "ref_genome_gz": "[tiny-grch38-chr11-530001-537000.fa.gz]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tests/reference/tiny-grch38-chr11-530001-537000.fa.gz",
   "ref_genome_gz_amb": "[tiny-grch38-chr11-530001-537000.fa.gz.amb]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tests/reference/tiny-grch38-chr11-530001-537000.fa.gz.amb",
   "ref_genome_gz_sa": "[tiny-grch38-chr11-530001-537000.fa.gz.sa]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/0.1.1/tests/reference/tiny-grch38-chr11-530001-537000.fa.gz.sa",
