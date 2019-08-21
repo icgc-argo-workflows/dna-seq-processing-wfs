@@ -56,39 +56,39 @@ workflow:
     metadata_validation.tool_url:
       type: string
       is_file: true
-      default: "[metadata-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.update/tools/metadata-validation/metadata-validation.cwl"
+      default: "[metadata-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.2/tools/metadata-validation/metadata-validation.cwl"
     sequence_download.tool_url:
       type: string
       is_file: true
-      default: "[score-download.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.init/tools/score-download/score-download.cwl"
+      default: "[score-download.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.2/tools/score-download/score-download.cwl"
     sequence_validation.tool_url:
       type: string
       is_file: true
-      default: "[seq-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/sequence_validation.update/tools/seq-validation/seq-validation.cwl"
+      default: "[seq-validation.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.2/tools/seq-validation/seq-validation.cwl"
     preprocess.tool_url:
       type: string
       is_file: true
-      default: "[seq-data-to-lane-bam.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.update/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl"
+      default: "[seq-data-to-lane-bam.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.2/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl"
     alignment_wf.tool_url:
       type: string
       is_file: true
-      default: "[bwa-mem-subwf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.1.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl"
+      default: "[bwa-mem-subwf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/pre-release-0.2.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl"
     markdup.tool_url:
       type: string
       is_file: true
-      default: "[bam-merge-sort-markdup.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.update/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl"
+      default: "[bam-merge-sort-markdup.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.2/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl"
     payload_gen_and_s3_submit_wf.tool_url:
       type: string
       is_file: true
-      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.download-and-metadata/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
+      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/pre-release-0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
     s3_upload.tool_url:
       type: string
       is_file: true
-      default: "[s3-upload.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/s3-upload.init/tools/s3-upload/s3-upload.cwl"
+      default: "[s3-upload.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/s3-upload.0.1.2/tools/s3-upload/s3-upload.cwl"
     s3_upload_wf.tool_url:
       type: string
       is_file: true
-      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.download-and-metadata/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
+      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/pre-release-0.2.0/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
     endpoint_url:
       type: string
       default: "https://object.cancercollaboratory.org:9080"
