@@ -116,7 +116,7 @@ steps:
       [ lane_bams, aligned_basename, bundle_type ]
 
   lane_seq_payload_gen_and_s3_submit_wf:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/pre-release-0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
     in:
       bundle_type: preprocess/bundle_type
       files_to_upload: preprocess/lane_bams
@@ -141,7 +141,7 @@ steps:
     out: [ ]
 
   alignment:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/pre-release-0.2.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
     in:
       input_bam: preprocess/lane_bams
       ref_genome_gz: ref_genome_gz
