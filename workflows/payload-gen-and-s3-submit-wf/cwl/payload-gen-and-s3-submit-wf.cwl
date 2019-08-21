@@ -63,7 +63,7 @@ steps:
 
       steps:
         payload_gen:
-          run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-generation.initial/tools/payload-generation/payload-generation.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-generation.0.1.2/tools/payload-generation/payload-generation.cwl
           in:
             bundle_type: bundle_type
             payload_schema_version: payload_schema_version
@@ -72,7 +72,7 @@ steps:
             input_metadata_aligned_seq: input_metadata_aligned_seq
           out: [ payload ]
         payload_s3_submit:
-          run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.initial/tools/payload-ceph-submission/payload-ceph-submission.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.2/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
             metadata: input_metadata_lane_seq
             payload: payload_gen/payload
