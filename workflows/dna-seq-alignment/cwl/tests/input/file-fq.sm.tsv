@@ -1,0 +1,3 @@
+name	size	read_group_submitter_id	checksum	checksum_type	local_path	format	type
+f677818e71ecd40145cebca12e17441f.BD233T_CTTGTA_L008_R1_001.fastq.bz2	145025511	C0HVY.2	e4fe8353ae62045642a2124909c5cfa5	md5	score://collab/EGAR00001264286/1a5436f1-0268-5f72-88b5-b49628264ff5	FASTQ	sequencing_file
+fa751a2fb96a12ba06ca667e76efdf60.BD233T_CTTGTA_L008_R2_001.fastq.bz2	119833006	C0HVY.2	e4fe8353ae62045642a2124909c5cfa5	md5	score://collab/EGAR00001264286/7151c61e-53ba-59cf-a19c-0d68936f5dea	FASTQ	sequencing_file
