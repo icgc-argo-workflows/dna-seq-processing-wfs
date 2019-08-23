@@ -1,18 +1,11 @@
-# Workflow preprocesses WGS sequences in FASTQ or BAM, then
-# runs original PCAWG BWA-MEM alignment, different QC metrics are
-# also collected at convenient steps
+# This workflow preprocesses WGS/WXS sequences in FASTQ or BAM (from local or from
+# data object repository), then runs BWA-MEM alignment to produce uniformly aligned
+# BAM or CRAM ready for variant calling.
 
 workflow:
   name:  dna-seq-alignment
-  version: "0.2.0a1"
+  version: "0.2.1"
 
-  env_var:  # JT will not pass these as parameters for tasks, instead, JT may check existence of the env variable
-    SCORE_TOKEN:
-      type: string
-      is_required: true
-    SONG_TOKEN:
-      type: string
-      is_required: true
   input:
     song_collab_url:
       type: string
@@ -43,10 +36,8 @@ workflow:
       items:
         type: string
         is_file: true
-      is_required: true
     cpus:
       type: integer
-      default: 1
     cram:
       type: boolean
       default: true
@@ -60,7 +51,7 @@ workflow:
     sequence_download.tool_url:
       type: string
       is_file: true
-      default: "[score-download.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.2/tools/score-download/score-download.cwl"
+      default: "[score-download.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.3/tools/score-download/score-download.cwl"
     sequence_validation.tool_url:
       type: string
       is_file: true
@@ -72,7 +63,7 @@ workflow:
     alignment_wf.tool_url:
       type: string
       is_file: true
-      default: "[bwa-mem-subwf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl"
+      default: "[bwa-mem-subwf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl"
     markdup.tool_url:
       type: string
       is_file: true
@@ -80,7 +71,10 @@ workflow:
     payload_gen_and_s3_submit_wf.tool_url:
       type: string
       is_file: true
-      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
+      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
+    payload_s3_submit.tool_url:
+      type: string
+      default: "[payload-ceph-submission.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.3/tools/payload-ceph-submission/payload-ceph-submission.cwl"
     s3_upload.tool_url:
       type: string
       is_file: true
@@ -88,7 +82,7 @@ workflow:
     s3_upload_wf.tool_url:
       type: string
       is_file: true
-      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
+      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
     endpoint_url:
       type: string
       default: "https://object.cancercollaboratory.org:9080"
@@ -156,6 +150,16 @@ workflow:
         seq_exp_json_name: seq_exp_json_name
         seq_rg_json_name: seq_rg_json_name
         tool_url: metadata_validation.tool_url
+
+    seq_exp_payload_s3_submit:
+      tool: seq_exp_payload_s3_submit
+      input:
+        metadata: seq_rg_json@metadata_validation
+        payload: seq_exp_json@metadata_validation
+        credentials_file: credentials_file
+        endpoint_url: endpoint_url
+        bucket_name: bucket_name
+        tool_url: payload_s3_submit.tool_url
 
     sequence_download:
       tool: sequence_download
@@ -312,6 +316,25 @@ tools:
       seq_rg_json:
         type: string
         is_file: true
+
+  seq_exp_payload_s3_submit:
+    command: cwltool_launcher.py
+    input:
+      metadata:
+        type: string
+        is_file: true
+      payload:
+        type: string
+        is_file: true
+      credentials_file:
+        type: string
+        is_file: true
+      endpoint_url:
+        type: string
+      bucket_name:
+        type: string
+      tool_url:
+        type: string
 
   sequence_download:
     command: cwltool_launcher.py

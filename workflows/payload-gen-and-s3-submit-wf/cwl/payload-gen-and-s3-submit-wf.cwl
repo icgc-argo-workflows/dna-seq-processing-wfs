@@ -72,7 +72,7 @@ steps:
             input_metadata_aligned_seq: input_metadata_aligned_seq
           out: [ payload ]
         payload_s3_submit:
-          run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.2/tools/payload-ceph-submission/payload-ceph-submission.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.3/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
             metadata: input_metadata_lane_seq
             payload: payload_gen/payload

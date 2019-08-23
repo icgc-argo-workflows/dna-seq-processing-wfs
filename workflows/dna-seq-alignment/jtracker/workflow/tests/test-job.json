@@ -3,6 +3,7 @@
   "rg_tsv":  "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/read_group-fq.tsv",
   "file_tsv": "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/file-fq.tsv",
   "credentials_file": "/home/ubuntu/credentials",
+  "score_token_file": "/home/ubuntu/access_token",
   "seq_files": [
           "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/C0HVY.2_r1.fq",
           "/home/ubuntu/dna-seq-processing-wfs/workflows/dna-seq-alignment/jtracker/workflow/tests/input/C0HVY.2_r2.fq",

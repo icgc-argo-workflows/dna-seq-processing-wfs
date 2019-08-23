@@ -28,3 +28,6 @@ credentials_file:
 endpoint_url: "https://object.cancercollaboratory.org:9080"
 bucket_name: "argo-test"
 payload_schema_version: 0.1.0-rc.1
+token_file:
+  class: File
+  path: input/fake-access_token.txt
