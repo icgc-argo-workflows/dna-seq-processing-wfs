@@ -90,11 +90,21 @@ steps:
     out:
       [ seq_exp_json, seq_rg_json ]
 
+  seq_exp_payload_s3_submit:
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.3/tools/payload-ceph-submission/payload-ceph-submission.cwl
+    in:
+      metadata: metadata_validation/seq_rg_json
+      payload: metadata_validation/seq_exp_json
+      credentials_file: credentials_file
+      endpoint_url: endpoint_url
+      bucket_name: bucket_name
+    out: [ payload ]
+
   sequence_download:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.2/tools/score-download/score-download.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.3/tools/score-download/score-download.cwl
     in:
       seq_files: seq_files
-      files_tsv: file_tsv
+      file_tsv: file_tsv
       repository: repository
       token_file: token_file
     out: [ seq_files ]
@@ -116,7 +126,7 @@ steps:
       [ lane_bams, aligned_basename, bundle_type ]
 
   lane_seq_payload_gen_and_s3_submit_wf:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
     in:
       bundle_type: preprocess/bundle_type
       files_to_upload: preprocess/lane_bams
@@ -141,7 +151,7 @@ steps:
     out: [ ]
 
   alignment:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.0/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
     in:
       input_bam: preprocess/lane_bams
       ref_genome_gz: ref_genome_gz
@@ -172,7 +182,7 @@ steps:
     out: [ payload ]
 
   aligned_bam_payload_s3_submit:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.2/tools/payload-ceph-submission/payload-ceph-submission.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.3/tools/payload-ceph-submission/payload-ceph-submission.cwl
     in:
       metadata: metadata_validation/seq_rg_json
       payload: aligned_bam_payload_generate/payload
@@ -207,7 +217,7 @@ steps:
     out: [ payload ]
 
   aligned_cram_payload_s3_submit:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.2/tools/payload-ceph-submission/payload-ceph-submission.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/payload-ceph-submission.0.1.3/tools/payload-ceph-submission/payload-ceph-submission.cwl
     in:
       metadata: metadata_validation/seq_rg_json
       payload: aligned_cram_payload_generate/payload
