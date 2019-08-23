@@ -89,6 +89,9 @@ workflow:
     bucket_name:
       type: string
       default: "argo-test"
+    seq_source_repository:
+      type: string
+      default: "collab"
     credentials_file:
       type: string
       is_file: true
