@@ -12,6 +12,8 @@ seq_rg_json_name: "seq_rg.json"
 seq_files:
   - class: File
     path: input/test_rg_3.bam
+  - class: File
+    path: input/test_rg_3.bam.bai
 ref_genome_gz:
   class: File
   path: reference/tiny-grch38-chr11-530001-537000.fa.gz

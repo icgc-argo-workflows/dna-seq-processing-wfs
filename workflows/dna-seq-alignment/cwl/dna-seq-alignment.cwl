@@ -101,7 +101,7 @@ steps:
     out: [ payload ]
 
   sequence_download:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.3/tools/score-download/score-download.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/score-download.0.1.4/tools/score-download/score-download.cwl
     in:
       seq_files: seq_files
       file_tsv: file_tsv
@@ -110,7 +110,7 @@ steps:
     out: [ seq_files ]
 
   sequence_validation:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.2/tools/seq-validation/seq-validation.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.3/tools/seq-validation/seq-validation.cwl
     in:
       seq_rg_json: metadata_validation/seq_rg_json
       seq_files: sequence_download/seq_files
@@ -118,7 +118,7 @@ steps:
       [  ]
 
   preprocess:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.2/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.3/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl
     in:
       seq_rg_json: metadata_validation/seq_rg_json
       seq_files: sequence_download/seq_files
@@ -126,7 +126,7 @@ steps:
       [ lane_bams, aligned_basename, bundle_type ]
 
   lane_seq_payload_gen_and_s3_submit_wf:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.2/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
     in:
       bundle_type: preprocess/bundle_type
       files_to_upload: preprocess/lane_bams
@@ -151,7 +151,7 @@ steps:
     out: [ ]
 
   alignment:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.1/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.2/workflows/bwa-mem-subwf/cwl/bwa-mem-subwf.cwl
     in:
       input_bam: preprocess/lane_bams
       ref_genome_gz: ref_genome_gz
