@@ -60,6 +60,9 @@ workflow:
       type: string
       is_file: true
       default: "[seq-data-to-lane-bam.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.3/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl"
+    proprocess.reads_max_discard_fraction:
+      type: number
+      default: 0.05
     alignment_wf.tool_url:
       type: string
       is_file: true
@@ -187,6 +190,7 @@ workflow:
       input:
         seq_files: seq_files@sequence_download
         seq_rg_json: seq_rg_json@metadata_validation
+        reads_max_discard_fraction: proprocess.reads_max_discard_fraction
         tool_url: preprocess.tool_url
       depends_on:
         - completed@sequence_validation
@@ -397,6 +401,8 @@ tools:
         items:
           type: string
           is_file: true
+      reads_max_discard_fraction:
+        type: number
       tool_url:
         type: string
         is_file: true

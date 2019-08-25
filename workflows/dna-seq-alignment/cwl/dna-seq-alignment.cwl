@@ -43,6 +43,8 @@ inputs:
       - .fai
   cpus:
     type: int?
+  reads_max_discard_fraction:
+    type: float?
   aligned_lane_prefix:
     type: string
   markdup:
@@ -122,6 +124,7 @@ steps:
     in:
       seq_rg_json: metadata_validation/seq_rg_json
       seq_files: sequence_download/seq_files
+      reads_max_discard_fraction: reads_max_discard_fraction
     out:
       [ lane_bams, aligned_basename, bundle_type ]
 
