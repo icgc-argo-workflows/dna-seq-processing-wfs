@@ -12,6 +12,8 @@ seq_rg_json_name: "seq_rg.json"
 seq_files:
   - class: File
     path: input/test_rg_3.bam
+  - class: File
+    path: input/test_rg_3.bam.bai
 ref_genome_gz:
   class: File
   path: reference/tiny-grch38-chr11-530001-537000.fa.gz
@@ -19,6 +21,7 @@ ref_genome:
   class: File
   path: reference/tiny-grch38-chr11-530001-537000.fa
 cpus: 1
+reads_max_discard_fraction: 0.02
 aligned_lane_prefix: "grch38-aligned"
 markdup: true
 cram: true

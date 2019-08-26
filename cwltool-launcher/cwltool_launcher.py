@@ -22,7 +22,7 @@ for i in input_template:
     # handle some optional inputs defined in cwl
     if not task_input.get(i):
         continue
-    if type(input_template[i]) in [str, int, bool]:
+    if type(input_template[i]) in [str, int, float, bool]:
         input_json[i] = task_input[i]
     # cwltool make-template does not do good job with 'null' in template
     elif isinstance(input_template[i], list) and \
