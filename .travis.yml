@@ -6,9 +6,6 @@ python:
 services:
   - docker
 
-before_install:
-  - docker pull quay.io/icgc-argo/dna-seq-processing-tools:0.1.1
-
 install:
   - "pip install -r tests/requirements-test.txt"
 
