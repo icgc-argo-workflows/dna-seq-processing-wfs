@@ -15,6 +15,8 @@ inputs:
     secondaryFiles:
       - .bai?
       - .crai?
+      - .tbi?
+      - .idx?
   payload_schema_version: string
   input_metadata_lane_seq: File
   input_metadata_aligned_seq: File[]?
@@ -48,7 +50,7 @@ steps:
         bundle_type: string
         file_to_upload:
           type: File
-          secondaryFiles: [ ".bai?", ".crai?" ]
+          secondaryFiles: [ ".bai?", ".crai?", ".tbi?", ".idx?" ]
         payload_schema_version: string
         input_metadata_lane_seq: File?
         input_metadata_aligned_seq: File[]?
@@ -63,7 +65,7 @@ steps:
 
       steps:
         payload_gen:
-          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.2/tools/payload-generation/payload-generation.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.3/tools/payload-generation/payload-generation.cwl
           in:
             bundle_type: bundle_type
             payload_schema_version: payload_schema_version
@@ -72,7 +74,7 @@ steps:
             input_metadata_aligned_seq: input_metadata_aligned_seq
           out: [ payload ]
         payload_s3_submit:
-          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.3/tools/payload-ceph-submission/payload-ceph-submission.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.4/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
             metadata: input_metadata_lane_seq
             payload: payload_gen/payload
