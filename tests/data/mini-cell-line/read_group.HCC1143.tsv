@@ -1,0 +1,7 @@
+type	submitter_id	platform_unit	is_paired_end	read_length_r1	read_length_r2	insert_size	sample_barcode	library_name	experiment_submitter_id
+read_group	BI:D0ENM.1	BI:D0ENMACXX111207_1#CCAGTTAG	True	101	101	358		WGS:BI:Sage-75643	EXP-2
+read_group	BI:D0ENM.2	BI:D0ENMACXX111207_2#CCAGTTAG	True	101	101	358		WGS:BI:Sage-75643	EXP-2
+read_group	BI:D0ENM.3	BI:D0ENMACXX111207_3#CCAGTTAG	True	101	101	358		WGS:BI:Sage-75643	EXP-2
+read_group	BI:D0ENM.5	BI:D0ENMACXX111207_5#CCAGTTAG	True	101	101	358		WGS:BI:Sage-75643	EXP-2
+read_group	BI:D0ENM.6	BI:D0ENMACXX111207_6#CCAGTTAG	True	101	101	358		WGS:BI:Sage-75643	EXP-2
+read_group	BI:D0ENM.7	BI:D0ENMACXX111207_7#CCAGTTAG	True	101	101	358		WGS:BI:Sage-75643	EXP-2

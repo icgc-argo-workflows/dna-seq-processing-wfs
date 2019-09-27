@@ -1,0 +1,6 @@
+name	size	read_group_submitter_id	checksum	checksum_type	local_path	format	type
+HCC1143_BL.11-530218-544918.bam	1035796	BI:C09DF.1	2c70c9157ad801c13e7a6b4ef24afdff	md5	.	BAM	sequencing_file
+HCC1143_BL.11-530218-544918.bam	1035796	BI:C09DF.2	2c70c9157ad801c13e7a6b4ef24afdff	md5	.	BAM	sequencing_file
+HCC1143_BL.11-530218-544918.bam	1035796	BI:D0EN0.4	2c70c9157ad801c13e7a6b4ef24afdff	md5	.	BAM	sequencing_file
+HCC1143_BL.11-530218-544918.bam	1035796	BI:D0EN0.7	2c70c9157ad801c13e7a6b4ef24afdff	md5	.	BAM	sequencing_file
+HCC1143_BL.11-530218-544918.bam	1035796	BI:D0EN0.8	2c70c9157ad801c13e7a6b4ef24afdff	md5	.	BAM	sequencing_file
