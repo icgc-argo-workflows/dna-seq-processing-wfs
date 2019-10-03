@@ -1,0 +1,6 @@
+[submodule "data-processing"]
+	path = data-processing
+	url = https://github.com/icgc-argo/nextflow-data-processing-utility-tools
+[submodule "dna-seq-processing"]
+	path = dna-seq-processing
+	url = https://github.com/icgc-argo/nextflow-dna-seq-processing-tools
