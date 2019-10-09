@@ -61,7 +61,7 @@
         ],
         "checksum": "e4fe8353ae62045642a2124909c5cfa5",
         "checksum_type": "md5",
-        "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
+        "path": "score://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
         "format": "BAM",
         "type": "sequencing_file"
       }
