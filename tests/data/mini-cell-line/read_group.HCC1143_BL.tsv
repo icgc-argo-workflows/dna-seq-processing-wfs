@@ -1,4 +1,4 @@
-type	submitter_id	platform_unit	is_paired_end	read_length_r1	read_length_r2	insert_size	sample_barcode	library_name	experiment_submitter_id
+type	submitter_read_group_id	platform_unit	is_paired_end	read_length_r1	read_length_r2	insert_size	sample_barcode	library_name	submitter_sequencing_experiment_id
 read_group	BI:C09DF.1	BI:C09DFACXX111207_1#TTGAGCCT	True	101	101	338		WGS:BI:Solexa-76163	EXP-1
 read_group	BI:C09DF.2	BI:C09DFACXX111207_2#TTGAGCCT	True	101	101	338		WGS:BI:Solexa-76163	EXP-1
 read_group	BI:D0EN0.4	BI:D0EN0ACXX111207_4#TTGAGCCT	True	101	101	338		WGS:BI:Solexa-76163	EXP-1
