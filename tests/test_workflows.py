@@ -3,8 +3,18 @@ import sys
 from glob import glob
 import shutil
 import subprocess
+import git
 
+repo = git.Repo(search_parent_directories=True)
 is_travis = os.environ.get('TRAVIS')
+if is_travis:
+    if os.environ.get('TRAVIS_EVENT_TYPE') == 'pull_request':
+        branch_name = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH')
+    else:
+        branch_name = os.environ.get('TRAVIS_BRANCH')
+else:
+    branch_name = repo.active_branch.name
+
 
 def pytest_generate_tests(metafunc):
     if 'app' in metafunc.fixturenames:
@@ -14,6 +24,10 @@ def pytest_generate_tests(metafunc):
             + glob(os.path.join('workflows', '*')):
             if app_dir.startswith('workflows'):
                 app_dir = os.path.join(app_dir, 'cwl')
+
+            app_name = os.path.basename(app_dir)
+            if branch_name not in ('master', 'develop') and not branch_name.startswith('%s.' % app_name):
+                continue  # don't need to test
 
             app_def = glob(os.path.join(app_dir, '*.cwl'))
 
