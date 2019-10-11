@@ -49,8 +49,11 @@ inputs:
     type: string
   markdup:
     type: boolean
-  cram:
-    type: boolean
+  aligned_seq_output_format:
+    type: string[]
+    default:
+    - bam
+    - cram
   payload_schema_version:
     type: string
   credentials_file:
@@ -66,9 +69,9 @@ outputs:
     type: File
     secondaryFiles: [.bai]
     outputSource: merge_markdup/aligned_bam
-  aligned_bam_duplicate_metrics:
+  aligned_duplicate_metrics:
     type: File
-    outputSource: merge_markdup/aligned_bam_duplicate_metrics
+    outputSource: merge_markdup/aligned_duplicate_metrics
   aligned_cram:
     type: File
     secondaryFiles: [.crai]
@@ -112,7 +115,7 @@ steps:
     out: [ seq_files ]
 
   sequence_validation:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.3/tools/seq-validation/seq-validation.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.4/tools/seq-validation/seq-validation.cwl
     in:
       seq_rg_json: metadata_validation/seq_rg_json
       seq_files: sequence_download/seq_files
@@ -170,9 +173,8 @@ steps:
       ref_genome: ref_genome
       cpus: cpus
       markdup: markdup
-      cram: cram
-
-    out: [ aligned_bam, aligned_bam_duplicate_metrics, aligned_cram, bundle_type]
+      output_format: aligned_seq_output_format
+    out: [ aligned_bam, aligned_duplicate_metrics, aligned_cram, bundle_type]
 
   aligned_bam_payload_generate:
     run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.4/tools/payload-generation/payload-generation.cwl
@@ -195,7 +197,7 @@ steps:
     out: [ payload ]
 
   aligned_bam_s3_upload:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.3/tools/s3-upload/s3-upload.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.4/tools/s3-upload/s3-upload.cwl
     in:
       endpoint_url: endpoint_url
       bucket_name: bucket_name
