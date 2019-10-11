@@ -34,10 +34,10 @@ markdup: true
 cram: true
 credentials_file:
   class: File
-  path: input/fake-credentials
+  path: fake/credentials
 endpoint_url: "https://object.cancercollaboratory.org:9080"
 bucket_name: "argo-test"
-payload_schema_version: 0.1.0-rc.1
+payload_schema_version: 0.1.0-rc.2
 token_file:
   class: File
-  path: input/fake-access_token.txt
+  path: fake/access_token
