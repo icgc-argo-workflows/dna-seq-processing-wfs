@@ -1,21 +1,21 @@
 {
   "type": "lane_seq_submission",
-  "program": "TEST-PRO",
+  "program_id": "TEST-PRO",
   "id": "c3ec531b-c2c9-4c77-894a-5b80dd18241e",
   "inputs": {
-    "read_group_submitter_id": "D0RE2.1",
+    "submitter_read_group_id": "D0RE2.1",
     "files": {
       "bam": {
         "name": "test_rg_3.bam",
         "size": 133684363564,
-        "read_group_submitter_id": [
+        "submitter_read_group_id": [
           "C0HVY.2",
           "D0RH0.2",
           "D0RE2.1"
         ],
         "checksum": "e4fe8353ae62045642a2124909c5cfa5",
         "checksum_type": "md5",
-        "local_path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
+        "path": "score://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
         "format": "BAM",
         "type": "sequencing_file"
       }
@@ -25,7 +25,7 @@
     "bam_file": {
       "type": "lane_seq_submission.bam_file.data_object",
       "name": "D0RE2_1.lane.bam",
-      "local_path": "/var/lib/cwl/stgf12233dd-cace-4fea-8918-53312f96ce4d/D0RE2_1.lane.bam",
+      "path": "/var/lib/cwl/stgf12233dd-cace-4fea-8918-53312f96ce4d/D0RE2_1.lane.bam",
       "size": 4551,
       "checksum": "8d0070078bd2a5695225bbf42a0f85d1",
       "checksum_type": "md5",
@@ -34,8 +34,8 @@
   },
   "info": {
     "library_strategy": "WGS",
-    "sample_submitter_id": "HCC1143_BAM_INPUT",
-    "donor_submitter_id": "HCC1143",
-    "specimen_type": "Cell line - derived from tumour"
+    "submitter_sample_id": "HCC1143_BAM_INPUT",
+    "submitter_donor_id": "HCC1143",
+    "tumour_normal_designation": "Cell line - derived from tumour"
   }
 }

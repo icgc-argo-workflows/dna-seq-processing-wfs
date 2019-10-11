@@ -1,6 +1,6 @@
 {
   "type": "dna_alignment",
-  "program": "TEST-PRO",
+  "program_id": "TEST-PRO",
   "id": "23a74103-1a9d-4bf3-8e06-0e8c33e8419e",
   "inputs": {
     "reference_genome": {
@@ -12,7 +12,7 @@
           "lane_seq": {
             "type": "lane_seq_submission.bam_file.data_object",
             "name": "C0HVY_2.lane.bam",
-            "local_path": "/var/lib/cwl/stgf12233dd-cace-4fea-8918-53312f96ce4d/C0HVY_2.lane.bam",
+            "path": "/var/lib/cwl/stgf12233dd-cace-4fea-8918-53312f96ce4d/C0HVY_2.lane.bam",
             "size": 4018,
             "checksum": "8d0070078bd2a5695225bbf42a0f85d1",
             "checksum_type": "md5",
@@ -27,7 +27,7 @@
           "lane_seq": {
             "type": "lane_seq_submission.bam_file.data_object",
             "name": "D0RE2_1.lane.bam",
-            "local_path": "/var/lib/cwl/stgcdf099fa-26d7-414c-9287-b786a4eb2bb9/D0RE2_1.lane.bam",
+            "path": "/var/lib/cwl/stgcdf099fa-26d7-414c-9287-b786a4eb2bb9/D0RE2_1.lane.bam",
             "size": 4600,
             "checksum": "e6800701dda4aebc0f34a248a10a547d",
             "checksum_type": "md5",
@@ -42,7 +42,7 @@
           "lane_seq": {
             "type": "lane_seq_submission.bam_file.data_object",
             "name": "D0RH0_2.lane.bam",
-            "local_path": "/var/lib/cwl/stga0fb59a5-6a99-4fc3-8208-1e84c8604e92/D0RH0_2.lane.bam",
+            "path": "/var/lib/cwl/stga0fb59a5-6a99-4fc3-8208-1e84c8604e92/D0RH0_2.lane.bam",
             "size": 3705,
             "checksum": "4a45a72a66b3e21f0c5e37b941c5e134",
             "checksum_type": "md5",
@@ -78,7 +78,7 @@
     "aligned_seq": {
       "type": "dna_alignment.aligned_seq.data_object",
       "name": "HCC1143.3.20190726.wgs.grch38.bam",
-      "local_path": "/var/lib/cwl/stg2fd25978-132b-4c01-bb47-2809eb78da2a/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam",
+      "path": "/var/lib/cwl/stg2fd25978-132b-4c01-bb47-2809eb78da2a/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam",
       "size": 13198,
       "checksum": "9f8bd59e0ab446bb01a367689cbb0467",
       "checksum_type": "md5",
@@ -87,7 +87,7 @@
     "aligned_seq_index": {
       "type": "dna_alignment.aligned_seq_index.data_object",
       "name": "HCC1143.3.20190726.wgs.grch38.bam.bai",
-      "local_path": "/var/lib/cwl/stg2fd25978-132b-4c01-bb47-2809eb78da2a/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam.bai",
+      "path": "/var/lib/cwl/stg2fd25978-132b-4c01-bb47-2809eb78da2a/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam.bai",
       "size": 352,
       "checksum": "c532221edfc6bed662cf944e1aa887ac",
       "checksum_type": "md5",
@@ -96,8 +96,8 @@
   },
   "info": {
     "library_strategy": "WGS",
-    "sample_submitter_id": "HCC1143_BAM_INPUT",
-    "donor_submitter_id": "HCC1143",
-    "specimen_type": "Cell line - derived from tumour"
+    "submitter_sample_id": "HCC1143_BAM_INPUT",
+    "submitter_donor_id": "HCC1143",
+    "tumour_normal_designation": "Cell line - derived from tumour"
   }
 }
