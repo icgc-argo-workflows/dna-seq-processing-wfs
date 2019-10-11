@@ -1,6 +1,6 @@
 {
     "type": "sequencing_experiment",
-    "program_": "TEST-PRO",
+    "program_id": "TEST-PRO",
     "submitter_sequencing_experiment_id": "TEST_EXP",
     "submitter_sample_id": "HCC1143_FASTQ_INPUT",
     "submitter_donor_id": "HCC1143",

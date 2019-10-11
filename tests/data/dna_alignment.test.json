@@ -98,6 +98,6 @@
     "library_strategy": "WGS",
     "submitter_sample_id": "HCC1143_BAM_INPUT",
     "submitter_donor_id": "HCC1143",
-    "specimen_type": "Cell line - derived from tumour"
+    "tumour_normal_designation": "Cell line - derived from tumour"
   }
 }
