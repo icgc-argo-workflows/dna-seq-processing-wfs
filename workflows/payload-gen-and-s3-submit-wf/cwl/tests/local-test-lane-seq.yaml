@@ -4,12 +4,12 @@ files_to_upload:
     path: input/C0HVY_2.lane.bam
   - class: File
     path: input/D0RE2_1.lane.bam
-payload_schema_version: 0.1.0-rc.1
+payload_schema_version: 0.1.0-rc.2
 input_metadata_lane_seq:
   class: File
   path: input/seq-rg-bam.json
 credentials_file:
   class: File
-  path: input/fake-credentials
+  path: fake/credentials
 endpoint_url: https://object.cancercollaboratory.org:9080
 bucket_name: argo-test
