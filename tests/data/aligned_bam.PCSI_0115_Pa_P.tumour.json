@@ -1,0 +1,73 @@
+{
+  "type": "dna_alignment",
+  "program_id": "PACA-CA",
+  "inputs": {
+    "reference_genome": {},
+    "lane_seq": [
+      {
+        "lane_seq_submission_id": "6c4f6c69-bb5c-4878-bba4-7ab990aca1db",
+        "files": {
+          "lane_seq": {
+            "type": "lane_seq_submission.bam_file.data_object",
+            "name": "121031_h239_0164_AC1F4JACXX_2_NoIndex.lane.bam",
+            "path": "/var/lib/cwl/stgb4d7da9f-8028-40dc-a655-6fadafa9567b/121031_h239_0164_AC1F4JACXX_2_NoIndex.lane.bam",
+            "size": 41577816850,
+            "checksum": "07e99807439fbf9e19aeaaa1e07f2aba",
+            "checksum_type": "md5",
+            "object_id": "816f4ae7-2808-5b12-a97d-d24c203f680d",
+            "bundle_id": "6c4f6c69-bb5c-4878-bba4-7ab990aca1db"
+          }
+        }
+      }
+    ]
+  },
+  "analysis": {
+    "analysis_type": "DNA alignment",
+    "reference_genome": "GRCh38",
+    "tool": {
+      "id": "87450266-33b5-45ea-97c6-6e621498b066",
+      "name": "dna_alignment",
+      "version": "0.1.0",
+      "included_apps": [
+        "bwa mem",
+        "samtools",
+        "biobambam"
+      ]
+    },
+    "execution": {
+      "runner_name": "cwltool",
+      "runner_version": "1.0.20190618201008",
+      "job_id": "1427c458-6954-46ca-a780-a9fe5ccdd62f",
+      "started_at": "2019-07-05T08:15:30+00:00",
+      "completed_at": "2019-07-05T08:15:30+00:00"
+    }
+  },
+  "files": {
+    "aligned_seq": {
+      "type": "dna_alignment.aligned_seq.data_object",
+      "name": "fb35bb4c-6ff6-5133-abea-b67855d45379.1.20190823.wgs.grch38.bam",
+      "path": "/var/lib/cwl/stg69f56738-35fa-4fd1-8b76-50ffc05d190a/fb35bb4c-6ff6-5133-abea-b67855d45379.1.20190823.wgs.grch38.bam",
+      "size": 37323294413,
+      "checksum": "3e598a9bf0f2641be9ab4a2346b3cd0a",
+      "checksum_type": "md5",
+      "object_id": "4ee78ab6-f588-5087-8ef0-27d2960ba97d"
+    },
+    "aligned_seq_index": {
+      "type": "dna_alignment.aligned_seq_index.data_object",
+      "name": "fb35bb4c-6ff6-5133-abea-b67855d45379.1.20190823.wgs.grch38.bam.bai",
+      "path": "/var/lib/cwl/stg69f56738-35fa-4fd1-8b76-50ffc05d190a/fb35bb4c-6ff6-5133-abea-b67855d45379.1.20190823.wgs.grch38.bam.bai",
+      "size": 8693224,
+      "checksum": "5a030ea86b12f81b87babcc4051422ca",
+      "checksum_type": "md5",
+      "object_id": "9c6a878e-385c-5f6e-823f-c4bf53ec3751"
+    }
+  },
+  "id": "0dac8a7a-6a02-417c-8e7b-7010fe4244cf",
+  "info": {
+    "library_strategy": "WXS",
+    "program_id": "PACA-CA",
+    "submitter_donor_id": "PCSI_0115",
+    "submitter_sample_id": "PCSI_0115_Pa_P",
+    "tumour_normal_designation": "Primary tumour"
+  }
+}

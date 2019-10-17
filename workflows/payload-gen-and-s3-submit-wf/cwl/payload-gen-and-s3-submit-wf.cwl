@@ -18,8 +18,11 @@ inputs:
       - .tbi?
       - .idx?
   payload_schema_version: string
-  input_metadata_lane_seq: File
-  input_metadata_aligned_seq: File[]?
+  user_submit_metadata: File?
+  analysis_input_payload: File[]?
+  wf_short_name: string?
+  wf_version: string?
+  data_type: string?
   credentials_file: File
   endpoint_url: string
   bucket_name: string
@@ -35,8 +38,11 @@ steps:
       bundle_type: bundle_type
       file_to_upload: files_to_upload
       payload_schema_version: payload_schema_version
-      input_metadata_lane_seq: input_metadata_lane_seq
-      input_metadata_aligned_seq: input_metadata_aligned_seq
+      user_submit_metadata: user_submit_metadata
+      analysis_input_payload: analysis_input_payload
+      wf_short_name: wf_short_name
+      wf_version: wf_version
+      data_type: data_type
       credentials_file: credentials_file
       endpoint_url: endpoint_url
       bucket_name: bucket_name
@@ -52,8 +58,11 @@ steps:
           type: File
           secondaryFiles: [ ".bai?", ".crai?", ".tbi?", ".idx?" ]
         payload_schema_version: string
-        input_metadata_lane_seq: File?
-        input_metadata_aligned_seq: File[]?
+        user_submit_metadata: File?
+        analysis_input_payload: File[]?
+        wf_short_name: string?
+        wf_version: string?
+        data_type: string?
         credentials_file: File
         endpoint_url: string
         bucket_name: string
@@ -70,13 +79,16 @@ steps:
             bundle_type: bundle_type
             payload_schema_version: payload_schema_version
             file_to_upload: file_to_upload
-            input_metadata_lane_seq: input_metadata_lane_seq
-            input_metadata_aligned_seq: input_metadata_aligned_seq
+            input_metadata_lane_seq: user_submit_metadata
+            input_metadata_aligned_seq: analysis_input_payload
+            wf_short_name: wf_short_name
+            wf_version: wf_version
+            data_type: data_type
           out: [ payload ]
         payload_s3_submit:
-          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.5/tools/payload-ceph-submission/payload-ceph-submission.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
-            metadata: input_metadata_lane_seq
+            metadata: user_submit_metadata
             payload: payload_gen/payload
             credentials_file: credentials_file
             endpoint_url: endpoint_url

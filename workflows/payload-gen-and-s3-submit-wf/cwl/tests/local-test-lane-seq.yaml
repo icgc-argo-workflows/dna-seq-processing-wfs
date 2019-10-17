@@ -5,11 +5,11 @@ files_to_upload:
   - class: File
     path: input/D0RE2_1.lane.bam
 payload_schema_version: 0.1.0-rc.2
-input_metadata_lane_seq:
+user_submit_metadata:
   class: File
   path: input/seq-rg-bam.json
 credentials_file:
   class: File
-  path: fake/credentials
+  path: /Users/lxiang/.aws/credentials
 endpoint_url: https://object.cancercollaboratory.org:9080
 bucket_name: argo-test

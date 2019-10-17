@@ -1,0 +1,29 @@
+{
+  "type": "sequencing_experiment",
+  "program_id": "PACA-CA",
+  "submitter_sequencing_experiment_id": "TEST-EXP-135",
+  "submitter_sample_id": "PCSI_0115_Pa_P",
+  "sequencing_center": "",
+  "platform": "ILLUMINA",
+  "platform_model": "",
+  "library_strategy": "WXS",
+  "sequencing_date": "",
+  "read_group_count": 1,
+  "tumour_normal_designation": "Primary tumour",
+  "submitter_donor_id": "PCSI_0115",
+  "read_groups": [
+    {
+      "type": "read_group",
+      "submitter_id": "121031_h239_0164_AC1F4JACXX_2_NoIndex",
+      "platform_unit": "h239",
+      "is_paired_end": "",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "insert_size": 290,
+      "sample_barcode": "",
+      "library_name": "PCSI_0115_Pa_P_PE_380_EX",
+      "submitter_sequencing_experiment_id": "TEST-EXP-135"
+    }
+  ],
+  "id": "05d71a10-8abd-4d31-a696-6878f0f66830"
+}

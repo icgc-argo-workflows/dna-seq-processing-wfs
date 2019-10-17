@@ -3,10 +3,10 @@ files_to_upload:
   - class: File
     path: input/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam
 payload_schema_version: 0.1.0-rc.2
-input_metadata_lane_seq:
+user_submit_metadata:
   class: File
   path: input/seq-rg-bam.json
-input_metadata_aligned_seq:
+analysis_input_payload:
   - class: File
     path: input/lane_seq_submission.C0HVY_2.lane.bam.json
   - class: File
@@ -15,6 +15,6 @@ input_metadata_aligned_seq:
     path: input/lane_seq_submission.D0RH0_2.lane.bam.json
 credentials_file:
   class: File
-  path: fake/credentials
+  path: /Users/lxiang/.aws/credentials
 endpoint_url: https://object.cancercollaboratory.org:9080
 bucket_name: argo-test
