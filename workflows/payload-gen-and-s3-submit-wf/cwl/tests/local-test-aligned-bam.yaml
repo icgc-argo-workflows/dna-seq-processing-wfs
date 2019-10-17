@@ -1,18 +1,18 @@
 bundle_type: dna_alignment
 files_to_upload:
   - class: File
-    path: input/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam
+    path: data/HCC1143_BAM_INPUT.3.20190814.wgs.grch38.bam
 payload_schema_version: 0.1.0-rc.2
 user_submit_metadata:
   class: File
-  path: input/seq-rg-bam.json
+  path: data/seq-rg-bam.json
 analysis_input_payload:
   - class: File
-    path: input/lane_seq_submission.C0HVY_2.lane.bam.json
+    path: data/lane_seq_submission.C0HVY_2.lane.bam.json
   - class: File
-    path: input/lane_seq_submission.D0RE2_1.lane.bam.json
+    path: data/lane_seq_submission.D0RE2_1.lane.bam.json
   - class: File
-    path: input/lane_seq_submission.D0RH0_2.lane.bam.json
+    path: data/lane_seq_submission.D0RH0_2.lane.bam.json
 credentials_file:
   class: File
   path: /Users/lxiang/.aws/credentials

@@ -1,13 +1,13 @@
 bundle_type: lane_seq_submission
 files_to_upload:
   - class: File
-    path: input/C0HVY_2.lane.bam
+    path: data/C0HVY_2.lane.bam
   - class: File
-    path: input/D0RE2_1.lane.bam
+    path: data/D0RE2_1.lane.bam
 payload_schema_version: 0.1.0-rc.2
 user_submit_metadata:
   class: File
-  path: input/seq-rg-bam.json
+  path: data/seq-rg-bam.json
 credentials_file:
   class: File
   path: /Users/lxiang/.aws/credentials
