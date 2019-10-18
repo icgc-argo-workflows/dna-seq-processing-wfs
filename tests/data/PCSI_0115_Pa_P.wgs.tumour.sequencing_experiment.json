@@ -6,7 +6,7 @@
   "sequencing_center": "",
   "platform": "ILLUMINA",
   "platform_model": "",
-  "library_strategy": "WXS",
+  "library_strategy": "WGS",
   "sequencing_date": "",
   "read_group_count": 1,
   "tumour_normal_designation": "Primary tumour",

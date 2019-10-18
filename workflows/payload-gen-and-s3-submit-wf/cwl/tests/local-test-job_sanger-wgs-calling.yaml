@@ -1,11 +1,16 @@
-
-wf_version: 0.1.0
-wf_short_name: sanger-wxs
+wf_version: 0.1.1
+wf_short_name: sanger-wgs
 user_submit_metadata:
   class: File
-  path: data/PCSI_0115_Pa_P.tumour.sequencing_experiment.json
+  path: data/PCSI_0115_Pa_P.wgs.tumour.sequencing_experiment.json
 payload_schema_version: 0.1.0-rc.2
 files_to_upload:
+  - class: File
+    path: data/PCSI_0115_Pa_P.copynumber.caveman.vcf.gz
+  - class: File
+    path: data/PCSI_0115_Pa_P_vs_PCSI_0115_Ly_R.annot.vcf.gz
+  - class: File
+    path: data/PCSI_0115_Pa_P_vs_PCSI_0115_Ly_R.flagged.vcf.gz
   - class: File
     path: data/PCSI_0115_Pa_P_vs_PCSI_0115_Ly_R.flagged.muts.vcf.gz
 endpoint_url: "https://object.cancercollaboratory.org:9080"

@@ -9,7 +9,6 @@ files_to_upload:
   - class: File
     path: data/PCSI_0115_Pa_P_vs_PCSI_0115_Ly_R.flagged.vcf.gz
 endpoint_url: "https://object.cancercollaboratory.org:9080"
-data_type: indel
 credentials_file:
   class: File
   path: /Users/lxiang/.aws/credentials

@@ -7,6 +7,8 @@ user_submit_metadata:
 payload_schema_version: 0.1.0-rc.2
 files_to_upload:
   - class: File
+    path: data/PCSI_0115_Pa_P_vs_PCSI_0115_Ly_R.flagged.vcf.gz
+  - class: File
     path: data/PCSI_0115_Pa_P_vs_PCSI_0115_Ly_R.flagged.muts.vcf.gz
 endpoint_url: "https://object.cancercollaboratory.org:9080"
 credentials_file:

@@ -7,9 +7,8 @@ user_submit_metadata:
 payload_schema_version: 0.1.0-rc.2
 files_to_upload:
   - class: File
-    path: data/filtered.mutect2.vcf.gz
+    path: data/broad-mutect2.snv-indel.vcf.gz
 endpoint_url: "https://object.cancercollaboratory.org:9080"
-data_type: snv-indel
 credentials_file:
   class: File
   path: /Users/lxiang/.aws/credentials

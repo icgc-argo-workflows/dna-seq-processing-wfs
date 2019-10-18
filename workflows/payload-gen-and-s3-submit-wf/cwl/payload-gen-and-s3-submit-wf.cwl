@@ -22,7 +22,6 @@ inputs:
   analysis_input_payload: File[]?
   wf_short_name: string?
   wf_version: string?
-  data_type: string?
   credentials_file: File
   endpoint_url: string
   bucket_name: string
@@ -42,7 +41,6 @@ steps:
       analysis_input_payload: analysis_input_payload
       wf_short_name: wf_short_name
       wf_version: wf_version
-      data_type: data_type
       credentials_file: credentials_file
       endpoint_url: endpoint_url
       bucket_name: bucket_name
@@ -62,7 +60,6 @@ steps:
         analysis_input_payload: File[]?
         wf_short_name: string?
         wf_version: string?
-        data_type: string?
         credentials_file: File
         endpoint_url: string
         bucket_name: string
@@ -74,16 +71,15 @@ steps:
 
       steps:
         payload_gen:
-          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.4/tools/payload-generation/payload-generation.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.5/tools/payload-generation/payload-generation.cwl
           in:
             bundle_type: bundle_type
             payload_schema_version: payload_schema_version
             file_to_upload: file_to_upload
-            input_metadata_lane_seq: user_submit_metadata
-            input_metadata_aligned_seq: analysis_input_payload
+            user_submit_metadata: user_submit_metadata
+            analysis_input_payload: analysis_input_payload
             wf_short_name: wf_short_name
             wf_version: wf_version
-            data_type: data_type
           out: [ payload ]
         payload_s3_submit:
           run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl
