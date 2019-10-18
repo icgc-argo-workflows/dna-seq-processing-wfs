@@ -31,6 +31,13 @@ outputs:
     type: File[]
     outputSource: subwf/payload
 
+  variant_call_renamed_result:
+    type:
+      - "null"
+      - type: array
+        items: File
+    outputSource: subwf/variant_call_renamed_result
+
 steps:
   subwf:
     in:
@@ -68,6 +75,9 @@ steps:
         payload:
           type: File
           outputSource: payload_s3_submit/payload
+        variant_call_renamed_result:
+          type: ["null", File]
+          outputSource: payload_gen/variant_call_renamed_result
 
       steps:
         payload_gen:
@@ -80,7 +90,7 @@ steps:
             analysis_input_payload: analysis_input_payload
             wf_short_name: wf_short_name
             wf_version: wf_version
-          out: [ payload ]
+          out: [ payload, variant_call_renamed_result]
         payload_s3_submit:
           run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
@@ -91,4 +101,4 @@ steps:
             bucket_name: bucket_name
           out: [ payload ]
 
-    out: [ payload ]
+    out: [ payload, variant_call_renamed_result ]
