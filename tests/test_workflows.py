@@ -22,8 +22,6 @@ def pytest_generate_tests(metafunc):
 
         for app_dir in glob(os.path.join('tools', '*')) \
             + glob(os.path.join('workflows', '*')):
-            if app_dir.startswith('workflows'):
-                app_dir = os.path.join(app_dir, 'cwl')
 
             app_name = os.path.basename(app_dir)
             if branch_name not in ('master', 'develop') and \
@@ -31,6 +29,8 @@ def pytest_generate_tests(metafunc):
                     not branch_name.startswith('%s.' % app_name):
                 continue  # don't need to test
 
+            if app_dir.startswith('workflows'):
+                app_dir = os.path.join(app_dir, 'cwl')
             app_def = glob(os.path.join(app_dir, '*.cwl'))
 
             assert len(app_def) <= 1, \
