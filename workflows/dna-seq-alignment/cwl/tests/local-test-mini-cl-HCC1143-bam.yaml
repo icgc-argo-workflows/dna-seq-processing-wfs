@@ -1,34 +1,34 @@
+aligned_lane_prefix: grch38-aligned
+bucket_name: argo-test
+cpus: 1
+credentials_file:
+  class: File
+  path: /Users/lxiang/.aws/credentials
+endpoint_url: "https://object.cancercollaboratory.org:9080"
 exp_tsv:
   class: File
   path: input/mini-cell-line/experiment.HCC1143.tsv
-rg_tsv:
-  class: File
-  path: input/mini-cell-line/read_group.HCC1143.tsv
 file_tsv:
   class: File
   path: input/mini-cell-line/file.HCC1143.tsv
-seq_exp_json_name: "seq_exp.json"
-seq_rg_json_name: "seq_rg.json"
-seq_files:
-  - class: File
-    path: input/mini-cell-line/HCC1143.11-530218-544918.bam
-ref_genome_gz:
-  class: File
-  path: reference/tiny-grch38-chr11-530001-537000.fa.gz
+markdup: true
+payload_schema_version: 0.1.0-rc.2
+reads_max_discard_fraction: 0.08
 ref_genome:
   class: File
   path: reference/tiny-grch38-chr11-530001-537000.fa
-cpus: 1
-reads_max_discard_fraction: 0.08
-aligned_lane_prefix: "grch38-aligned"
-markdup: true
-cram: true
-credentials_file:
+ref_genome_gz:
   class: File
-  path: fake/credentials
-endpoint_url: "https://object.cancercollaboratory.org:9080"
-bucket_name: "argo-test"
-payload_schema_version: 0.1.0-rc.2
+  path: reference/tiny-grch38-chr11-530001-537000.fa.gz
+rg_tsv:
+  class: File
+  path: input/mini-cell-line/read_group.HCC1143.tsv
+seq_exp_json_name: seq_exp.json
+seq_files:
+  -
+    class: File
+    path: input/mini-cell-line/HCC1143.11-530218-544918.bam
+seq_rg_json_name: seq_rg.json
 token_file:
   class: File
-  path: fake/access_token
+  path: access_token.txt

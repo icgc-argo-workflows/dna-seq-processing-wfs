@@ -50,7 +50,7 @@ inputs:
   markdup:
     type: boolean
   aligned_seq_output_format:
-    type: string[]
+    type: string[]?
     default:
     - bam
     - cram
@@ -65,23 +65,17 @@ inputs:
 
 
 outputs:
-  aligned_bam:
-    type: File
-    secondaryFiles: [.bai]
-    outputSource: merge_markdup/aligned_bam
+  aligned_seq:
+    type: File[]
+    secondaryFiles: [.bai, .crai]
+    outputSource: merge_markdup/aligned_seq
   aligned_duplicate_metrics:
     type: File
     outputSource: merge_markdup/aligned_duplicate_metrics
-  aligned_cram:
-    type: File
-    secondaryFiles: [.crai]
-    outputSource: merge_markdup/aligned_cram
-  aligned_bam_payload:
-    type: File
-    outputSource: aligned_bam_payload_s3_submit/payload
-  aligned_cram_payload:
-    type: File
-    outputSource: aligned_cram_payload_s3_submit/payload
+  aligned_seq_payload:
+    type: File[]
+    outputSource: aligned_seq_payload_gen_and_s3_submit_wf/payload
+
 
 steps:
   metadata_validation:
@@ -96,7 +90,7 @@ steps:
       [ seq_exp_json, seq_rg_json ]
 
   seq_exp_payload_s3_submit:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.5/tools/payload-ceph-submission/payload-ceph-submission.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl
     in:
       metadata: metadata_validation/seq_rg_json
       payload: metadata_validation/seq_exp_json
@@ -145,7 +139,7 @@ steps:
       [ payload ]
 
   lane_seq_s3_upload:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.4/tools/s3-upload/s3-upload.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.5/tools/s3-upload/s3-upload.cwl
     scatter: upload_file
     in:
       endpoint_url: endpoint_url
@@ -166,7 +160,7 @@ steps:
     out: [ aligned_lane_bam ]
 
   merge_markdup:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.3/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl
     in:
       aligned_lane_bams: alignment/aligned_lane_bam
       aligned_basename: preprocess/aligned_basename
@@ -174,76 +168,32 @@ steps:
       cpus: cpus
       markdup: markdup
       output_format: aligned_seq_output_format
-    out: [ aligned_bam, aligned_duplicate_metrics, aligned_cram, bundle_type]
+    out: [ aligned_seq, aligned_duplicate_metrics, bundle_type]
 
-  aligned_bam_payload_generate:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.4/tools/payload-generation/payload-generation.cwl
+  aligned_seq_payload_gen_and_s3_submit_wf:
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
     in:
-      bundle_type: merge_markdup/bundle_type
+      bundle_type: { default: 'dna_alignment' }
       payload_schema_version: payload_schema_version
-      file_to_upload: merge_markdup/aligned_bam
-      input_metadata_lane_seq: metadata_validation/seq_rg_json
-      input_metadata_aligned_seq: lane_seq_payload_gen_and_s3_submit_wf/payload
-    out: [ payload ]
-
-  aligned_bam_payload_s3_submit:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.5/tools/payload-ceph-submission/payload-ceph-submission.cwl
-    in:
-      metadata: metadata_validation/seq_rg_json
-      payload: aligned_bam_payload_generate/payload
+      files_to_upload: merge_markdup/aligned_seq
+      user_submit_metadata: metadata_validation/seq_rg_json
+      analysis_input_payload: lane_seq_payload_gen_and_s3_submit_wf/payload
       credentials_file: credentials_file
       endpoint_url: endpoint_url
       bucket_name: bucket_name
     out: [ payload ]
 
-  aligned_bam_s3_upload:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.4/tools/s3-upload/s3-upload.cwl
+  aligned_seq_s3_upload:
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.5/tools/s3-upload/s3-upload.cwl
+    scatter: upload_file
     in:
       endpoint_url: endpoint_url
       bucket_name: bucket_name
       s3_credential_file: credentials_file
-      bundle_type: merge_markdup/bundle_type
-      upload_file: merge_markdup/aligned_bam
-      payload_jsons:
-        source:
-         - aligned_bam_payload_s3_submit/payload
-        linkMerge: merge_flattened
-
+      bundle_type: { default: 'dna_alignment' }
+      upload_file: merge_markdup/aligned_seq
+      payload_jsons: aligned_seq_payload_gen_and_s3_submit_wf/payload
     out: [ ]
 
-  aligned_cram_payload_generate:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.4/tools/payload-generation/payload-generation.cwl
-    in:
-      bundle_type: merge_markdup/bundle_type
-      payload_schema_version: payload_schema_version
-      file_to_upload: merge_markdup/aligned_cram
-      input_metadata_lane_seq: metadata_validation/seq_rg_json
-      input_metadata_aligned_seq: lane_seq_payload_gen_and_s3_submit_wf/payload
-    out: [ payload ]
-
-  aligned_cram_payload_s3_submit:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.5/tools/payload-ceph-submission/payload-ceph-submission.cwl
-    in:
-      metadata: metadata_validation/seq_rg_json
-      payload: aligned_cram_payload_generate/payload
-      credentials_file: credentials_file
-      endpoint_url: endpoint_url
-      bucket_name: bucket_name
-    out: [ payload ]
-
-  aligned_cram_s3_upload:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.4/tools/s3-upload/s3-upload.cwl
-    in:
-      endpoint_url: endpoint_url
-      bucket_name: bucket_name
-      s3_credential_file: credentials_file
-      bundle_type: merge_markdup/bundle_type
-      upload_file: merge_markdup/aligned_cram
-      payload_jsons:
-        source:
-         - aligned_cram_payload_s3_submit/payload
-        linkMerge: merge_flattened
-
-    out: [ ]
 
 
