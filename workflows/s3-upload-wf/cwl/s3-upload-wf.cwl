@@ -1,6 +1,6 @@
 class: Workflow
 cwlVersion: v1.1
-id: bwa-mem-subwf
+id: s3-upload-wf
 
 requirements:
 - class: StepInputExpressionRequirement
@@ -20,7 +20,7 @@ outputs: [ ]
 
 steps:
   alignment:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.4/tools/s3-upload/s3-upload.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.5/tools/s3-upload/s3-upload.cwl
     scatter: upload_file
     in:
       upload_file: upload_files
