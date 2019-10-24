@@ -38,6 +38,9 @@ workflow:
         is_file: true
     cpus:
       type: integer
+    aligned_lane_prefix:
+      type: string
+      default: "grch38-aligned"
     aligned_seq_output_format:
       type: arrary
       items:
