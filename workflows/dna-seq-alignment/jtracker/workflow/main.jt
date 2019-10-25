@@ -98,9 +98,11 @@ workflow:
     credentials_file:
       type: string
       is_file: true
+      default: "/home/ubuntu/.aws/credentials"
     score_token_file:
       type: string
       is_file: true
+      default: "/home/ubuntu/.accessToken"
     payload_schema_version:
       type: string
       default: "0.1.0-rc.2"
