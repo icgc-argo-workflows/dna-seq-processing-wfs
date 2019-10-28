@@ -293,6 +293,79 @@ workflow:
         upload_file: aligned_cram@markdup
         tool_url: s3_upload.tool_url
 
+
+    cleanup_metadata_validation:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@metadata_validation
+       depends_on:
+          - completed@metadata_validation
+    
+    
+     cleanup_seq_exp_payload_s3_submit:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@seq_exp_payload_s3_submit
+       depends_on:
+          - completed@seq_exp_payload_s3_submit
+
+
+    cleanup_sequence_download:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@sequence_download
+       depends_on:
+          - completed@sequence_download
+
+
+    cleanup_preprocess:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@preprocess
+       depends_on:
+          - completed@preprocess
+
+    
+    cleanup_lane_seq_payload_gen_and_s3_submit_wf:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@lane_seq_payload_gen_and_s3_submit_wf
+       depends_on:
+          - completed@lane_seq_payload_gen_and_s3_submit_wf
+
+
+    cleanup_alignment_wf:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@alignment_wf
+       depends_on:
+          - completed@alignment_wf
+
+    
+    cleanup_markdup:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@markdup
+       depends_on:
+          - completed@markdup
+
+
+    cleanup_aligned_bam_payload_gen_and_s3_submit_wf:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@aligned_bam_payload_gen_and_s3_submit_wf
+       depends_on:
+          - completed@aligned_bam_payload_gen_and_s3_submit_wf
+
+    
+    cleanup_aligned_cram_payload_gen_and_s3_submit_wf:
+       tool: cleanup_directory
+       input:
+          dir: output_dir@aligned_cram_payload_gen_and_s3_submit_wf
+       depends_on:
+          - completed@aligned_cram_payload_gen_and_s3_submit_wf
+
+
 # A workflow is made up with one or more tools
 # Each tool can have its own docker imagine if desirable
 tools:
@@ -566,3 +639,32 @@ tools:
       aligned_cram:
         type: string
         is_file: true
+
+
+    cleanup_directory:
+       command: |
+         bash -c '
+         set -euxo pipefail
+            if [ $(basename ${dir}) = task.metadata_validation ]; then
+               rm -f ${dir}/*.json
+            elif [ $(basename ${dir}) = task.seq_exp_payload_s3_submit ]; then
+               rm -f ${dir}/*.json
+            elif [ $(basename ${dir}) = task.sequence_download ]; then
+               rm -f ${dir}/*.fq
+            elif [ $(basename ${dir}) = task.preprocess ]; then
+               rm -f ${dir}/*.bam
+            elif [ $(basename ${dir}) = task.lane_seq_payload_gen_and_s3_submit_wf ]; then
+               rm -f ${dir}/*.json
+            elif [ $(basename ${dir}) = task.alignment_wf ]; then
+               rm -f ${dir}/*.bam
+            elif [ $(basename ${dir}) = task.task.markdup ]; then
+               rm -f ${dir}/*
+            elif [ $(basename ${dir}) = task.aligned_bam_payload_gen_and_s3_submit_wf ]; then
+               rm -f ${dir}/*.json
+            elif [ $(basename ${dir}) = task.aligned_cram_payload_gen_and_s3_submit_wf ]; then
+               rm -f ${dir}/*.json
+            fi
+         '
+      input:
+         dir:
+            type: string
