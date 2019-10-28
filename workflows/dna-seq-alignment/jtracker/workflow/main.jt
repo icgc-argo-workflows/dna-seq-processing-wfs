@@ -160,7 +160,7 @@ workflow:
         tool_url: metadata_validation.tool_url
 
     seq_exp_payload_s3_submit:
-      tool: seq_exp_payload_s3_submit
+      tool: payload_s3_submit
       input:
         metadata: seq_rg_json@metadata_validation
         payload: seq_exp_json@metadata_validation
@@ -203,7 +203,7 @@ workflow:
         bundle_type: bundle_type@preprocess
         payload_schema_version: payload_schema_version
         files_to_upload: lane_bams@preprocess
-        input_metadata_lane_seq: seq_rg_json@metadata_validation
+        user_submit_metadata: seq_rg_json@metadata_validation
         credentials_file: credentials_file
         endpoint_url: endpoint_url
         bucket_name: bucket_name
@@ -302,7 +302,7 @@ tools:
         type: string
         is_file: true
 
-  seq_exp_payload_s3_submit:
+  payload_s3_submit:
     command: cwltool_launcher.py
     input:
       metadata:
