@@ -14,7 +14,7 @@ inputs:
   s3_credential_file: File
   upload_files:
     type: File[]
-    secondaryFiles: [ ".bai?", ".crai?" ]
+    secondaryFiles: [ ".bai?", ".crai?", ".tbi?", ".idx?" ]
 
 outputs: [ ]
 
