@@ -85,7 +85,7 @@ workflow:
     s3_upload_wf.tool_url:
       type: string
       is_file: true
-      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/s3-upload-wf.0.1.0/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
+      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/s3-upload-wf.0.1.1/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
     endpoint_url:
       type: string
       default: "https://object.cancercollaboratory.org:9080"
