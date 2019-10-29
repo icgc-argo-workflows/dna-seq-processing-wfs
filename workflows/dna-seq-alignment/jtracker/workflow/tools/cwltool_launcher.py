@@ -80,6 +80,7 @@ else: # cwltool run failed
 output_dict = dict()
 
 for key, val in result.items():
+    if val is None: continue
     if isinstance(val, str) or isinstance(val, int):
         output_dict[key] = val
     if isinstance(val, dict):
@@ -87,6 +88,7 @@ for key, val in result.items():
     if isinstance(val, list):
         output_dict[key] = []
         for v in val:
+            if v is None: continue
             output_dict[key].append(v.get('path'))
 
 with open('output.json', 'w') as f:
