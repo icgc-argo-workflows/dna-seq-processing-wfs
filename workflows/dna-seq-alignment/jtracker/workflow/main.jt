@@ -4,7 +4,7 @@
 
 workflow:
   name:  dna-seq-alignment
-  version: "0.2.3"
+  version: "0.2.6"
 
   input:
     song_collab_url:
@@ -38,6 +38,9 @@ workflow:
         is_file: true
     cpus:
       type: integer
+    aligned_lane_prefix:
+      type: string
+      default: "grch38-aligned"
     aligned_seq_output_format:
       type: arrary
       items:
@@ -71,22 +74,18 @@ workflow:
     markdup.tool_url:
       type: string
       is_file: true
-      default: "[bam-merge-sort-markdup.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.3/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl"
+      default: "[bam-merge-sort-markdup.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.cwl"
     payload_gen_and_s3_submit_wf.tool_url:
       type: string
       is_file: true
-      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.4/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
+      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
     payload_s3_submit.tool_url:
       type: string
-      default: "[payload-ceph-submission.cwl]https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.5/tools/payload-ceph-submission/payload-ceph-submission.cwl"
-    s3_upload.tool_url:
-      type: string
-      is_file: true
-      default: "[s3-upload.cwl]https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.4/tools/s3-upload/s3-upload.cwl"
+      default: "[payload-ceph-submission.cwl]https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl"
     s3_upload_wf.tool_url:
       type: string
       is_file: true
-      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.4/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
+      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/s3-upload-wf.0.1.1/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
     endpoint_url:
       type: string
       default: "https://object.cancercollaboratory.org:9080"
@@ -99,12 +98,14 @@ workflow:
     credentials_file:
       type: string
       is_file: true
+      default: "/home/ubuntu/.aws/credentials"
     score_token_file:
       type: string
       is_file: true
+      default: "/home/ubuntu/.accessToken"
     payload_schema_version:
       type: string
-      default: "0.1.0-rc.1"
+      default: "0.1.0-rc.2"
     ref_genome_gz_amb:
       type: string
       is_file: true
@@ -159,7 +160,7 @@ workflow:
         tool_url: metadata_validation.tool_url
 
     seq_exp_payload_s3_submit:
-      tool: seq_exp_payload_s3_submit
+      tool: payload_s3_submit
       input:
         metadata: seq_rg_json@metadata_validation
         payload: seq_exp_json@metadata_validation
@@ -202,7 +203,7 @@ workflow:
         bundle_type: bundle_type@preprocess
         payload_schema_version: payload_schema_version
         files_to_upload: lane_bams@preprocess
-        input_metadata_lane_seq: seq_rg_json@metadata_validation
+        user_submit_metadata: seq_rg_json@metadata_validation
         credentials_file: credentials_file
         endpoint_url: endpoint_url
         bucket_name: bucket_name
@@ -242,56 +243,32 @@ workflow:
         ref_genome: ref_genome
         ref_genome_fai: ref_genome_fai
         markdup: markdup
-        cram: cram
+        output_format: aligned_seq_output_format
         tool_url: markdup.tool_url
 
-    aligned_bam_payload_gen_and_s3_submit_wf:
+    aligned_seq_payload_gen_and_s3_submit_wf:
       tool: payload_gen_and_s3_submit_wf
       input:
         bundle_type: bundle_type@markdup
         payload_schema_version: payload_schema_version
-        files_to_upload: aligned_bam@markdup
-        input_metadata_lane_seq: seq_rg_json@metadata_validation
-        input_metadata_aligned_seq: payload@lane_seq_payload_gen_and_s3_submit_wf
+        files_to_upload: aligned_seq@markdup
+        user_submit_metadata: seq_rg_json@metadata_validation
+        analysis_input_payload: payload@lane_seq_payload_gen_and_s3_submit_wf
         credentials_file: credentials_file
         endpoint_url: endpoint_url
         bucket_name: bucket_name
         tool_url: payload_gen_and_s3_submit_wf.tool_url
 
-    aligned_bam_s3_upload:
-      tool: s3_upload
+    aligned_seq_s3_upload:
+      tool: s3_upload_wf
       input:
         endpoint_url: endpoint_url
         bucket_name: bucket_name
         s3_credential_file: credentials_file
         bundle_type: bundle_type@markdup
-        payload_jsons: payload@aligned_bam_payload_gen_and_s3_submit_wf
-        upload_file: aligned_bam@markdup
-        tool_url: s3_upload.tool_url
-
-    aligned_cram_payload_gen_and_s3_submit_wf:
-      tool: payload_gen_and_s3_submit_wf
-      input:
-        bundle_type: bundle_type@markdup
-        payload_schema_version: payload_schema_version
-        files_to_upload: aligned_cram@markdup
-        input_metadata_lane_seq: seq_rg_json@metadata_validation
-        input_metadata_aligned_seq: payload@lane_seq_payload_gen_and_s3_submit_wf
-        credentials_file: credentials_file
-        endpoint_url: endpoint_url
-        bucket_name: bucket_name
-        tool_url: payload_gen_and_s3_submit_wf.tool_url
-
-    aligned_cram_s3_upload:
-      tool: s3_upload
-      input:
-        endpoint_url: endpoint_url
-        bucket_name: bucket_name
-        s3_credential_file: credentials_file
-        bundle_type: bundle_type@markdup
-        payload_jsons: payload@aligned_cram_payload_gen_and_s3_submit_wf
-        upload_file: aligned_cram@markdup
-        tool_url: s3_upload.tool_url
+        payload_jsons: payload@aligned_seq_payload_gen_and_s3_submit_wf
+        upload_files: aligned_seq@markdup
+        tool_url: s3_upload_wf.tool_url
 
 # A workflow is made up with one or more tools
 # Each tool can have its own docker imagine if desirable
@@ -325,7 +302,7 @@ tools:
         type: string
         is_file: true
 
-  seq_exp_payload_s3_submit:
+  payload_s3_submit:
     command: cwltool_launcher.py
     input:
       metadata:
@@ -435,26 +412,10 @@ tools:
       s3_credential_file:
         type: File
       upload_files:
-        type: File[]
-
-  s3_upload:
-    command: cwltool_launcher.py
-    input:
-      endpoint_url:
-        type: string
-      bucket_name:
-        type: string
-      bundle_type:
-        type: string
-      payload_jsons:
         type: array
         items:
           type: string
           is_file: true
-      s3_credential_file:
-        type: File
-      upload_file:
-        type: File
 
   payload_gen_and_s3_submit_wf:
     command: cwltool_launcher.py
@@ -468,9 +429,14 @@ tools:
           is_file: true
       payload_schema_version:
         type: string
-      input_metadata_lane_seq:
+      user_submit_metadata:
         type: string
         is_file: true
+      analysis_input_payload:
+        type: array
+        items:
+          type: string
+          is_file: true
       credentials_file:
         type: string
         is_file: true
@@ -478,6 +444,12 @@ tools:
         type: string
       bucket_name:
         type: string
+    output:
+      payload:
+        type: array
+        items:
+          type: string
+          is_file: true
 
   alignment_wf:
     command: cwltool_launcher.py
@@ -550,19 +522,22 @@ tools:
         type: integer
       markdup:
         type: boolean
-      cram:
+      output_format:
+        type: array
+        items:
+          type: string
+      lossy:
         type: boolean
       tool_url:
         type: string
         is_file: true
 
     output:
-      aligned_bam:
-        type: string
-        is_file: true
+      aligned_seq:
+        type: array
+        items:
+          type: string
+          is_file: true
       aligned_duplicate_metrics:
-        type: string
-        is_file: true
-      aligned_cram:
         type: string
         is_file: true

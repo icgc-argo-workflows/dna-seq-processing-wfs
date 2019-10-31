@@ -22,6 +22,5 @@
   "ref_genome_gz_alt": "/home/ubuntu/dna-seq-processing-wfs/tests/reference/tiny-grch38-chr11-530001-537000.fa.gz.alt",
   "ref_genome_gz_fai": "/home/ubuntu/dna-seq-processing-wfs/tests/reference/tiny-grch38-chr11-530001-537000.fa.gz.fai",
   "ref_genome_fai": "/home/ubuntu/dna-seq-processing-wfs/tests/reference/tiny-grch38-chr11-530001-537000.fa.fai",
-  "ref_genome": "/home/ubuntu/dna-seq-processing-wfs/tests/reference/tiny-grch38-chr11-530001-537000.fa",
-  "aligned_lane_prefix": "grch38-aligned"
+  "ref_genome": "/home/ubuntu/dna-seq-processing-wfs/tests/reference/tiny-grch38-chr11-530001-537000.fa"
 }
