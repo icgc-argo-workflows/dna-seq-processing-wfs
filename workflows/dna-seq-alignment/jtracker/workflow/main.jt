@@ -587,8 +587,8 @@ tools:
        command: |
          bash -c '
          set -euxo pipefail
-            for dir in `ls -d task.*`
+            for dir in `ls -d ../task.*`
             do
-               rm -f ${dir}/outdir/*
+               rm -f ../${dir}/outdir/*
             done
             '
