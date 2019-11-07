@@ -1,0 +1,51 @@
+{
+  "study": "laborum tempor veniam occaecat",
+  "analysisType": "sequencingRead",
+  "experiment": {
+    "libraryStrategy": "RNA-Seq"
+  },
+  "sample": [
+    {
+      "sampleSubmitterId": "anim enim aliqua culpa",
+      "sampleType": "Total RNA",
+      "specimen": {
+        "specimenSubmitterId": "pariatur Excepteu",
+        "specimenClass": "Tumour",
+        "specimenType": "Recurrent tumour - other"
+      },
+      "donor": {
+        "donorSubmitterId": "in deserunt labore ipsum",
+        "donorGender": "unspecified"
+      }
+    },
+    {
+      "sampleSubmitterId": "anim",
+      "sampleType": "FFPE DNA",
+      "specimen": {
+        "specimenSubmitterId": "d",
+        "specimenClass": "Normal",
+        "specimenType": "Primary tumour - blood derived (bone marrow)"
+      },
+      "donor": {
+        "donorSubmitterId": "adipisicing aliquip par",
+        "donorGender": "male"
+      }
+    }
+  ],
+  "file": [
+    {
+      "fileName": "C0HVY.2_r1.fq",
+      "fileSize": 5381,
+      "fileType": "FASTQ",
+      "fileAccess": "open",
+      "fileMd5sum": "6584EBB05EDFBD6F59BE6307556BD871"
+    },
+    {
+      "fileName": "C0HVY.2_r2",
+      "fileSize": 5381,
+      "fileType": "FASTQ",
+      "fileAccess": "controlled",
+      "fileMd5sum": "D649696F346EB75B95B68E8ECD45F44F"
+    }
+  ]
+}
