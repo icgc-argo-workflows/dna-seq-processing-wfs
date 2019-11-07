@@ -555,10 +555,6 @@ tools:
       aligned_duplicate_metrics:
         type: string
         is_file: true
-      aligned_cram:
-        type: string
-        is_file: true
-
 
     cleanup_directory:
        command: |
