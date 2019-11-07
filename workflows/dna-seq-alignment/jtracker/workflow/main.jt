@@ -270,6 +270,20 @@ workflow:
         upload_files: aligned_seq@markdup
         tool_url: s3_upload_wf.tool_url
 
+    cleanup_outdir_files:
+       tool: cleanup_directory
+       depends_on:
+          - completed@metadata_validation
+          - completed@seq_exp_payload_s3_submit
+          - completed@sequence_download
+          - completed@preprocess
+          - completed@lane_seq_payload_gen_and_s3_submit_wf
+          - completed@alignment_wf
+          - completed@markdup
+          - completed@aligned_bam_payload_gen_and_s3_submit_wf
+          - completed@aligned_cram_payload_gen_and_s3_submit_wf
+    
+    
 # A workflow is made up with one or more tools
 # Each tool can have its own docker imagine if desirable
 tools:
@@ -541,3 +555,13 @@ tools:
       aligned_duplicate_metrics:
         type: string
         is_file: true
+
+    cleanup_directory:
+       command: |
+         bash -c '
+         set -euxo pipefail
+         for dir in `ls -d ../task.*`
+         do
+            rm -f ${dir}/outdir/*
+         done
+         '
