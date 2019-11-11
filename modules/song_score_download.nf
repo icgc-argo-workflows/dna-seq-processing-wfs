@@ -19,11 +19,11 @@ process songScoreDownload {
     // doesn't exist yet, Roberto will make it happen
     // rob will make sing submit extract study from payload
     """
-    export ACCESSTOKEN=${params.apiToken}
-    export METADATA_URL=${params.songURL}
-    export STORAGE_URL=${params.scoreURL}
+    export ACCESSTOKEN=${params.api_token}
+    export METADATA_URL=${params.song_url}
+    export STORAGE_URL=${params.score_url}
 
-    sing configure --server-url ${params.songURL} --access-token ${params.apiToken}
+    sing configure --server-url ${params.song_url} --access-token ${params.api_token}
     sing get --analysisId ${analysisId} > analysis.json
     
     score-client download --analysisId ${analysisId} --output-dir ./out

@@ -9,9 +9,9 @@ params.mem = 1024
 test_data_dir = "data"
 
 // required params
-params.songURL = "http://some-song-url.com"
-params.scoreURL = "http://example-score-url.com"
-params.apiToken = "this-is-only-a-test"
+params.song_url = "http://some-song-url.com"
+params.score_url = "http://example-score-url.com"
+params.api_token = "this-is-only-a-test"
 
 include songScoreUpload as stepOneUpload from '../modules/song_score_upload' params(params)
 include songScoreUpload as stepTwoDownload from '../modules/song_score_download' params(params)
