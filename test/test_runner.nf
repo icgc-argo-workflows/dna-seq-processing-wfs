@@ -13,16 +13,16 @@ params.songURL = "http://some-song-url.com"
 params.scoreURL = "http://example-score-url.com"
 params.apiToken = "this-is-only-a-test"
 
-include songScoreUpload as stepOneUpload from '../modules/song_score_upload'
-include songScoreUpload as stepTwoDownload from '../modules/song_score_download'
+include songScoreUpload as stepOneUpload from '../modules/song_score_upload' params(params)
+include songScoreUpload as stepTwoDownload from '../modules/song_score_download' params(params)
 
 payload = file("${test_data_dir}/payload.json")
 fq_files = Channel.fromPath("${test_data_dir}/*.fq")
 
 workflow {
   // Upload files with payload
-  stepOneUpload(params.apiToken, payload, fq_files.collect())
+  stepOneUpload(payload, fq_files.collect())
 
   // Download same files
-  stepTwoDownload(params.apiToken, stepOneUpload.out)
+  stepTwoDownload(stepOneUpload.out)
 }
