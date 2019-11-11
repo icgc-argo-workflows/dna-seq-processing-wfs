@@ -9,8 +9,8 @@ params.mem = 1024
 test_data_dir = "data"
 
 // required params
-params.songURI = "http://some-song-url.com"
-params.scoreURI = "http://example-score-url.com"
+params.songURL = "http://some-song-url.com"
+params.scoreURL = "http://example-score-url.com"
 params.apiToken = "this-is-only-a-test"
 
 include songScoreUpload as stepOneUpload from '../modules/song_score_upload'

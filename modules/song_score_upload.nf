@@ -20,10 +20,10 @@ process songScoreUpload {
     // rob will make sing submit extract study from payload
     """
     export ACCESSTOKEN=${apiToken}
-    export METADATA_URL=${params.songURI}
-    export STORAGE_URL=${params.scoreURI}
+    export METADATA_URL=${params.songURL}
+    export STORAGE_URL=${params.scoreURL}
 
-    sing configure --server-url ${params.songURI} --access-token ${apiToken}
+    sing configure --server-url ${params.songURL} --access-token ${apiToken}
     sing submit -f ${payload} > output.json
     sing manifest -a `cat output.json | jq .analysisId` -d . -f manifest.txt
 

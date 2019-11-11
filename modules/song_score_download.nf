@@ -21,10 +21,10 @@ process songScoreDownload {
     // rob will make sing submit extract study from payload
     """
     export ACCESSTOKEN=${apiToken}
-    export METADATA_URL=${params.songURI}
-    export STORAGE_URL=${params.scoreURI}
+    export METADATA_URL=${params.songURL}
+    export STORAGE_URL=${params.scoreURL}
 
-    sing configure --server-url ${params.songURI} --access-token ${apiToken}
+    sing configure --server-url ${params.songURL} --access-token ${apiToken}
     sing get --analysisId ${analysisId} > analysis.json
     
     score-client download --analysisId ${analysisId} --output-dir ./out
