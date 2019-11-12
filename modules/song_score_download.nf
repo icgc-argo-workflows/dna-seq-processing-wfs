@@ -13,7 +13,7 @@ process songScoreDownload {
         val analysisId
 
     output:
-        tuple file('analysis.json'), file('./out/*') emit: files
+        tuple file('analysis.json'), file('./out/*')
 
     // doesn't exist yet, Roberto will make it happen
     // rob will make sing submit extract study from payload

@@ -14,7 +14,7 @@ process songScoreUpload {
         file uploads
 
     output:
-        stdout() emit: analysis_id
+        stdout()
 
     // rob will make sing submit extract study from payload
     """
