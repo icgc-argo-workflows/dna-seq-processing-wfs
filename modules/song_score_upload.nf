@@ -10,11 +10,11 @@ process songScoreUpload {
     container 'icgc-argo/song-score'
 
     input:
-    file payload
-    file uploads
+        file payload
+        file uploads
 
     output:
-    stdout()
+        stdout() emit: analysis_id
 
     // rob will make sing submit extract study from payload
     """

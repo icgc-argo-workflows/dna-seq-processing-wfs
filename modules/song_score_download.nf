@@ -10,11 +10,10 @@ process songScoreDownload {
     container 'icgc-argo/song-score'
 
     input:
-    val analysisId
+        val analysisId
 
     output:
-    file 'analysis.json'
-    file './out/*'
+        tuple file('analysis.json'), file('./out/*') emit: files
 
     // doesn't exist yet, Roberto will make it happen
     // rob will make sing submit extract study from payload
