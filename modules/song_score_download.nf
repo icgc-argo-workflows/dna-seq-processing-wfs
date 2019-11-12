@@ -10,6 +10,7 @@ process songScoreDownload {
     container 'icgc-argo/song-score'
 
     input:
+        val studyId
         val analysisId
 
     output:
@@ -23,8 +24,8 @@ process songScoreDownload {
     export STORAGE_URL=${params.score_url}
 
     sing configure --server-url ${params.song_url} --access-token ${params.api_token}
-    sing get --analysisId ${analysisId} > analysis.json
+    sing get --studyId ${studyId} --analysisId ${analysisId} > analysis.json
     
-    score-client download --analysisId ${analysisId} --output-dir ./out
+    score-client download --studyId ${studyId} --analysisId ${analysisId} --output-dir ./out
     """
 }
