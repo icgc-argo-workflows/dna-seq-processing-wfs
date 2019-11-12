@@ -21,8 +21,11 @@ Required Parameters (no default):
 --song_url                              song server URL
 --score_url                             score server URL
 --api_token                             song/score API Token
+--aligned_basename                      final aligned filename
 
 General Parameters (with defaults):
+--reference_dir                         reference genome directory
+--aligned_lane_prefix                   prefix for alignment (defaults to "grch38-aligned")
 --cpus                                  cpus given to all process containers (default 1)
 --memory                                memory (MB) given to all process containers (default 1024)
 
@@ -75,6 +78,8 @@ Upload Parameters (object):
 
 */
 
+params.reference_dir = "reference"
+params.aligned_lane_prefix = "grch38-aligned"
 params.cpus = 1
 params.memory = 1024
 
@@ -115,14 +120,21 @@ include bwaMemAligner as align from 'dna-seq-processing/modules/bwa_mem_aligner.
 include bamMergeSortMarkdup as merge from 'dna-seq-processing/modules/bam_merge_sort_markdup.nf' params(params.merge)
 include songScoreUpload as upload from 'data-processing/modules/song_score_upload' params(params.upload)
 
+ref_gnome = Channel.fromPath("${reference}/*").collect()
+
 workflow {
     // download files and metadata from song/score (A1)
+    download(params.study_id, params.analysis_id)
 
     // run files through preprocess step (split to lanes)
+    preprocess(download.out)
 
-    // aliign each lane independently
+    // align each lane independently
+    align(preprocess.out, ref_gnome, params.aligned_lane_prefix)
 
     // collect aligned lanes for merge and markdup
+    merge(align.out.collect(), ref_gnome, params.aligned_basename)
 
-    // upload aligned file and metadata to song/score (A2)   
+    // upload aligned file and metadata to song/score (A2)
+    upload(merge.out)
 }
