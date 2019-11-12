@@ -10,8 +10,7 @@ process songScoreUpload {
     container 'icgc-argo/song-score'
 
     input:
-        file payload
-        file uploads
+        tuple path(payload), path(uploads)
 
     output:
         stdout()
