@@ -61,7 +61,6 @@ include payloadGenAndS3Submit as payloadGenAndS3Submit_AS from "./modules/payloa
 
 include s3Upload as s3Upload_LS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
 include s3Upload as s3Upload_AS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
-include getSecondaryFile as getUploadSecondaryFile from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
 
 
 workflow {
@@ -131,27 +130,19 @@ workflow {
       Channel.fromPath('NO_FILE')
     )
 
-    Channel
-      .fromPath(getBwaSecondaryFiles(params.ref_genome_gz), checkIfExists: true)
-      .set { ref_genome_gz_ch }
-
     bwaMemAligner(
       seqDataToLaneBamWf.out.lane_bams,
       params.aligned_lane_prefix,
       params.cpus_align,
       file(params.ref_genome_gz),
-      ref_genome_gz_ch.collect()
+      Channel.fromPath(getBwaSecondaryFiles(params.ref_genome_gz), checkIfExists: true).collect()
     )
     bwaMemAligner.out.aligned_bam.view()
-
-    Channel
-      .fromPath(getFaiFile(params.ref_genome), checkIfExists: true)
-      .set { ref_genome_fai_ch }
 
     bamMergeSortMarkdup(
       bwaMemAligner.out.aligned_bam.collect(),
       file(params.ref_genome),
-      ref_genome_fai_ch.collect(),
+      Channel.fromPath(getFaiFile(params.ref_genome), checkIfExists: true).collect(),
       params.cpus_mkdup,
       seqDataToLaneBamWf.out.aligned_basename,
       params.markdup,
