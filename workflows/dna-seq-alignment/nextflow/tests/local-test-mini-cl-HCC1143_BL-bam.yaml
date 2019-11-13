@@ -1,0 +1,36 @@
+aligned_lane_prefix: grch38-aligned
+bucket_name: argo-test
+cpus: 1
+aligned_seq_output_format:
+  - bam
+credentials_file:
+  class: File
+  path: /Users/junjun/credentials
+endpoint_url: "https://object.cancercollaboratory.org:9080"
+exp_tsv:
+  class: File
+  path: input/mini-cell-line/experiment.HCC1143_BL.tsv
+file_tsv:
+  class: File
+  path: input/mini-cell-line/file.HCC1143_BL.tsv
+markdup: true
+payload_schema_version: 0.1.0-rc.2
+reads_max_discard_fraction: 0.05
+ref_genome:
+  class: File
+  path: reference/tiny-grch38-chr11-530001-537000.fa
+ref_genome_gz:
+  class: File
+  path: reference/tiny-grch38-chr11-530001-537000.fa.gz
+rg_tsv:
+  class: File
+  path: input/mini-cell-line/read_group.HCC1143_BL.tsv
+seq_exp_json_name: seq_exp.json
+seq_files:
+  -
+    class: File
+    path: input/mini-cell-line/HCC1143_BL.11-530218-544918.bam
+seq_rg_json_name: seq_rg.json
+token_file:
+  class: File
+  path: /Users/junjun/access_token

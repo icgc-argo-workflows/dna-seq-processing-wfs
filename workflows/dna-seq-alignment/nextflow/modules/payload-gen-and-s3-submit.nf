@@ -99,19 +99,7 @@ def getSecondaryFiles(main_files){  //this is kind of like CWL's secondary files
   return secFiles
 }
 
-Channel
-  .fromPath(params.files_to_upload, checkIfExists: false)
-  .set { files_to_upload_ch }
-/*
-Channel
-  .fromPath(getSecondaryFiles(params.files_to_upload), checkIfExists: false)
-  .set { sec_files_to_upload_ch }
-*/
-/*
-Channel
-  .fromPath(params.analysis_input_payload, checkIfExists: false)
-  .set { analysis_input_payload_ch }
-*/
+
 workflow payloadGenAndS3Submit {
   get:
     bundle_type
@@ -134,17 +122,10 @@ workflow payloadGenAndS3Submit {
       user_submit_metadata,
       files_to_upload,
       sec_files_to_upload,
-      /*
-      Channel
-        .fromPath(getSecondaryFiles(params.files_to_upload), checkIfExists: false),
-      */
       analysis_input_payload.collect(),
       wf_short_name,
       wf_version
     )
-    payloadGeneration.out.payload.view()
-    payloadGeneration.out[1].view()  // variant call renamed result file (n/a for none variant call)
-    payloadGeneration.out[2].view()  // variant call renamed result index file (n/a for none variant call)
 
     payloadCephSubmission(
       credentials_file,
@@ -164,10 +145,10 @@ workflow {
       params.bundle_type,
       params.payload_schema_version,
       file(params.user_submit_metadata),
-      files_to_upload_ch,
+      Channel
+        .fromPath(params.files_to_upload, checkIfExists: false),
       Channel
         .fromPath(getSecondaryFiles(params.files_to_upload), checkIfExists: false),
-      //analysis_input_payload_ch.collect(),
       Channel.fromPath(params.analysis_input_payload, checkIfExists: false).collect(),
       params.wf_short_name,
       params.wf_version,

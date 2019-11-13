@@ -41,7 +41,7 @@ process getBasenameAndBundleType {
 }
 
 process seqDataToLaneBam {
-  container 'quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.0.1.4'
+  container 'quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.0.1.5.0'
 
   input:
     path seq_rg_json

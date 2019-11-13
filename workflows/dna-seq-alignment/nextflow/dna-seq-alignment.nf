@@ -82,27 +82,30 @@ workflow {
       params.endpoint_url,
       params.bucket_name
     )
-    scoreDownload(
-      file(params.seq_files),
-      file(params.file_tsv),
-      params.repository,
-      file(params.token_file)
-    )
-    scoreDownload.out.download_file.view()
+    if (params.seq_files != 'NO_FILE') {
+      Channel
+        .fromPath(params.seq_files, checkIfExists: true)
+        .set { input_files }
+    } else {
+      scoreDownload(
+        file(params.seq_files),
+        file(params.file_tsv),
+        params.repository,
+        file(params.token_file)
+      )
+      input_files = scoreDownload.out.download_file
+    }
 
     seqValidation(
       metadataValidation.out.metadata,
-      scoreDownload.out.download_file.collect()
+      input_files.collect()
     )
 
     seqDataToLaneBamWf(
        metadataValidation.out.metadata,
-       scoreDownload.out.download_file.collect(),
+       input_files.collect(),
        params.reads_max_discard_fraction
     )
-    seqDataToLaneBamWf.out.lane_bams.view()
-    seqDataToLaneBamWf.out.aligned_basename.view()
-    seqDataToLaneBamWf.out.bundle_type.view()
 
     payloadGenAndS3Submit_LS(
       seqDataToLaneBamWf.out.bundle_type,
