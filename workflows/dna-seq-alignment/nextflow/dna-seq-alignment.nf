@@ -74,6 +74,7 @@ workflow {
       params.seq_exp_json_name,
       params.seq_rg_json_name
     )
+
     payloadCephSubmission_RG(
       file(params.credentials_file),
       metadataValidation.out.payload,
@@ -81,6 +82,7 @@ workflow {
       params.endpoint_url,
       params.bucket_name
     )
+
     if (params.seq_files != 'NO_FILE') {
       Channel
         .fromPath(params.seq_files, checkIfExists: true)
@@ -105,14 +107,16 @@ workflow {
        input_files.collect(),
        params.reads_max_discard_fraction
     )
+    // seqDataToLaneBamWf.out.lane_bams.view()
+    // seqDataToLaneBamWf.out.bundle_type.view()
 
     payloadGenAndS3Submit_LS(
       seqDataToLaneBamWf.out.bundle_type,
       params.payload_schema_version,
       metadataValidation.out.metadata,  // user submitted metadata
-      seqDataToLaneBamWf.out.lane_bams,  // files_to_upload_ch
-      Channel.fromPath('NO_FILE'),  // sec_file
-      Channel.fromPath('NO_FILE_2'),  // analysis_input_payload, no need here
+      seqDataToLaneBamWf.out.lane_bams.flatten(),  // files_to_upload_ch
+      Channel.fromPath('NO_FILE').first(),  // sec_file, first() turns it to singleton channnel
+      Channel.fromPath('NO_FILE_2').first(),  // analysis_input_payload, no need here
       "",  // wf_short_name, optional
       "",  // wf_version, optional
       file(params.credentials_file),
@@ -124,20 +128,20 @@ workflow {
       params.endpoint_url,
       params.bucket_name,
       seqDataToLaneBamWf.out.bundle_type,
-      payloadGenAndS3Submit_LS.out.payload,
+      payloadGenAndS3Submit_LS.out.payload.collect(),
       file(params.credentials_file),
-      seqDataToLaneBamWf.out.lane_bams,
-      Channel.fromPath('NO_FILE')
+      seqDataToLaneBamWf.out.lane_bams.flatten(),
+      Channel.fromPath('NO_FILE').first()
     )
 
     bwaMemAligner(
-      seqDataToLaneBamWf.out.lane_bams,
+      seqDataToLaneBamWf.out.lane_bams.flatten(),
       params.aligned_lane_prefix,
       params.cpus_align,
       file(params.ref_genome_gz),
       Channel.fromPath(getBwaSecondaryFiles(params.ref_genome_gz), checkIfExists: true).collect()
     )
-    bwaMemAligner.out.aligned_bam.view()
+    // bwaMemAligner.out.aligned_bam.view()
 
     bamMergeSortMarkdup(
       bwaMemAligner.out.aligned_bam.collect(),
@@ -149,9 +153,9 @@ workflow {
       params.aligned_seq_output_format,
       false
     )
-    bamMergeSortMarkdup.out.merged_seq.view()
-    bamMergeSortMarkdup.out.merged_seq_idx.view()
-    bamMergeSortMarkdup.out.duplicates_metrics.view()
+    // bamMergeSortMarkdup.out.merged_seq.view()
+    // bamMergeSortMarkdup.out.merged_seq_idx.view()
+    // bamMergeSortMarkdup.out.duplicates_metrics.view()
 
     payloadGenAndS3Submit_AS(
       'dna_alignment',
@@ -179,7 +183,7 @@ workflow {
 
   publish:
     metadataValidation.out.metadata to: "outdir", mode: 'copy', overwrite: true
-    metadataValidation.out.payload to: "outdir", mode: 'copy', overwrite: true
+    payloadCephSubmission_RG.out.payload to: "outdir", mode: 'copy', overwrite: true
     payloadGenAndS3Submit_LS.out.payload to: "outdir", mode: 'copy', overwrite: true
     payloadGenAndS3Submit_AS.out.payload to: "outdir", mode: 'copy', overwrite: true
 }

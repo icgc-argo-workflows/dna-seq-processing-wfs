@@ -134,7 +134,7 @@ workflow payloadGenAndS3Submit {
       endpoint_url,
       bucket_name
     )
-    payloadCephSubmission.out.payload.view()
+    // payloadCephSubmission.out.payload.view()
 
   emit:
     payload = payloadCephSubmission.out.payload
