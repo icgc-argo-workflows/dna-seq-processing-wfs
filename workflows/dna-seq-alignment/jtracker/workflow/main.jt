@@ -276,14 +276,16 @@ workflow:
           - completed@metadata_validation
           - completed@seq_exp_payload_s3_submit
           - completed@sequence_download
+          - completed@sequence_validation
           - completed@preprocess
           - completed@lane_seq_payload_gen_and_s3_submit_wf
+          - completed@lane_seq_s3_upload
           - completed@alignment_wf
           - completed@markdup
-          - completed@aligned_bam_payload_gen_and_s3_submit_wf
-          - completed@aligned_cram_payload_gen_and_s3_submit_wf
-    
-    
+          - completed@aligned_seq_payload_gen_and_s3_submit_wf
+          - completed@aligned_seq_s3_upload
+
+
 # A workflow is made up with one or more tools
 # Each tool can have its own docker imagine if desirable
 tools:
