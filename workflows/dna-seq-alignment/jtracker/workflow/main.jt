@@ -556,12 +556,12 @@ tools:
         type: string
         is_file: true
 
-    cleanup_directory:
-       command: |
-         bash -c '
-         set -euxo pipefail
-         for dir in `ls -d ../task.*`
-         do
-            rm -f ${dir}/outdir/*
-         done
-         '
+  cleanup_directory:
+    command: |
+      bash -c '
+      set -euxo pipefail
+      for dir in `ls -d ../task.*`
+      do
+        rm -f $dir/outdir/*
+      done
+      '
