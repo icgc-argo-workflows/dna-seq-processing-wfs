@@ -4,7 +4,7 @@
 
 workflow:
   name:  dna-seq-alignment
-  version: "0.2.8"
+  version: "0.2.9"
 
   input:
     song_collab_url:
@@ -78,14 +78,14 @@ workflow:
     payload_gen_and_s3_submit_wf.tool_url:
       type: string
       is_file: true
-      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
+      default: "[payload-gen-and-s3-submit-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.1/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl"
     payload_s3_submit.tool_url:
       type: string
-      default: "[payload-ceph-submission.cwl]https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl"
+      default: "[payload-ceph-submission.cwl]https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.7.0/tools/payload-ceph-submission/payload-ceph-submission.cwl"
     s3_upload_wf.tool_url:
       type: string
       is_file: true
-      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/s3-upload-wf.0.1.1/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
+      default: "[s3-upload-wf.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/s3-upload-wf.0.1.2/workflows/s3-upload-wf/cwl/s3-upload-wf.cwl"
     endpoint_url:
       type: string
       default: "https://object.cancercollaboratory.org:9080"
