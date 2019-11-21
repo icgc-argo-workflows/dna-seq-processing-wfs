@@ -1,34 +1,66 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
+// groovy goodness
+import groovy.json.JsonSlurper
+def jsonSlurper = new JsonSlurper()
 
-process songScoreUpload {
-    
-    cpus params.cpus
-    memory "${params.mem} MB"
+// processes resources
+params.cpus = 1
+params.mem = 1024
 
-    container 'icgc-argo/song-score'
+// required params w/ default
+params.song_container_version = 'latest'
+params.score_container_version = 'edge' // TODO: Use latest once it's fixed
 
+// required params, no default
+// --song_url         song url for download process (defaults to main song_url param)
+// --score_url        score url for download process (defaults to main score_url param)
+// --api_token        song/score API token for download process (defaults to main api_token param)
+
+song_params = [
+    *:params,
+    'container_version': params.song_container_version
+]
+
+score_params = [
+    *:params,
+    'container_version': params.score_container_version
+]
+
+// import modules
+include songSubmit from './song_submit' params(song_params)
+include songManifest from './song_manifest' params(song_params)
+include scoreUpload from './score_upload' params(score_params)
+include songPublish from './song_publish' params(song_params)
+
+process extractAnalysisId {
     input:
-        tuple path(payload), path(uploads)
+        val submit_json
 
     output:
-        stdout()
+        val result
 
-    // rob will make sing submit extract study from payload
-    """
-    export ACCESSTOKEN=${params.api_token}
-    export METADATA_URL=${params.song_url}
-    export STORAGE_URL=${params.score_url}
-
-    sing configure --server-url ${params.song_url} --access-token ${params.api_token}
-    sing submit -f ${payload} > output.json
-    sing manifest -a `cat output.json | jq .analysisId` -d . -f manifest.txt
-
-    score-client upload --manifest manifest.txt
-
-    sing publish -a `cat output.json | jq .analysisId`\
-    
-    cat output.json | jq .analysisId
-    """
+    exec:
+        result = jsonSlurper.parseText(submit_json).analysisId
 }
+
+workflow song_score_upload {
+    get: studyId
+    get: payload
+    get: upload
+
+    main:
+        songSubmit(studyId, payload)
+
+        // Extract and save analysisId
+        analysisId = extractAnalysisId(songSubmit.out)
+
+        songManifest(studyId, analysisId, upload)
+        scoreUpload(analysisId, songManifest.out, upload)
+        songPublish(studyId, scoreUpload.out.ready_to_publish)
+
+    emit:
+        analysis_id = songPublish.out.analysisId
+}
+

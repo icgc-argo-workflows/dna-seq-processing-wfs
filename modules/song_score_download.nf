@@ -1,31 +1,42 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
 
+// processes resources
+params.cpus = 1
+params.mem = 1024
 
-process songScoreDownload {
-    
-    cpus params.cpus
-    memory "${params.mem} MB"
- 
-    container 'icgc-argo/song-score'
+// required params w/ default
+params.song_container_version = 'latest'
+params.score_container_version = 'latest'
 
-    input:
-        val studyId
-        val analysisId
+// required params, no default
+// --song_url         song url for download process (defaults to main song_url param)
+// --score_url        score url for download process (defaults to main score_url param)
+// --api_token        song/score API token for download process (defaults to main api_token param)
 
-    output:
-        tuple file('analysis.json'), file('./out/*')
+song_params = [
+    *:params,
+    'container_version': params.song_container_version
+]
 
-    // doesn't exist yet, Roberto will make it happen
-    // rob will make sing submit extract study from payload
-    """
-    export ACCESSTOKEN=${params.api_token}
-    export METADATA_URL=${params.song_url}
-    export STORAGE_URL=${params.score_url}
+score_params = [
+    *:params,
+    'container_version': params.score_container_version
+]
 
-    sing configure --server-url ${params.song_url} --access-token ${params.api_token}
-    sing get --studyId ${studyId} --analysisId ${analysisId} > analysis.json
-    
-    score-client download --studyId ${studyId} --analysisId ${analysisId} --output-dir ./out
-    """
+// import modules
+include songGetAnalysis from './song_get_analysis' params(params = song_params)
+include scoreDownload from './score_download' params(params = score_params)
+
+workflow song_score_download {
+    get: studyId
+    get: analysisId
+
+    main:
+        songGetAnalysis(studyId, analysisId)
+        scoreDownload(songGetAnalysis.out.json)
+
+    emit:
+        analysis_json = songGetAnalysis.out.json
+        analysis_json_and_files = scoreDownload.out.analysis_json_and_files
 }
