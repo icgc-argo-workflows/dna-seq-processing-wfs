@@ -63,7 +63,7 @@ workflow:
     preprocess.tool_url:
       type: string
       is_file: true
-      default: "[seq-data-to-lane-bam.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.4/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl"
+      default: "[seq-data-to-lane-bam.cwl]https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.5.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl"
     preprocess.reads_max_discard_fraction:
       type: number
       default: 0.05
