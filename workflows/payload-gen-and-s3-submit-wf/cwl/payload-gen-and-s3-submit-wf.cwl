@@ -81,7 +81,7 @@ steps:
 
       steps:
         payload_gen:
-          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.5/tools/payload-generation/payload-generation.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.5.1/tools/payload-generation/payload-generation.cwl
           in:
             bundle_type: bundle_type
             payload_schema_version: payload_schema_version
@@ -92,7 +92,7 @@ steps:
             wf_version: wf_version
           out: [ payload, variant_call_renamed_result]
         payload_s3_submit:
-          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl
+          run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.7.0/tools/payload-ceph-submission/payload-ceph-submission.cwl
           in:
             metadata: user_submit_metadata
             payload: payload_gen/payload
