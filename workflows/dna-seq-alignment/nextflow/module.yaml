@@ -1,0 +1,31 @@
+name: dna-seq-alignment
+version: "0.2.8.0"
+source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.0.2.8.0/workflows/dna-seq-alignment/nextflow/dna-seq-alignment.nf
+dependencies:
+  metadata-validation:
+    version: "0.1.3.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.3.1/tools/metadata-validation/metadata-validation.nf
+  score-download:
+    version: "0.1.5.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-download.0.1.5.1/tools/score-download/score-download.nf
+  seq-validation:
+    version: "0.1.4.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.4.1/tools/seq-validation/seq-validation.nf
+  seq-data-to-lane-bam:
+    version: "0.1.5.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.5.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf
+  bwa-mem-aligner:
+    version: "0.1.2.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.2.1/tools/bwa-mem-aligner/bwa-mem-aligner.nf
+  bam-merge-sort-markdup:
+    version: "0.1.4.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf
+  payload-generation:
+    version: "0.1.5.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.5.1/tools/payload-generation/payload-generation.nf
+  payload-ceph-submission:
+    version: "0.1.7.0"  # docker container does not have /bin/bash which is needed by nextflow
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.7.0/tools/payload-ceph-submission/payload-ceph-submission.nf
+  s3-upload:
+    version: "0.1.6.0"  # docker container does not have /bin/bash which is needed by nextflow
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf
