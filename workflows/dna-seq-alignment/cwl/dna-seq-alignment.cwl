@@ -90,7 +90,7 @@ steps:
       [ seq_exp_json, seq_rg_json ]
 
   seq_exp_payload_s3_submit:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.6/tools/payload-ceph-submission/payload-ceph-submission.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.7.0/tools/payload-ceph-submission/payload-ceph-submission.cwl
     in:
       metadata: metadata_validation/seq_rg_json
       payload: metadata_validation/seq_exp_json
@@ -117,7 +117,7 @@ steps:
       [  ]
 
   preprocess:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.4/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.5.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.cwl
     in:
       seq_rg_json: metadata_validation/seq_rg_json
       seq_files: sequence_download/seq_files
@@ -126,12 +126,12 @@ steps:
       [ lane_bams, aligned_basename, bundle_type ]
 
   lane_seq_payload_gen_and_s3_submit_wf:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/0.2.4/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.1/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
     in:
       bundle_type: preprocess/bundle_type
       files_to_upload: preprocess/lane_bams
       payload_schema_version: payload_schema_version
-      input_metadata_lane_seq: metadata_validation/seq_rg_json
+      user_submit_metadata: metadata_validation/seq_rg_json
       credentials_file: credentials_file
       endpoint_url: endpoint_url
       bucket_name: bucket_name
@@ -139,7 +139,7 @@ steps:
       [ payload ]
 
   lane_seq_s3_upload:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.5/tools/s3-upload/s3-upload.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.cwl
     scatter: upload_file
     in:
       endpoint_url: endpoint_url
@@ -171,7 +171,7 @@ steps:
     out: [ aligned_seq, aligned_duplicate_metrics, bundle_type]
 
   aligned_seq_payload_gen_and_s3_submit_wf:
-    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.0/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/payload-gen-and-s3-submit-wf.0.2.1/workflows/payload-gen-and-s3-submit-wf/cwl/payload-gen-and-s3-submit-wf.cwl
     in:
       bundle_type: { default: 'dna_alignment' }
       payload_schema_version: payload_schema_version
@@ -184,7 +184,7 @@ steps:
     out: [ payload ]
 
   aligned_seq_s3_upload:
-    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.5/tools/s3-upload/s3-upload.cwl
+    run: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.cwl
     scatter: upload_file
     in:
       endpoint_url: endpoint_url
