@@ -13,13 +13,15 @@ params.container_version = 'latest'
 // --score_url        score url for download process
 // --api_token        song/score API token for download process
 
-// TODO: Replace with score container once it can download files via analysisId
+// TODO: Replace with score container once it can download files via analysis_id
 process scoreDownload {
     
     cpus params.cpus
     memory "${params.mem} MB"
  
     container "lepsalex/song-score-jq:${params.container_version}"
+
+    tag "${analysis.baseName}"
 
     input:
         path analysis

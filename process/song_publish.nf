@@ -19,19 +19,21 @@ process songPublish {
  
     container "overture/song-client:${params.container_version}"
 
+    tag "${analysis_id}"
+    
     input:
-        val studyId
-        val analysisId
+        val study_id
+        val analysis_id
 
     output:
-        val analysisId, emit: analysisId
+        val analysis_id, emit: analysis_id
 
     """
     export CLIENT_SERVER_URL=${params.song_url}
     export CLIENT_ACCESS_TOKEN=${params.api_token}
-    export CLIENT_STUDY_ID=${studyId}
+    export CLIENT_STUDY_ID=${study_id}
 
     cd /song-client/bin
-    ./sing publish -a  ${analysisId}
+    ./sing publish -a  ${analysis_id}
     """
 }

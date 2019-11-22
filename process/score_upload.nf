@@ -20,13 +20,15 @@ process scoreUpload {
  
     container "overture/score:${params.container_version}"
 
+    tag "${analysis_id}"
+
     input:
-        val analysisId
+        val analysis_id
         path manifest
         path upload
 
     output:
-        val analysisId, emit: ready_to_publish
+        val analysis_id, emit: ready_to_publish
 
     """
     export METADATA_URL=${params.song_url}

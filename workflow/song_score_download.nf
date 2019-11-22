@@ -25,15 +25,15 @@ score_params = [
 ]
 
 // import modules
-include songGetAnalysis from './song_get_analysis' params(params = song_params)
-include scoreDownload from './score_download' params(params = score_params)
+include songGetAnalysis from '../process/song_get_analysis' params(song_params)
+include scoreDownload from '../process/score_download' params(score_params)
 
-workflow song_score_download {
-    get: studyId
-    get: analysisId
+workflow songScoreDownload {
+    get: study_id
+    get: analysis_id
 
     main:
-        songGetAnalysis(studyId, analysisId)
+        songGetAnalysis(study_id, analysis_id)
         scoreDownload(songGetAnalysis.out.json)
 
     emit:
