@@ -1,0 +1,5 @@
+{
+  "exp_tsv": "input/experiment-fq.sm.tsv",
+  "rg_tsv": "input/read_group-fq.sm.tsv",
+  "file_tsv": "input/file-fq.sm.tsv"
+}

@@ -43,7 +43,7 @@ def getSecondaryFile(main_file){  //this is kind of like CWL's secondary files
 }
 
 process payloadGeneration {
-  container "quay.io/icgc-argo/payload-generation:payload-generation.0.1.5"
+  container "quay.io/icgc-argo/payload-generation:payload-generation.0.1.5.1"
 
   input:
     val bundle_type

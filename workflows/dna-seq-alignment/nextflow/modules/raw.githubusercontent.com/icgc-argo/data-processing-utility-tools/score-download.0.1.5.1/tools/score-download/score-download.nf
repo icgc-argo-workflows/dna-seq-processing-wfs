@@ -30,7 +30,7 @@ params.token_file = "NO_FILE"
 
 
 process scoreDownload {
-  container "quay.io/icgc-argo/score-download:score-download.0.1.5"
+  container "quay.io/icgc-argo/score-download:score-download.0.1.5.1"
 
   input:
     path seq_files
