@@ -163,14 +163,14 @@ workflow {
     preprocess(download.out.analysis_json_and_files)
 
     // align each lane independently
-    align(preprocess.out.lane_bams, ref_gnome, params.aligned_lane_prefix)
+    align(preprocess.out.unaligned_lanes, ref_gnome, params.aligned_lane_prefix)
 
     // collect aligned lanes for merge and markdup
     merge(align.out.aligned_file.collect(), ref_gnome, params.aligned_basename)
 
     // generate A2 payload
-    a2PayloadGen(a2_template, download.out.analysis_json, merge.out.merged_bam.collect())
+    a2PayloadGen(a2_template, download.out.analysis_json, merge.out.merged_aligned_file.collect())
 
     // upload aligned file and metadata to song/score (A2)
-    upload(params.study_id, a2PayloadGen.out.a2_analysis, merge.out.merged_bam.collect())
+    upload(params.study_id, a2PayloadGen.out.a2_analysis, merge.out.merged_aligned_file.collect())
 }

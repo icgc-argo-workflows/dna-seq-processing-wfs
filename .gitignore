@@ -11,4 +11,5 @@ out
 reports
 remote_reports
 params.json
+params.*.json
 test-data
