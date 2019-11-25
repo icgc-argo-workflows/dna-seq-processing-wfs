@@ -1,10 +1,11 @@
 {
-    "study_id": "",
-    "analysis_id": "",
-    "song_url": "",
-    "score_url": "",
-    "api_token": "",
-    "aligned_basename": "",
-    "reference_dir": "",
-    "aligned_lane_prefix": ""
+    "study_id": "SOME-STUDY",
+    "analysis_id": "SOME-A1-ID",
+    "song_url": "https://song.server.url",
+    "score_url": "https://score.server.url",
+    "api_token": "INSERT-TOKEN-HERE",
+    "reference_dir": "./reference-dir",
+    "a2_template_path": "./some-dir/a2_template.json",
+    "aligned_lane_prefix": "grch38-aligned",
+    "aligned_basename": "SOME.NAME"
 }

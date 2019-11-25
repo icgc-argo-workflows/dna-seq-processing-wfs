@@ -10,3 +10,5 @@ reference
 out
 reports
 remote_reports
+params.json
+test-data

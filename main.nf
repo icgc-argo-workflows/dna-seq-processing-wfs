@@ -25,6 +25,7 @@ Required Parameters (no default):
 
 General Parameters (with defaults):
 --reference_dir                         reference genome directory
+--a2_template_path                      A2 analysis template path 
 --aligned_lane_prefix                   prefix for alignment (defaults to "grch38-aligned")
 --cpus                                  cpus given to all process containers (default 1)
 --memory                                memory (MB) given to all process containers (default 1024)
@@ -32,7 +33,8 @@ General Parameters (with defaults):
 Download Parameters (object):
 --download
 {
-    container_version                   docker container version, defaults set below
+    song_container_version              song docker container version, defaults set below
+    score_container_version             score docker container version, defaults set below
     song_url                            song url for download process (defaults to main song_url param)
     score_url                           score url for download process (defaults to main score_url param)
     api_token                           song/score API token for download process (defaults to main api_token param)
@@ -45,30 +47,34 @@ Preprocess Parameters (object):
 {
     container_version                   docker container version, defaults set below
     reads_max_discard_fraction          preprocess reads max discard function
-    cpus_preprocess                     cpus for process container, defaults to cpus parameter
-    memory_preprocess                   memory (MB) for process container, defaults to memory parameter
+    cpus                                cpus for preprocess container, defaults to cpus parameter
+    memory                              memory (MB) for preprocess container, defaults to memory parameter
 }
 
 Align Parameters (object):
 --align
 {
     container_version                   docker container version, defaults set below
-    cpus                                cpus for process container, defaults to cpus parameter
-    memory                              memory (MB) for process container, defaults to memory parameter
+    cpus                                cpus for align container, defaults to cpus parameter
+    memory                              memory (MB) for align container, defaults to memory parameter
 }
 
 Merge Parameters (object):
 --merge
 {
     container_version                   docker container version, defaults set below
-    cpus_merge                          cpus for process container, defaults to cpus parameter
-    memory_merge                        memory (MB) for process container, defaults to memory parameter
+    output_format                       options are ['cram', 'bam']
+    markdup                             TODO: write description
+    lossy                               TODO: write description
+    cpus                                cpus for merge container, defaults to cpus parameter
+    memory                              memory (MB) for merge container, defaults to memory parameter
 }
 
 Upload Parameters (object):
 --upload
 {
-    container_version                   docker container version, defaults set below
+    song_container_version              song docker container version, defaults set below
+    score_container_version             score docker container version, defaults set below
     song_url                            song url for upload process (defaults to main song_url param)
     score_url                           score url for upload process (defaults to main score_url param)
     api_token                           song/score API token for upload process (defaults to main api_token param)
@@ -78,63 +84,93 @@ Upload Parameters (object):
 
 */
 
-params.reference_dir = "reference"
-params.aligned_lane_prefix = "grch38-aligned"
+params.reference_dir = 'reference'
+params.a2_template_path = 'template/a2_template.json'
+params.aligned_lane_prefix = 'grch38-aligned'
 params.cpus = 1
 params.memory = 1024
 
-params.download.container_version = '1.0.0'
-params.download.song_url = parms.song_url
-params.download.score_url = parms.score_url
-params.download.api_token = params.api_token
-params.download.cpus = params.cpu
-params.download.memory = params.memory
+download_params = [
+    'song_container_version': 'latest',
+    'score_container_version': 'latest',
+    'song_url': params.song_url,
+    'score_url': params.score_url,
+    'api_token': params.api_token,
+    'cpus': params.cpus,
+    'mem': params.memory,
+    *:(params.download ?: [:])
+]
 
-params.preprocess.container_version = '0.1.3'
-params.preprocess.reads_max_discard_fraction = 0.05
-params.preprocess.cpus = params.cpu
-params.preprocess.memory = params.memory
+preprocess_params = [
+    'container_version': '0.1.5.0',
+    'reads_max_discard_fraction': 0.05,
+    'cpus': params.cpus,
+    'mem': params.memory,
+    *:(params.preprocess ?: [:])
+]
 
-params.align.container_version = '0.1.2'
-params.align.cpus = params.cpu
-params.align.memory = params.memory
+align_params = [
+    'container_version': '0.1.2',
+    'cpus': params.cpus,
+    'mem': params.memory,
+    *:(params.align ?: [:])
+]
 
-params.merge.container_version = '0.1.3'
-params.merge.output_format = ['cram'] // options are ['cram', 'bam']
-params.merge.markdup = 'OPTIONAL_INPUT'
-params.merge.lossy = 'OPTIONAL_INPUT'
-params.merge.memory = params.memory
-params.merge.cpus = params.cpu
+merge_params = [
+    'container_version': '0.1.4',
+    'output_format': ['cram'],
+    'markdup': 'OPTIONAL_INPUT',
+    'lossy': 'OPTIONAL_INPUT',
+    'cpus': params.cpus,
+    'mem': params.memory,
+    *:(params.align ?: [:])
+]
 
-params.upload.container_version = '1.0.0'
-params.upload.song_url = parms.song_url
-params.upload.score_url = parms.score_url
-params.upload.api_token = params.api_token
-params.upload.cpus = params.cpu
-params.upload.memory = params.memory
+a2_gen_params = [
+    'container_version': 'latest',
+    'cpus': params.cpus,
+    'mem': params.memory,
+    *:(params.a2_gen_params ?: [:])
+]
+
+upload_params = [
+    'song_container_version': 'latest',
+    'score_container_version': 'edge',
+    'song_url': params.song_url,
+    'score_url': params.score_url,
+    'api_token': params.api_token,
+    'cpus': params.cpus,
+    'mem': params.memory,
+    *:(params.download ?: [:])
+]
 
 // Include all modules and pass params
-include songScoreDownload as download from 'data-processing/modules/song_score_download' params(params.download)                                                                             
-include seqDataToLaneBam as preprocess from 'dna-seq-processing/modules/seq_data_to_lane_bam' params(params.preprocess)
-include bwaMemAligner as align from 'dna-seq-processing/modules/bwa_mem_aligner.nf' params(params.align)
-include bamMergeSortMarkdup as merge from 'dna-seq-processing/modules/bam_merge_sort_markdup.nf' params(params.merge)
-include songScoreUpload as upload from 'data-processing/modules/song_score_upload' params(params.upload)
+include songScoreDownload as download from './data-processing/workflow/song_score_download' params(download_params)                                                                             
+include preprocess from './dna-seq-processing/workflow/preprocess' params(preprocess_params)
+include bwaMemAligner as align from './dna-seq-processing/process/bwa_mem_aligner' params(align_params)
+include merge from './dna-seq-processing/workflow/merge' params(merge_params)
+include a2PayloadGen from './data-processing/process/a2_payload_gen' params(a2_gen_params) 
+include songScoreUpload as upload from './data-processing/workflow/song_score_upload' params(upload_params)
 
-ref_gnome = Channel.fromPath("${reference}/*").collect()
+ref_gnome = Channel.fromPath("${params.reference_dir}/*").collect()
+a2_template = Channel.fromPath(params.a2_template_path)
 
 workflow {
     // download files and metadata from song/score (A1)
     download(params.study_id, params.analysis_id)
 
     // run files through preprocess step (split to lanes)
-    preprocess(download.out)
+    preprocess(download.out.analysis_json_and_files)
 
     // align each lane independently
-    align(preprocess.out, ref_gnome, params.aligned_lane_prefix)
+    align(preprocess.out.lane_bams, ref_gnome, params.aligned_lane_prefix)
 
     // collect aligned lanes for merge and markdup
-    merge(align.out.collect(), ref_gnome, params.aligned_basename)
+    merge(align.out.aligned_file.collect(), ref_gnome, params.aligned_basename)
+
+    // generate A2 payload
+    a2PayloadGen(a2_template, download.out.analysis_json, merge.out.merged_bam.collect())
 
     // upload aligned file and metadata to song/score (A2)
-    upload(merge.out)
+    upload(params.study_id, a2PayloadGen.out.a2_analysis, merge.out.merged_bam.collect())
 }
