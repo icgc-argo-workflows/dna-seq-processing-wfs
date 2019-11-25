@@ -27,7 +27,9 @@
       "fileAccess": "open"
     }
   ],
-  "experiment": {},
+  "experiment": {
+    "libraryStrategy": "WGS"
+  },
   "type": "sequencing_experiment",
   "input_seq_format": "BAM",
   "program": "TEST-PRO",
