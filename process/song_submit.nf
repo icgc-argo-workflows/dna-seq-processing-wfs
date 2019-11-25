@@ -26,7 +26,7 @@ process songSubmit {
         path payload
     
     output:
-        stdout()
+        path 'download_payload.json'
 
     """
     export CLIENT_SERVER_URL=${params.song_url}
@@ -35,6 +35,6 @@ process songSubmit {
 
     export DATADIR=\$PWD
     cd /song-client/bin
-    ./sing submit -f \$DATADIR/${payload}
+    ./sing submit -f \$DATADIR/${payload} > \$DATADIR/download_payload.json
     """
 }
