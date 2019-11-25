@@ -123,7 +123,7 @@ merge_params = [
     'lossy': 'OPTIONAL_INPUT',
     'cpus': params.cpus,
     'mem': params.memory,
-    *:(params.align ?: [:])
+    *:(params.merge ?: [:])
 ]
 
 a2_gen_params = [
@@ -141,7 +141,7 @@ upload_params = [
     'api_token': params.api_token,
     'cpus': params.cpus,
     'mem': params.memory,
-    *:(params.download ?: [:])
+    *:(params.upload ?: [:])
 ]
 
 // Include all modules and pass params

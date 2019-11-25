@@ -7,5 +7,11 @@
     "reference_dir": "./reference-dir",
     "a2_template_path": "./some-dir/a2_template.json",
     "aligned_lane_prefix": "grch38-aligned",
-    "aligned_basename": "SOME.NAME"
+    "aligned_basename": "SOME.NAME",
+    "download": {},
+    "preprocess": {},
+    "align": {},
+    "merge": {},
+    "a2_gen_params": {},
+    "upload": {}
 }
