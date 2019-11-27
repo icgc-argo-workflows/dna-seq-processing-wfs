@@ -45,7 +45,6 @@ process seqDataToLaneBam {
 
   input:
     path seq_rg_json
-    //tuple sampleId, file(seq_files)
     path seq_files
     val reads_max_discard_fraction
 

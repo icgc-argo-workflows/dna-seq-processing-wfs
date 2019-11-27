@@ -27,7 +27,7 @@ params.seq_rg_json = "tests/input/seq_rg.json"
 params.seq_files = "tests/input/test_rg_3.bam*"
 
 process seqValidation {
-  container 'quay.io/icgc-argo/seq-validation:seq-validation.0.1.4'
+  container 'quay.io/icgc-argo/seq-validation:seq-validation.0.1.4.1'
 
   input:
     path seq_rg_json

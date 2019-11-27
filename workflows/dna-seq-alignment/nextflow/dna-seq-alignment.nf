@@ -24,22 +24,23 @@
 nextflow.preview.dsl=2
 
 params.meta_format = "tsv"
-params.exp_tsv = "tests/input/experiment-fq.sm.tsv"
-params.rg_tsv = "tests/input/read_group-fq.sm.tsv"
-params.file_tsv = "tests/input/file-fq.sm.tsv"
+params.exp_tsv = ""
+params.rg_tsv = ""
+params.file_tsv = ""
 params.exp_json = ""  // optional json string of exp metadata
 params.seq_exp_json_name = "seq_exp.json"
 params.seq_rg_json_name = "seq_rg.json"
 params.seq_files = "NO_FILE"
 params.repository = "collab"
 params.token_file = "/Users/junjun/access_token"
-params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
-params.ref_genome = "tests/reference/tiny-grch38-chr11-530001-537000.fa"
+params.ref_genome_gz = ""
+params.ref_genome = ""
 params.cpus_align = 1
 params.cpus_mkdup = 1
 params.reads_max_discard_fraction = 0.08
 params.aligned_lane_prefix = "grch38-aligned"
 params.markdup = true
+params.lossy = false
 params.aligned_seq_output_format = "cram"
 params.payload_schema_version = "0.1.0-rc.2"
 params.credentials_file ="/Users/junjun/credentials"
@@ -63,36 +64,61 @@ include s3Upload as s3Upload_LS from "./modules/raw.githubusercontent.com/icgc-a
 include s3Upload as s3Upload_AS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
 
 
-workflow {
+workflow DnaSeqAlignmentWf {
+  get:
+    meta_format
+    exp_tsv
+    rg_tsv
+    file_tsv
+    exp_json
+    seq_exp_json_name
+    seq_rg_json_name
+    seq_files
+    repository
+    token_file
+    ref_genome_gz
+    ref_genome
+    cpus_align
+    cpus_mkdup
+    reads_max_discard_fraction
+    aligned_lane_prefix
+    markdup
+    lossy
+    aligned_seq_output_format
+    payload_schema_version
+    credentials_file
+    endpoint_url
+    bucket_name
+
   main:
     metadataValidation(
-      params.meta_format,
-      params.exp_json,
-      file(params.exp_tsv),
-      file(params.rg_tsv),
-      file(params.file_tsv),
-      params.seq_exp_json_name,
-      params.seq_rg_json_name
+      meta_format,
+      exp_json,
+      file(exp_tsv),
+      file(rg_tsv),
+      file(file_tsv),
+      seq_exp_json_name,
+      seq_rg_json_name
     )
 
     payloadCephSubmission_RG(
-      file(params.credentials_file),
+      file(credentials_file),
       metadataValidation.out.payload,
       metadataValidation.out.metadata,
-      params.endpoint_url,
-      params.bucket_name
+      endpoint_url,
+      bucket_name
     )
 
-    if (params.seq_files != 'NO_FILE') {
+    if (seq_files != 'NO_FILE') {
       Channel
-        .fromPath(params.seq_files, checkIfExists: true)
+        .fromPath(seq_files, checkIfExists: true)
         .set { input_files }
     } else {
       scoreDownload(
-        file(params.seq_files),
-        file(params.file_tsv),
-        params.repository,
-        file(params.token_file)
+        file(seq_files),
+        file(file_tsv),
+        repository,
+        file(token_file)
       )
       input_files = scoreDownload.out.download_file
     }
@@ -105,53 +131,53 @@ workflow {
     seqDataToLaneBamWf(
        metadataValidation.out.metadata,
        input_files.collect(),
-       params.reads_max_discard_fraction
+       reads_max_discard_fraction
     )
     // seqDataToLaneBamWf.out.lane_bams.view()
     // seqDataToLaneBamWf.out.bundle_type.view()
 
     payloadGenAndS3Submit_LS(
       seqDataToLaneBamWf.out.bundle_type,
-      params.payload_schema_version,
+      payload_schema_version,
       metadataValidation.out.metadata,  // user submitted metadata
       seqDataToLaneBamWf.out.lane_bams.flatten(),  // files_to_upload_ch
       Channel.fromPath('NO_FILE').first(),  // sec_file, first() turns it to singleton channnel
       Channel.fromPath('NO_FILE_2').first(),  // analysis_input_payload, no need here
       "",  // wf_short_name, optional
       "",  // wf_version, optional
-      file(params.credentials_file),
-      params.endpoint_url,
-      params.bucket_name
+      file(credentials_file),
+      endpoint_url,
+      bucket_name
     )
 
     s3Upload_LS(
-      params.endpoint_url,
-      params.bucket_name,
+      endpoint_url,
+      bucket_name,
       seqDataToLaneBamWf.out.bundle_type,
       payloadGenAndS3Submit_LS.out.payload.collect(),
-      file(params.credentials_file),
+      file(credentials_file),
       seqDataToLaneBamWf.out.lane_bams.flatten(),
       Channel.fromPath('NO_FILE').first()
     )
 
     bwaMemAligner(
       seqDataToLaneBamWf.out.lane_bams.flatten(),
-      params.aligned_lane_prefix,
-      params.cpus_align,
-      file(params.ref_genome_gz),
-      Channel.fromPath(getBwaSecondaryFiles(params.ref_genome_gz), checkIfExists: true).collect()
+      aligned_lane_prefix,
+      cpus_align,
+      file(ref_genome_gz),
+      Channel.fromPath(getBwaSecondaryFiles(ref_genome_gz), checkIfExists: true).collect()
     )
     // bwaMemAligner.out.aligned_bam.view()
 
     bamMergeSortMarkdup(
       bwaMemAligner.out.aligned_bam.collect(),
-      file(params.ref_genome),
-      Channel.fromPath(getFaiFile(params.ref_genome), checkIfExists: true).collect(),
-      params.cpus_mkdup,
+      file(ref_genome),
+      Channel.fromPath(getFaiFile(ref_genome), checkIfExists: true).collect(),
+      cpus_mkdup,
       seqDataToLaneBamWf.out.aligned_basename,
-      params.markdup,
-      params.aligned_seq_output_format,
-      false
+      markdup,
+      aligned_seq_output_format,
+      lossy
     )
     // bamMergeSortMarkdup.out.merged_seq.view()
     // bamMergeSortMarkdup.out.merged_seq_idx.view()
@@ -159,31 +185,66 @@ workflow {
 
     payloadGenAndS3Submit_AS(
       'dna_alignment',
-      params.payload_schema_version,
+      payload_schema_version,
       metadataValidation.out.metadata,  // user submitted metadata
       bamMergeSortMarkdup.out.merged_seq,  // files_to_upload_ch
       bamMergeSortMarkdup.out.merged_seq_idx,  // sec_files_to_upload
       payloadGenAndS3Submit_LS.out.payload,  // analysis_input_payload, these are lane-seq payloads
       "",  // wf_short_name, optional
       "",  // wf_version, optional
-      file(params.credentials_file),
+      file(credentials_file),
+      endpoint_url,
+      bucket_name
+    )
+
+    s3Upload_AS(
+      endpoint_url,
+      bucket_name,
+      'dna_alignment',
+      payloadGenAndS3Submit_AS.out.payload,
+      file(credentials_file),
+      bamMergeSortMarkdup.out.merged_seq,
+      bamMergeSortMarkdup.out.merged_seq_idx
+    )
+  emit:
+    metadata = metadataValidation.out.metadata
+    rg_payload = payloadCephSubmission_RG.out.payload
+    ls_payload = payloadGenAndS3Submit_LS.out.payload
+    as_payload = payloadGenAndS3Submit_AS.out.payload
+
+}
+
+workflow {
+  main:
+    DnaSeqAlignmentWf(
+      params.meta_format,
+      params.exp_tsv,
+      params.rg_tsv,
+      params.file_tsv,
+      params.exp_json,
+      params.seq_exp_json_name,
+      params.seq_rg_json_name,
+      params.seq_files,
+      params.repository,
+      params.token_file,
+      params.ref_genome_gz,
+      params.ref_genome,
+      params.cpus_align,
+      params.cpus_mkdup,
+      params.reads_max_discard_fraction,
+      params.aligned_lane_prefix,
+      params.markdup,
+      params.lossy,
+      params.aligned_seq_output_format,
+      params.payload_schema_version,
+      params.credentials_file,
       params.endpoint_url,
       params.bucket_name
     )
 
-    s3Upload_AS(
-      params.endpoint_url,
-      params.bucket_name,
-      'dna_alignment',
-      payloadGenAndS3Submit_AS.out.payload,
-      file(params.credentials_file),
-      bamMergeSortMarkdup.out.merged_seq,
-      bamMergeSortMarkdup.out.merged_seq_idx
-    )
-
   publish:
-    metadataValidation.out.metadata to: "outdir", mode: 'copy', overwrite: true
-    payloadCephSubmission_RG.out.payload to: "outdir", mode: 'copy', overwrite: true
-    payloadGenAndS3Submit_LS.out.payload to: "outdir", mode: 'copy', overwrite: true
-    payloadGenAndS3Submit_AS.out.payload to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.metadata to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.rg_payload to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.ls_payload to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.as_payload to: "outdir", mode: 'copy', overwrite: true
 }
