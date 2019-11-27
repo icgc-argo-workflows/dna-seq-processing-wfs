@@ -5,7 +5,7 @@ aligned_seq_output_format:
   - bam
 credentials_file:
   class: File
-  path: /Users/lxiang/.aws/credentials
+  path: /home/ubuntu/.aws/credentials
 endpoint_url: "https://object.cancercollaboratory.org:9080"
 exp_tsv:
   class: File
@@ -33,4 +33,4 @@ seq_files:
 seq_rg_json_name: seq_rg.json
 token_file:
   class: File
-  path: access_token.txt
+  path: /home/ubuntu/.accessToken

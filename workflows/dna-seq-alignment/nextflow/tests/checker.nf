@@ -32,7 +32,7 @@ params.seq_exp_json_name = "seq_exp.json"
 params.seq_rg_json_name = "seq_rg.json"
 params.seq_files = "NO_FILE"
 params.repository = "collab"
-params.token_file = "/Users/junjun/access_token"
+params.token_file = "/home/ubuntu/.accessToken"
 params.ref_genome_gz = "reference/tiny-grch38-chr11-530001-537000.fa.gz"
 params.ref_genome = "reference/tiny-grch38-chr11-530001-537000.fa"
 params.cpus_align = 1
@@ -43,7 +43,7 @@ params.markdup = true
 params.lossy = false
 params.aligned_seq_output_format = "cram"
 params.payload_schema_version = "0.1.0-rc.2"
-params.credentials_file ="/Users/junjun/credentials"
+params.credentials_file ="/home/ubuntu/.aws/credentials"
 params.endpoint_url = "https://object.cancercollaboratory.org:9080"
 params.bucket_name = "argo-test"
 
