@@ -1,0 +1,6 @@
+{
+    "exp_tsv": "tests/data/mini-cell-line/experiment.HCC1143_BL.tsv",
+    "rg_tsv": "tests/data/mini-cell-line/read_group.HCC1143_BL.tsv",
+    "file_tsv": "tests/data/mini-cell-line/file.HCC1143_BL.tsv",
+    "seq_files": "tests/data/mini-cell-line/HCC1143_BL.11-530218-544918.bam"
+}

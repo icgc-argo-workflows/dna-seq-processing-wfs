@@ -1,0 +1,13 @@
+{
+  "exp_tsv": "tests/data/experiment-fq.tsv",
+  "rg_tsv": "tests/data/read_group-fq.tsv",
+  "file_tsv": "tests/data/file-fq.tsv",
+  "seq_files": [
+    "tests/data/D0RH0.2_r1.fq",
+    "tests/data/D0RH0.2_r2.fq",
+    "tests/data/D0RE2.1_r1.fq",
+    "tests/data/D0RE2.1_r2.fq",
+    "tests/data/C0HVY.2_r1.fq",
+    "tests/data/C0HVY.2_r2.fq"
+  ]
+}
