@@ -38,6 +38,9 @@ process ScoreUpload {
     val song_url
     val score_url
 
+  output:
+    stdout()
+
   script:
     """
     score-upload.py -m ${manifest_file} -s ${song_url} -c ${score_url} -t ${token_file}
@@ -52,4 +55,5 @@ workflow {
     params.song_url,
     params.score_url
   )
+  ScoreUpload.out[0].view()
 }

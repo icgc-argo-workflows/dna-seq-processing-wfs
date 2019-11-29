@@ -47,6 +47,8 @@ params.aligned_seq_output_format = "cram"
 params.payload_schema_version = "0.1.0-rc.2"
 params.endpoint_url = "https://object.cancercollaboratory.org:9080"
 params.bucket_name = "argo-test"
+params.song_url
+params.score_url
 
 
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.3.1/tools/metadata-validation/metadata-validation.nf" params(params)
@@ -64,6 +66,7 @@ include payloadGenAndS3Submit as payloadGenAndS3Submit_AS from "./payload-gen-an
 include s3Upload as s3Upload_LS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
 include s3Upload as s3Upload_AS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
 
+include SeqExperimentUpload from "./seq-experiment-upload" params(params)
 
 workflow DnaSeqAlignmentWf {
   get:
@@ -90,6 +93,8 @@ workflow DnaSeqAlignmentWf {
     credentials_file
     endpoint_url
     bucket_name
+    song_url
+    score_url
 
   main:
     metadataValidation(
@@ -101,7 +106,7 @@ workflow DnaSeqAlignmentWf {
       seq_exp_json_name,
       seq_rg_json_name
     )
-
+/*
     payloadCephSubmission_RG(
       file(credentials_file),
       metadataValidation.out.payload,
@@ -109,7 +114,7 @@ workflow DnaSeqAlignmentWf {
       endpoint_url,
       bucket_name
     )
-
+*/
     if (seq_files != 'NO_FILE') {
       Channel
         .fromPath(seq_files, checkIfExists: true)
@@ -123,6 +128,16 @@ workflow DnaSeqAlignmentWf {
       )
       input_files = scoreDownload.out.download_file
     }
+
+    SeqExperimentUpload(
+      metadataValidation.out.metadata,
+      'dna-seq-alignment',
+      version,
+      input_files.collect(),
+      song_url,
+      score_url,
+      token_file
+    )
 
     seqValidation(
       metadataValidation.out.metadata,
@@ -209,7 +224,7 @@ workflow DnaSeqAlignmentWf {
     )
   emit:
     metadata = metadataValidation.out.metadata
-    rg_payload = payloadCephSubmission_RG.out.payload
+    //rg_payload = payloadCephSubmission_RG.out.payload
     ls_payload = payloadGenAndS3Submit_LS.out.payload
     as_payload = payloadGenAndS3Submit_AS.out.payload
 
@@ -240,12 +255,14 @@ workflow {
       params.payload_schema_version,
       params.credentials_file,
       params.endpoint_url,
-      params.bucket_name
+      params.bucket_name,
+      params.song_url,
+      params.score_url
     )
 
   publish:
     DnaSeqAlignmentWf.out.metadata to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.rg_payload to: "outdir", mode: 'copy', overwrite: true
+    //DnaSeqAlignmentWf.out.rg_payload to: "outdir", mode: 'copy', overwrite: true
     DnaSeqAlignmentWf.out.ls_payload to: "outdir", mode: 'copy', overwrite: true
     DnaSeqAlignmentWf.out.as_payload to: "outdir", mode: 'copy', overwrite: true
 }
