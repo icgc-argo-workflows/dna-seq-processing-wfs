@@ -69,12 +69,19 @@ workflow DnaAlignmentUpload {
 
     SongAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
 
-    ScoreManifestGen(SongAnalysisGet.out.song_analysis)
+    ScoreManifestGen(SongAnalysisGet.out.song_analysis, files_to_upload)
+/*
+    ScoreUpload(
+      ScoreManifestGen.out.manifest_file,
+      //files_to_upload,
+      files_to_upload.combine(secondary_files_to_upload).collect(),
+      token_file,
+      song_url,
+      score_url
+    )
 
-    //ScoreUpload(ScoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
-
-    //SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
-
+    SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
+*/
   emit:
     dna_seq_alignment_analysis = SongAnalysisGet.out.song_analysis
 }

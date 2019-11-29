@@ -108,15 +108,7 @@ workflow DnaSeqAlignmentWf {
       seq_exp_json_name,
       seq_rg_json_name
     )
-/*
-    payloadCephSubmission_RG(
-      file(credentials_file),
-      metadataValidation.out.payload,
-      metadataValidation.out.metadata,
-      endpoint_url,
-      bucket_name
-    )
-*/
+
     if (seq_files != 'NO_FILE') {
       Channel
         .fromPath(seq_files, checkIfExists: true)
@@ -164,32 +156,6 @@ workflow DnaSeqAlignmentWf {
       token_file
     )
 
-/*
-    payloadGenAndS3Submit_LS(
-      seqDataToLaneBamWf.out.bundle_type,
-      payload_schema_version,
-      metadataValidation.out.metadata,  // user submitted metadata
-      seqDataToLaneBamWf.out.lane_bams.flatten(),  // files_to_upload_ch
-      Channel.fromPath('NO_FILE').first(),  // sec_file, first() turns it to singleton channnel
-      Channel.fromPath('NO_FILE_2').first(),  // analysis_input_payload, no need here
-      "",  // wf_short_name, optional
-      "",  // wf_version, optional
-      file(credentials_file),
-      endpoint_url,
-      bucket_name
-    )
-
-    s3Upload_LS(
-      endpoint_url,
-      bucket_name,
-      seqDataToLaneBamWf.out.bundle_type,
-      payloadGenAndS3Submit_LS.out.payload.collect(),
-      file(credentials_file),
-      seqDataToLaneBamWf.out.lane_bams.flatten(),
-      Channel.fromPath('NO_FILE').first()
-    )
-*/
-
     bwaMemAligner(
       seqDataToLaneBamWf.out.lane_bams.flatten(),
       aligned_lane_prefix,
@@ -223,32 +189,6 @@ workflow DnaSeqAlignmentWf {
       params.score_url,
       params.token_file
     )
-
-/*
-    payloadGenAndS3Submit_AS(
-      'dna_alignment',
-      payload_schema_version,
-      metadataValidation.out.metadata,  // user submitted metadata
-      bamMergeSortMarkdup.out.merged_seq,  // files_to_upload_ch
-      bamMergeSortMarkdup.out.merged_seq_idx,  // sec_files_to_upload
-      payloadGenAndS3Submit_LS.out.payload,  // analysis_input_payload, these are lane-seq payloads
-      "",  // wf_short_name, optional
-      "",  // wf_version, optional
-      file(credentials_file),
-      endpoint_url,
-      bucket_name
-    )
-
-    s3Upload_AS(
-      endpoint_url,
-      bucket_name,
-      'dna_alignment',
-      payloadGenAndS3Submit_AS.out.payload,
-      file(credentials_file),
-      bamMergeSortMarkdup.out.merged_seq,
-      bamMergeSortMarkdup.out.merged_seq_idx
-    )
-*/
 
   emit:
     metadata = metadataValidation.out.metadata
