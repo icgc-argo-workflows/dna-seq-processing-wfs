@@ -85,8 +85,7 @@ workflow {
 
   publish:
     DnaSeqAlignmentWf.out.metadata to: "outdir", mode: 'copy', overwrite: true
-    //DnaSeqAlignmentWf.out.rg_payload to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.ls_payload to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.as_payload to: "outdir", mode: 'copy', overwrite: true
-
+    DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", mode: 'copy', overwrite: true
 }

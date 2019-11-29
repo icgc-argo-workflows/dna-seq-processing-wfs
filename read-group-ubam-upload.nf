@@ -64,9 +64,12 @@ workflow ReadGroupUbamUpload {
 
     ScoreManifestGen(SongAnalysisGet.out.song_analysis)
 
-    ScoreUpload(ScoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
+    //ScoreUpload(ScoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
 
-    SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
+    //SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
+
+  emit:
+    read_group_ubam_analysis = SongAnalysisGet.out.song_analysis
 }
 
 workflow {
@@ -79,4 +82,7 @@ workflow {
     params.score_url,
     params.token_file
   )
+
+  publish:
+    ReadGroupUbamUpload.out.read_group_ubam_analysis to: "outdir", mode: 'copy', overwrite: true
 }

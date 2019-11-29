@@ -67,6 +67,8 @@ include s3Upload as s3Upload_LS from "./modules/raw.githubusercontent.com/icgc-a
 include s3Upload as s3Upload_AS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
 
 include SeqExperimentUpload from "./seq-experiment-upload" params(params)
+include ReadGroupUbamUpload from "./read-group-ubam-upload" params(params)
+include DnaAlignmentUpload from "./dna-alignment-upload" params(params)
 
 workflow DnaSeqAlignmentWf {
   get:
@@ -152,6 +154,17 @@ workflow DnaSeqAlignmentWf {
     // seqDataToLaneBamWf.out.lane_bams.view()
     // seqDataToLaneBamWf.out.bundle_type.view()
 
+    ReadGroupUbamUpload(
+      SeqExperimentUpload.out.seq_expriment_analysis,
+      seqDataToLaneBamWf.out.lane_bams.flatten(),
+      'dna-seq-alignment', //params.wf_short_name,
+      version,
+      song_url,
+      score_url,
+      token_file
+    )
+
+/*
     payloadGenAndS3Submit_LS(
       seqDataToLaneBamWf.out.bundle_type,
       payload_schema_version,
@@ -175,6 +188,7 @@ workflow DnaSeqAlignmentWf {
       seqDataToLaneBamWf.out.lane_bams.flatten(),
       Channel.fromPath('NO_FILE').first()
     )
+*/
 
     bwaMemAligner(
       seqDataToLaneBamWf.out.lane_bams.flatten(),
@@ -199,6 +213,18 @@ workflow DnaSeqAlignmentWf {
     // bamMergeSortMarkdup.out.merged_seq_idx.view()
     // bamMergeSortMarkdup.out.duplicates_metrics.view()
 
+    DnaAlignmentUpload(
+      bamMergeSortMarkdup.out.merged_seq,
+      bamMergeSortMarkdup.out.merged_seq_idx,
+      ReadGroupUbamUpload.out.read_group_ubam_analysis.collect(),
+      'dna-seq-alignment',
+      version,
+      params.song_url,
+      params.score_url,
+      params.token_file
+    )
+
+/*
     payloadGenAndS3Submit_AS(
       'dna_alignment',
       payload_schema_version,
@@ -222,11 +248,13 @@ workflow DnaSeqAlignmentWf {
       bamMergeSortMarkdup.out.merged_seq,
       bamMergeSortMarkdup.out.merged_seq_idx
     )
+*/
+
   emit:
     metadata = metadataValidation.out.metadata
-    //rg_payload = payloadCephSubmission_RG.out.payload
-    ls_payload = payloadGenAndS3Submit_LS.out.payload
-    as_payload = payloadGenAndS3Submit_AS.out.payload
+    seq_expriment_analysis = SeqExperimentUpload.out.seq_expriment_analysis
+    read_group_ubam_analysis = ReadGroupUbamUpload.out.read_group_ubam_analysis
+    dna_seq_alignment_analysis = DnaAlignmentUpload.out.dna_seq_alignment_analysis
 
 }
 
@@ -262,7 +290,7 @@ workflow {
 
   publish:
     DnaSeqAlignmentWf.out.metadata to: "outdir", mode: 'copy', overwrite: true
-    //DnaSeqAlignmentWf.out.rg_payload to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.ls_payload to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.as_payload to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", mode: 'copy', overwrite: true
 }
