@@ -153,7 +153,8 @@ workflow DnaSeqAlignmentWf {
       version,
       song_url,
       score_url,
-      token_file
+      token_file,
+      seqDataToLaneBamWf.out.lane_bams.collect()
     )
 
     bwaMemAligner(

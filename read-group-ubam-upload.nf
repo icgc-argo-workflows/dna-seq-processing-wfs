@@ -30,6 +30,7 @@ params.wf_version = "0.2.3.0"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/Users/junjun/.access_token"
+params.all_files = ["tests/data/C0HVY_2.lane.bam"]
 
 include PayloadGenReadGroupUbam from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-read-group-ubam.0.1.0.0/tools/payload-gen-read-group-ubam/payload-gen-read-group-ubam.nf" params(params)
 include SongPayloadUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
@@ -48,6 +49,7 @@ workflow ReadGroupUbamUpload {
     song_url
     score_url
     token_file
+    all_files
 
   main:
     PayloadGenReadGroupUbam(
@@ -62,12 +64,12 @@ workflow ReadGroupUbamUpload {
 
     SongAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
 
-    ScoreManifestGen(SongAnalysisGet.out.song_analysis, files_to_upload)
-/*
-    ScoreUpload(ScoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
+    ScoreManifestGen(SongAnalysisGet.out.song_analysis, all_files)
+
+    ScoreUpload(ScoreManifestGen.out.manifest_file, all_files, token_file, song_url, score_url)
 
     SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
-*/
+
   emit:
     read_group_ubam_analysis = SongAnalysisGet.out.song_analysis
 }
@@ -80,7 +82,8 @@ workflow {
     params.wf_version,
     params.song_url,
     params.score_url,
-    params.token_file
+    params.token_file,
+    Channel.fromPath(params.all_files).collect()
   )
 
   publish:

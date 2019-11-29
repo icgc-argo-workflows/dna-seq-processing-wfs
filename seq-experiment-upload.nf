@@ -27,12 +27,12 @@ params.user_submit_metadata = "tests/data/seq_rg-fq.json"
 params.wf_short_name = "dna-seq-alignment"
 params.wf_version = "0.2.3.0"
 params.files_to_upload = [
-  "C0HVY.2_r1.fq",
-  "C0HVY.2_r2.fq",
-  "D0RE2.1_r1.fq",
-  "D0RE2.1_r2.fq",
-  "D0RH0.2_r1.fq",
-  "D0RH0.2_r2.fq"
+  "tests/data/C0HVY.2_r1.fq",
+  "tests/data/C0HVY.2_r2.fq",
+  "tests/data/D0RE2.1_r1.fq",
+  "tests/data/D0RE2.1_r2.fq",
+  "tests/data/D0RH0.2_r1.fq",
+  "tests/data/D0RH0.2_r2.fq"
 ]
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"

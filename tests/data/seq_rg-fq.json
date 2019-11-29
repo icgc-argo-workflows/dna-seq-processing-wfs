@@ -29,9 +29,9 @@
       "files": [
         {
           "name": "C0HVY.2_r1.fq",
-          "size": 133684363564,
+          "size": 5381,
           "submitter_read_group_id": "C0HVY.2",
-          "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+          "checksum": "6584ebb05edfbd6f59be6307556bd871",
           "checksum_type": "md5",
           "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
           "format": "FASTQ",
@@ -39,9 +39,9 @@
         },
         {
           "name": "C0HVY.2_r2.fq",
-          "size": 133684363564,
+          "size": 5381,
           "submitter_read_group_id": "C0HVY.2",
-          "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+          "checksum": "d649696f346eb75b95b68e8ecd45f44f",
           "checksum_type": "md5",
           "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
           "format": "FASTQ",
@@ -63,9 +63,9 @@
       "files": [
         {
           "name": "D0RE2.1_r1.fq",
-          "size": 133684363564,
+          "size": 6148,
           "submitter_read_group_id": "D0RE2.1",
-          "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+          "checksum": "058510bbdab2dccc14a2d7402a21248d",
           "checksum_type": "md5",
           "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
           "format": "FASTQ",
@@ -73,9 +73,9 @@
         },
         {
           "name": "D0RE2.1_r2.fq",
-          "size": 133684363564,
+          "size": 6148,
           "submitter_read_group_id": "D0RE2.1",
-          "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+          "checksum": "5fb35647198666b6a06e8539074282fd",
           "checksum_type": "md5",
           "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
           "format": "FASTQ",
@@ -97,9 +97,9 @@
       "files": [
         {
           "name": "D0RH0.2_r1.fq",
-          "size": 133684363564,
+          "size": 4784,
           "submitter_read_group_id": "D0RH0.2",
-          "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+          "checksum": "eb109b8774df03084024bc09a86721be",
           "checksum_type": "md5",
           "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
           "format": "FASTQ",
@@ -107,9 +107,9 @@
         },
         {
           "name": "D0RH0.2_r2.fq",
-          "size": 133684363564,
+          "size": 4784,
           "submitter_read_group_id": "D0RH0.2",
-          "checksum": "e4fe8353ae62045642a2124909c5cfa5",
+          "checksum": "ed209fda15a5928087104253a6bfb42d",
           "checksum_type": "md5",
           "path": "song://collaboratory/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504",
           "format": "FASTQ",

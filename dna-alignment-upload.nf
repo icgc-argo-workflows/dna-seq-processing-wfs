@@ -65,38 +65,40 @@ workflow DnaAlignmentUpload {
       params.wf_version
     )
 
+    all_files = (files_to_upload.mix(secondary_files_to_upload)).collect()
+
     SongPayloadUpload(song_url, PayloadGenDnaAlignment.out.payload, token_file)
 
     SongAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
 
-    ScoreManifestGen(SongAnalysisGet.out.song_analysis, files_to_upload)
-/*
+    ScoreManifestGen(SongAnalysisGet.out.song_analysis, all_files)
+
     ScoreUpload(
       ScoreManifestGen.out.manifest_file,
-      //files_to_upload,
-      files_to_upload.combine(secondary_files_to_upload).collect(),
+      all_files,
       token_file,
       song_url,
       score_url
     )
 
     SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
-*/
+
   emit:
     dna_seq_alignment_analysis = SongAnalysisGet.out.song_analysis
 }
 
 workflow {
-  DnaAlignmentUpload(
-    file(params.files_to_upload),
-    file(getSecondaryFile(params.files_to_upload)),
-    Channel.fromPath(params.input_payload).collect(),
-    params.wf_short_name,
-    params.wf_version,
-    params.song_url,
-    params.score_url,
-    params.token_file
-  )
+  main:
+    DnaAlignmentUpload(
+      file(params.files_to_upload),
+      file(getSecondaryFile(params.files_to_upload)),
+      Channel.fromPath(params.input_payload).collect(),
+      params.wf_short_name,
+      params.wf_version,
+      params.song_url,
+      params.score_url,
+      params.token_file
+    )
 
   publish:
     DnaAlignmentUpload.out.dna_seq_alignment_analysis to: "outdir", mode: 'copy', overwrite: true
