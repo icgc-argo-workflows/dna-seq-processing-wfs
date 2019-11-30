@@ -181,8 +181,7 @@ workflow DnaSeqAlignmentWf {
     // bamMergeSortMarkdup.out.duplicates_metrics.view()
 
     DnaAlignmentUpload(
-      bamMergeSortMarkdup.out.merged_seq,
-      bamMergeSortMarkdup.out.merged_seq_idx,
+      (bamMergeSortMarkdup.out.merged_seq.mix(bamMergeSortMarkdup.out.merged_seq_idx)).collect(),
       ReadGroupUbamUpload.out.read_group_ubam_analysis.collect(),
       'dna-seq-alignment',
       version,

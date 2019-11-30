@@ -23,12 +23,15 @@
 
 nextflow.preview.dsl=2
 
-params.input_payload = [
+params.input_payloads = [
   "tests/data/rg_ubam.song-analysis.01.json",
   "tests/data/rg_ubam.song-analysis.02.json",
   "tests/data/rg_ubam.song-analysis.03.json"
 ]
-params.files_to_upload = "tests/data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam"
+params.files_to_upload = [
+  "tests/data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam",
+  "tests/data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam.bai"
+]
 params.wf_short_name = "dna-seq-alignment"
 params.wf_version = "0.2.3.0"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
@@ -36,8 +39,7 @@ params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/Users/junjun/.access_token"
 
 
-include PayloadGenDnaAlignment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.0.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(params)
-include getSecondaryFile from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.0.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf"
+include payloadGenDnaAlignment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.0.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(params)
 include SongPayloadUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
 include SongAnalysisGet from  "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
 include ScoreManifestGen from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
@@ -48,8 +50,7 @@ include SongAnalysisPublish from "./modules/raw.githubusercontent.com/icgc-argo/
 workflow DnaAlignmentUpload {
   get:
     files_to_upload
-    secondary_files_to_upload
-    input_payload
+    input_payloads
     wf_short_name
     wf_version
     song_url
@@ -57,29 +58,20 @@ workflow DnaAlignmentUpload {
     token_file
 
   main:
-    PayloadGenDnaAlignment(
+    payloadGenDnaAlignment(
       files_to_upload,
-      secondary_files_to_upload,
-      input_payload,
+      input_payloads,
       params.wf_short_name,
       params.wf_version
     )
 
-    all_files = (files_to_upload.mix(secondary_files_to_upload)).collect()
-
-    SongPayloadUpload(song_url, PayloadGenDnaAlignment.out.payload, token_file)
+    SongPayloadUpload(song_url, payloadGenDnaAlignment.out.payload, token_file)
 
     SongAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
 
-    ScoreManifestGen(SongAnalysisGet.out.song_analysis, all_files)
+    ScoreManifestGen(SongAnalysisGet.out.song_analysis, files_to_upload)
 
-    ScoreUpload(
-      ScoreManifestGen.out.manifest_file,
-      all_files,
-      token_file,
-      song_url,
-      score_url
-    )
+    ScoreUpload(ScoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
 
     SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
 
@@ -90,9 +82,8 @@ workflow DnaAlignmentUpload {
 workflow {
   main:
     DnaAlignmentUpload(
-      file(params.files_to_upload),
-      file(getSecondaryFile(params.files_to_upload)),
-      Channel.fromPath(params.input_payload).collect(),
+      Channel.fromPath(params.files_to_upload).collect(),
+      Channel.fromPath(params.input_payloads).collect(),
       params.wf_short_name,
       params.wf_version,
       params.song_url,

@@ -18,34 +18,25 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Authors:
+ *   Linda Xiang <linda.xiang@oicr.on.ca>
+ *   Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.file_to_upload = ""
-params.input_payload = ""
+params.files_to_upload = ""
+params.input_payloads = ""
 params.wf_short_name = ""
 params.wf_version = ""
 
 
-def getSecondaryFile(main_file){  //this is kind of like CWL's secondary files
-  if (main_file.endsWith('.bam')) {
-    return main_file + '.bai'
-  } else if (main_file.endsWith('.cram')) {
-    return main_file + '.crai'
-  } else if (main_file.endsWith('.vcf.gz')) {
-    return main_file + '.tbi'
-  }
-}
-
-process PayloadGenDnaAlignment {
+process payloadGenDnaAlignment {
   container "quay.io/icgc-argo/payload-gen-dna-alignment:payload-gen-dna-alignment.0.1.0.0"
 
   input:
-    path file_to_upload
-    path file_to_upload_idx
-    path input_payload
+    path files_to_upload
+    path input_payloads
     val wf_short_name
     val wf_version
 
@@ -57,7 +48,7 @@ process PayloadGenDnaAlignment {
     args_wf_version = wf_version.length() > 0 ? "-v ${wf_version}" : ""
     """
     payload-gen-dna-alignment.py \
-      -f ${file_to_upload} \
-      -a ${input_payload} ${args_wf_short_name} ${args_wf_version}
+      -f ${files_to_upload} \
+      -a ${input_payloads} ${args_wf_short_name} ${args_wf_version}
     """
 }
