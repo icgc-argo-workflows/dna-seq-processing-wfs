@@ -28,7 +28,7 @@ params.manifest_file = ""
 params.song_url = ""
 params.score_url = ""
 
-process ScoreUpload {
+process scoreUpload {
   container "quay.io/icgc-argo/score-upload:score-upload.0.1.0.0"
 
   input:
@@ -48,12 +48,12 @@ process ScoreUpload {
 }
 
 workflow {
-  ScoreUpload(
+  scoreUpload(
     file(params.manifest_file),
     Channel.fromPath(params.upload_files).collect(),
     file(params.token_file),
     params.song_url,
     params.score_url
   )
-  ScoreUpload.out[0].view()
+  scoreUpload.out[0].view()
 }

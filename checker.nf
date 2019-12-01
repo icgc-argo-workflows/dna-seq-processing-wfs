@@ -28,19 +28,16 @@ params.exp_tsv = ""
 params.rg_tsv = ""
 params.file_tsv = ""
 params.exp_json = ""  // optional json string of exp metadata
-params.seq_exp_json_name = "seq_exp.json"
-params.seq_rg_json_name = "seq_rg.json"
 params.seq_files = "NO_FILE"
 params.repository = "collab"
-//params.token_file = "/home/ubuntu/.accessToken"
-//params.credentials_file ="/home/ubuntu/.aws/credentials"
-params.token_file = "/Users/junjun/.access_token"
-params.credentials_file ="/Users/junjun/credentials"
+params.token_file = "/home/ubuntu/.access_token"
+params.token_file_legacy_data = "/home/ubuntu/access_token"
 params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
 params.ref_genome = "tests/reference/tiny-grch38-chr11-530001-537000.fa"
 params.cpus_align = 1
 params.cpus_mkdup = 1
 params.reads_max_discard_fraction = 0.08
+params.upload_ubam = false
 params.aligned_lane_prefix = "grch38-aligned"
 params.markdup = true
 params.lossy = false
@@ -57,26 +54,25 @@ workflow {
   main:
     DnaSeqAlignmentWf(
       params.meta_format,
-      params.exp_tsv,
-      params.rg_tsv,
-      params.file_tsv,
+      file(params.exp_tsv),
+      file(params.rg_tsv),
+      file(params.file_tsv),
       params.exp_json,
-      params.seq_exp_json_name,
-      params.seq_rg_json_name,
       params.seq_files,
       params.repository,
       params.token_file,
+      params.token_file_legacy_data,
       params.ref_genome_gz,
       params.ref_genome,
       params.cpus_align,
       params.cpus_mkdup,
       params.reads_max_discard_fraction,
+      params.upload_ubam,
       params.aligned_lane_prefix,
       params.markdup,
       params.lossy,
       params.aligned_seq_output_format,
       params.payload_schema_version,
-      params.credentials_file,
       params.endpoint_url,
       params.bucket_name,
       params.song_url,
@@ -84,8 +80,11 @@ workflow {
     )
 
   publish:
-    DnaSeqAlignmentWf.out.metadata to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", mode: 'copy', overwrite: true
-    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", mode: 'copy', overwrite: true
+    DnaSeqAlignmentWf.out.metadata to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.aligned_seq to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.aligned_seq_index to: "outdir", overwrite: true
 }

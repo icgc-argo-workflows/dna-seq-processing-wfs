@@ -30,7 +30,7 @@ params.token_file = ""
 params.score_upload_status = ""
 
 
-process SongAnalysisPublish {
+process songAnalysisPublish {
   container "quay.io/icgc-argo/song-analysis-publish:song-analysis-publish.0.1.0.0"
 
   input:
@@ -50,12 +50,12 @@ process SongAnalysisPublish {
 }
 
 workflow {
-  SongAnalysisPublish(
+  songAnalysisPublish(
     params.analysis_id,
     params.study,
     params.score_upload_status,
     params.song_url,
     file(params.token_file)
   )
-  SongAnalysisPublish.out[0].view()
+  songAnalysisPublish.out[0].view()
 }

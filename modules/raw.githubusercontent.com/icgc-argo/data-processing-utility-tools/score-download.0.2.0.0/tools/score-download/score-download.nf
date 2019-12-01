@@ -28,7 +28,7 @@ params.song_url = ""
 params.score_url = ""
 params.token_file = ""
 
-process ScoreDownload {
+process scoreDownload {
   container "quay.io/icgc-argo/score-download:score-download.0.2.0.0"
 
   input:
@@ -48,12 +48,12 @@ process ScoreDownload {
 
 workflow {
   main:
-    ScoreDownload(
+    scoreDownload(
       file(params.manifest_file),
       file(params.token_file),
       params.song_url,
       params.score_url
     )
   publish:
-    ScoreDownload.out.downloaded_files to: 'outdir', mode: 'copy', overwrite: true
+    scoreDownload.out.downloaded_files to: 'outdir', mode: 'copy', overwrite: true
 }

@@ -29,7 +29,7 @@ params.song_url = ""
 params.token_file = "NO_FILE"
 
 
-process SongAnalysisGet {
+process songAnalysisGet {
   container "quay.io/icgc-argo/song-analysis-get:song-analysis-get.0.1.0.0"
 
   input:
@@ -50,12 +50,12 @@ process SongAnalysisGet {
 
 workflow {
   main:
-    SongAnalysisGet(
+    songAnalysisGet(
       params.analysis_id,
       params.study,
       params.song_url,
       file(params.token_file)
     )
   publish:
-    SongAnalysisGet.out.song_analysis to: 'outdir', mode: 'copy', overwrite: true
+    songAnalysisGet.out.song_analysis to: 'outdir', mode: 'copy', overwrite: true
 }

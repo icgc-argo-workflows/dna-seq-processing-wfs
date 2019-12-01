@@ -157,5 +157,5 @@ workflow {
       params.bucket_name
   )
   publish:
-    payloadGenAndS3Submit.out.payload to: "outdir", mode: 'copy', overwrite: true
+    payloadGenAndS3Submit.out.payload to: "outdir", overwrite: true
 }

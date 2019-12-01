@@ -18,7 +18,7 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Author Linda Xiang <linda.xiang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
@@ -27,7 +27,7 @@ params.user_submit_metadata = ""
 params.wf_short_name = ""
 params.wf_version = ""
 
-process PayloadGenSeqExperiment {
+process payloadGenSeqExperiment {
   container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.0.1.0.0"
 
   input:

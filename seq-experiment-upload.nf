@@ -36,14 +36,15 @@ params.files_to_upload = [
 ]
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
-params.token_file = "/Users/junjun/.access_token"
+params.token_file = "/home/ubuntu/.access_token"
+params.is_submission = false
 
-include PayloadGenSeqExperiment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf" params(params)
+include payloadGenSeqExperiment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf" params(params)
 include SongPayloadUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
-include SongAnalysisGet from  "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
-include ScoreManifestGen from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
-include ScoreUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf" params(params)
-include SongAnalysisPublish from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf" params(params)
+include songAnalysisGet from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
+include scoreManifestGen from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
+include scoreUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf" params(params)
+include songAnalysisPublish from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf" params(params)
 
 
 workflow SeqExperimentUpload {
@@ -55,22 +56,25 @@ workflow SeqExperimentUpload {
     song_url
     score_url
     token_file
+    is_submission
     
   main:
-    PayloadGenSeqExperiment(user_submit_metadata, wf_short_name, wf_version)
+    payloadGenSeqExperiment(user_submit_metadata, wf_short_name, wf_version)
 
-    SongPayloadUpload(song_url, PayloadGenSeqExperiment.out.payload, token_file)
+    SongPayloadUpload(song_url, payloadGenSeqExperiment.out.payload, token_file)
 
-    SongAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
+    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
 
-    ScoreManifestGen(SongAnalysisGet.out.song_analysis, files_to_upload)
+    if (is_submission) {
+      scoreManifestGen(songAnalysisGet.out.song_analysis, files_to_upload)
 
-    ScoreUpload(ScoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
+      scoreUpload(scoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
 
-    SongAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, ScoreUpload.out[0], song_url, token_file)
+      songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], song_url, token_file)
+    }
 
   emit:
-    seq_expriment_analysis = SongAnalysisGet.out.song_analysis
+    seq_expriment_analysis = songAnalysisGet.out.song_analysis
 }
 
 workflow {
@@ -81,9 +85,10 @@ workflow {
     Channel.fromPath(params.files_to_upload).collect(),
     params.song_url,
     params.score_url,
-    params.token_file
+    params.token_file,
+    params.is_submission
   )
 
   publish:
-    SeqExperimentUpload.out.seq_expriment_analysis to: "outdir", mode: 'copy', overwrite: true
+    SeqExperimentUpload.out.seq_expriment_analysis to: "outdir", overwrite: true
 }

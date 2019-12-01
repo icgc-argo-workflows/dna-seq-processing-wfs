@@ -18,7 +18,8 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Author: Linda Xiang <linda.xiang@oicr.on.ca>
+ *         Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
@@ -29,23 +30,12 @@ params.wf_short_name = ""
 params.wf_version = ""
 
 
-def getSecondaryFile(main_file){  //this is kind of like CWL's secondary files
-  if (main_file.endsWith('.bam')) {
-    return main_file + '.bai'
-  } else if (main_file.endsWith('.cram')) {
-    return main_file + '.crai'
-  } else if (main_file.endsWith('.vcf.gz')) {
-    return main_file + '.tbi'
-  }
-}
-
-process PayloadGenReadGroupUbam {
+process payloadGenReadGroupUbam {
   container "quay.io/icgc-argo/payload-gen-read-group-ubam:payload-gen-read-group-ubam.0.1.0.0"
 
   input:
     path sequencing_experiment_analysis
     path file_to_upload
-    path file_to_upload_idx
     val wf_short_name
     val wf_version
 

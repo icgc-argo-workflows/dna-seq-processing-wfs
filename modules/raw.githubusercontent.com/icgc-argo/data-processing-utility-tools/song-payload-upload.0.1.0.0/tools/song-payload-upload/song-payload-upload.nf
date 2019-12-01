@@ -39,7 +39,7 @@ process getStudyAndAnalysisId {
     meta_info = new JsonSlurper().parseText(str)
 }
 
-process SongPayloadUploadPr {
+process songPayloadUploadPr {
   container "quay.io/icgc-argo/song-payload-upload:song-payload-upload.0.1.0.0"
 
   input:
@@ -63,14 +63,14 @@ workflow SongPayloadUpload{
     token_file
 
   main:
-    SongPayloadUploadPr(
+    songPayloadUploadPr(
       song_url,
       song_payload,
       token_file
     )
 
     getStudyAndAnalysisId(
-      SongPayloadUploadPr.out[0]
+      songPayloadUploadPr.out[0]
     )
 
   emit:

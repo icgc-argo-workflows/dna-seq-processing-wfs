@@ -26,7 +26,7 @@ nextflow.preview.dsl=2
 params.song_analysis = ""
 params.files = ""
 
-process ScoreManifestGen {
+process scoreManifestGen {
   container "quay.io/icgc-argo/score-manifest-gen:score-manifest-gen.0.1.0.0"
 
   input:
@@ -44,11 +44,11 @@ process ScoreManifestGen {
 
 workflow {
   main:
-    ScoreManifestGen(
+    scoreManifestGen(
       file(params.song_analysis),
       Channel.fromPath(params.files).collect()
     )
 
   publish:
-    ScoreManifestGen.out.manifest_file to: 'outdir', mode: 'copy', overwrite: true
+    scoreManifestGen.out.manifest_file to: 'outdir', mode: 'copy', overwrite: true
 }
