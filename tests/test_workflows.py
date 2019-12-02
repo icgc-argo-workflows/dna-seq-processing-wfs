@@ -7,13 +7,6 @@ import git
 
 repo = git.Repo(search_parent_directories=True)
 is_travis = os.environ.get('TRAVIS')
-if is_travis:
-    if os.environ.get('TRAVIS_EVENT_TYPE') == 'pull_request':
-        branch_name = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH')
-    else:
-        branch_name = os.environ.get('TRAVIS_BRANCH')
-else:
-    branch_name = repo.active_branch.name
 
 
 def pytest_generate_tests(metafunc):
@@ -21,6 +14,8 @@ def pytest_generate_tests(metafunc):
         jobs = []
 
         for test_job in glob(os.path.join('tests', '*.nf.json')):
+            if is_travis and os.path.basename(test_job).startswith('local-'): continue
+
             jobs.append([os.path.basename(test_job), os.path.abspath(test_job)])
 
         metafunc.parametrize('job', jobs, ids=[j[0] for j in jobs])
