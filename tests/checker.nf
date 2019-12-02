@@ -18,7 +18,8 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
+ *          Linda Xiang <linda.xiang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
@@ -27,15 +28,14 @@ params.meta_format = "tsv"
 params.exp_tsv = ""
 params.rg_tsv = ""
 params.file_tsv = ""
-params.exp_json = ""  // optional json string of exp metadata
 params.seq_files = "NO_FILE"
 params.repository = "collab"
 params.token_file = "/home/ubuntu/.access_token"
 params.token_file_legacy_data = "/home/ubuntu/access_token"
-params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
-params.ref_genome = "tests/reference/tiny-grch38-chr11-530001-537000.fa"
-params.cpus_align = 1
-params.cpus_mkdup = 1
+params.ref_genome_gz = "reference/tiny-grch38-chr11-530001-537000.fa.gz"
+params.ref_genome = "reference/tiny-grch38-chr11-530001-537000.fa"
+params.cpus_align = -1  // negative means use default
+params.cpus_mkdup = -1  // negative means use default
 params.reads_max_discard_fraction = 0.08
 params.upload_ubam = false
 params.aligned_lane_prefix = "grch38-aligned"
@@ -43,12 +43,10 @@ params.markdup = true
 params.lossy = false
 params.aligned_seq_output_format = "cram"
 params.payload_schema_version = "0.1.0-rc.2"
-params.endpoint_url = "https://object.cancercollaboratory.org:9080"
-params.bucket_name = "argo-test"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
-include "./dna-seq-alignment" params(params)
+include "../dna-seq-alignment" params(params)
 
 workflow {
   main:
@@ -57,7 +55,6 @@ workflow {
       file(params.exp_tsv),
       file(params.rg_tsv),
       file(params.file_tsv),
-      params.exp_json,
       params.seq_files,
       params.repository,
       params.token_file,
@@ -73,8 +70,6 @@ workflow {
       params.lossy,
       params.aligned_seq_output_format,
       params.payload_schema_version,
-      params.endpoint_url,
-      params.bucket_name,
       params.song_url,
       params.score_url
     )
@@ -84,7 +79,7 @@ workflow {
     DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
+    //DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.aligned_seq to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.aligned_seq_index to: "outdir", overwrite: true
 }

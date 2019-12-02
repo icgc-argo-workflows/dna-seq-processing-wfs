@@ -18,15 +18,6 @@ dependencies:
   bam-merge-sort-markdup:
     version: "0.1.4.1"
     source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf
-  payload-generation:
-    version: "0.1.5.1"
-    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-generation.0.1.5.1/tools/payload-generation/payload-generation.nf
-  payload-ceph-submission:
-    version: "0.1.7.0"  # docker container does not have /bin/bash which is needed by nextflow
-    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.7.0/tools/payload-ceph-submission/payload-ceph-submission.nf
-  s3-upload:
-    version: "0.1.6.0"  # docker container does not have /bin/bash which is needed by nextflow
-    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf
   payload-gen-seq-experiment:
     version: "0.1.0.0"
     source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf
@@ -51,9 +42,6 @@ dependencies:
   song-analysis-publish:
     version: "0.1.0.0"
     source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf
-  score-download:
-    version: "0.2.0.0"
-    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-download.0.2.0.0/tools/score-download/score-download.nf
   score-download:
     version: "0.1.5.1"
     source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-download.0.1.5.1/tools/score-download/score-download.nf

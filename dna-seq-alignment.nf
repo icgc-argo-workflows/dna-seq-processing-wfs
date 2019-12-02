@@ -18,7 +18,8 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
+ *          Linda Xiang <linda.xiang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
@@ -29,15 +30,14 @@ params.meta_format = "tsv"
 params.exp_tsv = ""
 params.rg_tsv = ""
 params.file_tsv = ""
-params.exp_json = ""  // optional json string of exp metadata
 params.seq_files = "NO_FILE"
 params.repository = "collab"
 params.token_file = ""
 params.token_file_legacy_data = ""
 params.ref_genome_gz = ""
 params.ref_genome = ""
-params.cpus_align = 1
-params.cpus_mkdup = 1
+params.cpus_align = -1  // negative means use default
+params.cpus_mkdup = -1  // negative means use default
 params.reads_max_discard_fraction = 0.08
 params.upload_ubam = false
 params.aligned_lane_prefix = "grch38-aligned"
@@ -45,8 +45,6 @@ params.markdup = true
 params.lossy = false
 params.aligned_seq_output_format = "cram"
 params.payload_schema_version = "0.1.0-rc.2"
-params.endpoint_url = "https://object.cancercollaboratory.org:9080"
-params.bucket_name = "argo-test"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
@@ -58,14 +56,6 @@ include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.2.1/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
 
-include payloadCephSubmission as payloadCephSubmission_RG from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-ceph-submission.0.1.7.0/tools/payload-ceph-submission/payload-ceph-submission.nf" params(params)
-
-include payloadGenAndS3Submit as payloadGenAndS3Submit_LS from "./payload-gen-and-s3-submit.nf" params(params)
-include payloadGenAndS3Submit as payloadGenAndS3Submit_AS from "./payload-gen-and-s3-submit.nf" params(params)
-
-include s3Upload as s3Upload_LS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
-include s3Upload as s3Upload_AS from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/s3-upload.0.1.6.0/tools/s3-upload/s3-upload.nf" params(params)
-
 include SeqExperimentUpload from "./seq-experiment-upload" params(params)
 include ReadGroupUbamUpload from "./read-group-ubam-upload" params(params)
 include DnaAlignmentUpload from "./dna-alignment-upload" params(params)
@@ -76,7 +66,6 @@ workflow DnaSeqAlignmentWf {
     exp_tsv
     rg_tsv
     file_tsv
-    exp_json
     seq_files
     repository
     token_file
@@ -92,14 +81,12 @@ workflow DnaSeqAlignmentWf {
     lossy
     aligned_seq_output_format
     payload_schema_version
-    endpoint_url
-    bucket_name
     song_url
     score_url
 
   main:
     // Validate metadata
-    metadataValidation(meta_format, exp_json, exp_tsv, rg_tsv,
+    metadataValidation(meta_format, '', exp_tsv, rg_tsv,
         file_tsv, "seq_exp.json", "seq_rg.json")
 
     is_submission = false
@@ -111,7 +98,7 @@ workflow DnaSeqAlignmentWf {
       input_files = scoreDownload.out.download_file
     }
 
-    // create SONG entry for sequencing experiment and (upload if needed)
+    // create SONG entry for sequencing experiment and (upload if it's submission)
     SeqExperimentUpload(metadataValidation.out.metadata, name, version,
         input_files.collect(), song_url, score_url, token_file, is_submission)
 
@@ -121,7 +108,7 @@ workflow DnaSeqAlignmentWf {
     // prepare unmapped BAM
     seqDataToLaneBamWf(metadataValidation.out.metadata, input_files.collect(), reads_max_discard_fraction)
 
-    // create SONG entry for read group ubam (and upload data if needed)
+    // create SONG entry for read group ubam (and upload data if upload_ubam set to true)
     ReadGroupUbamUpload(SeqExperimentUpload.out.seq_expriment_analysis,
         seqDataToLaneBamWf.out.lane_bams.flatten(), seqDataToLaneBamWf.out.lane_bams.collect(),
         name, version, song_url, score_url, token_file, upload_ubam)
@@ -159,7 +146,6 @@ workflow {
       file(params.exp_tsv),
       file(params.rg_tsv),
       file(params.file_tsv),
-      params.exp_json,
       params.seq_files,
       params.repository,
       params.token_file,
@@ -175,8 +161,6 @@ workflow {
       params.lossy,
       params.aligned_seq_output_format,
       params.payload_schema_version,
-      params.endpoint_url,
-      params.bucket_name,
       params.song_url,
       params.score_url
     )
