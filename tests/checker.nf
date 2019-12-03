@@ -32,7 +32,6 @@ params.seq_files = "NO_FILE"
 params.repository = "collab"
 params.token_file = "/home/ubuntu/.access_token"
 params.token_file_legacy_data = "/home/ubuntu/access_token"
-params.ref_genome_gz = "reference/tiny-grch38-chr11-530001-537000.fa.gz"
 params.ref_genome = "reference/tiny-grch38-chr11-530001-537000.fa"
 params.cpus_align = -1  // negative means use default
 params.cpus_mkdup = -1  // negative means use default
@@ -42,7 +41,6 @@ params.aligned_lane_prefix = "grch38-aligned"
 params.markdup = true
 params.lossy = false
 params.aligned_seq_output_format = "cram"
-params.payload_schema_version = "0.1.0-rc.2"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
@@ -59,7 +57,6 @@ workflow {
       params.repository,
       params.token_file,
       params.token_file_legacy_data,
-      params.ref_genome_gz,
       params.ref_genome,
       params.cpus_align,
       params.cpus_mkdup,
@@ -69,7 +66,6 @@ workflow {
       params.markdup,
       params.lossy,
       params.aligned_seq_output_format,
-      params.payload_schema_version,
       params.song_url,
       params.score_url
     )
@@ -79,7 +75,7 @@ workflow {
     DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
-    //DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.aligned_seq to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.aligned_seq_index to: "outdir", overwrite: true
 }

@@ -24,7 +24,7 @@
 
 nextflow.preview.dsl=2
 name = 'dna-seq-alignment'
-version = "0.2.3.0"
+version = "0.3.0.0"
 
 params.meta_format = "tsv"
 params.exp_tsv = ""
@@ -34,8 +34,7 @@ params.seq_files = "NO_FILE"
 params.repository = "collab"
 params.token_file = ""
 params.token_file_legacy_data = ""
-params.ref_genome_gz = ""
-params.ref_genome = ""
+params.ref_genome = "reference/tiny-grch38-chr11-530001-537000.fa"
 params.cpus_align = -1  // negative means use default
 params.cpus_mkdup = -1  // negative means use default
 params.reads_max_discard_fraction = 0.08
@@ -44,7 +43,6 @@ params.aligned_lane_prefix = "grch38-aligned"
 params.markdup = true
 params.lossy = false
 params.aligned_seq_output_format = "cram"
-params.payload_schema_version = "0.1.0-rc.2"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
@@ -70,7 +68,6 @@ workflow DnaSeqAlignmentWf {
     repository
     token_file
     token_file_legacy_data
-    ref_genome_gz
     ref_genome
     cpus_align
     cpus_mkdup
@@ -80,7 +77,6 @@ workflow DnaSeqAlignmentWf {
     markdup
     lossy
     aligned_seq_output_format
-    payload_schema_version
     song_url
     score_url
 
@@ -115,8 +111,8 @@ workflow DnaSeqAlignmentWf {
 
     // BWA alignment for each ubam in scatter
     bwaMemAligner(seqDataToLaneBamWf.out.lane_bams.flatten(), aligned_lane_prefix,
-        cpus_align, file(ref_genome_gz),
-        Channel.fromPath(getBwaSecondaryFiles(ref_genome_gz), checkIfExists: true).collect())
+        cpus_align, file(ref_genome + ".gz"),
+        Channel.fromPath(getBwaSecondaryFiles(ref_genome + ".gz"), checkIfExists: true).collect())
 
     // merge aligned lane BAM and mark dups, convert to CRAM if specified
     bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome),
@@ -150,7 +146,6 @@ workflow {
       params.repository,
       params.token_file,
       params.token_file_legacy_data,
-      params.ref_genome_gz,
       params.ref_genome,
       params.cpus_align,
       params.cpus_mkdup,
@@ -160,7 +155,6 @@ workflow {
       params.markdup,
       params.lossy,
       params.aligned_seq_output_format,
-      params.payload_schema_version,
       params.song_url,
       params.score_url
     )

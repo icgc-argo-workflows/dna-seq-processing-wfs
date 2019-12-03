@@ -1,5 +1,5 @@
 name: dna-seq-alignment
-version: "0.2.3.0"
+version: "0.3.0.0"
 path: github.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment
 source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.0.2.3.0/dna-seq-alignment.nf
 dependencies:
