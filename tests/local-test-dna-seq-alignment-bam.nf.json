@@ -1,0 +1,7 @@
+{
+  "exp_tsv": "data/experiment.tsv",
+  "rg_tsv": "data/read_group.tsv",
+  "file_tsv": "data/file.tsv",
+  "aligned_seq_output_format": "bam",
+  "seq_files": "data/test_rg_3.bam"
+}

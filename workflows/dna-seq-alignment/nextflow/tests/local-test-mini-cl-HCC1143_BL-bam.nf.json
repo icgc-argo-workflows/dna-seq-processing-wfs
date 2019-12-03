@@ -1,6 +1,0 @@
-{
-    "exp_tsv": "input/mini-cell-line/experiment.HCC1143_BL.tsv",
-    "rg_tsv": "input/mini-cell-line/read_group.HCC1143_BL.tsv",
-    "file_tsv": "input/mini-cell-line/file.HCC1143_BL.tsv",
-    "seq_files": "input/mini-cell-line/HCC1143_BL.11-530218-544918.bam"
-}

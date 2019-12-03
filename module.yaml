@@ -1,0 +1,47 @@
+name: dna-seq-alignment
+version: "0.2.3.0"
+path: github.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment
+source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-wfs/dna-seq-alignment.0.2.3.0/dna-seq-alignment.nf
+dependencies:
+  metadata-validation:
+    version: "0.1.3.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.3.1/tools/metadata-validation/metadata-validation.nf
+  seq-validation:
+    version: "0.1.4.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.4.1/tools/seq-validation/seq-validation.nf
+  seq-data-to-lane-bam:
+    version: "0.1.5.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.5.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf
+  bwa-mem-aligner:
+    version: "0.1.2.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.2.1/tools/bwa-mem-aligner/bwa-mem-aligner.nf
+  bam-merge-sort-markdup:
+    version: "0.1.4.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf
+  payload-gen-seq-experiment:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf
+  payload-gen-read-group-ubam:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-read-group-ubam.0.1.0.0/tools/payload-gen-read-group-ubam/payload-gen-read-group-ubam.nf
+  payload-gen-dna-alignment:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.0.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf
+  song-payload-upload:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf
+  song-analysis-get:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf
+  score-manifest-gen:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf
+  score-upload:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf
+  song-analysis-publish:
+    version: "0.1.0.0"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf
+  score-download:
+    version: "0.1.5.1"
+    source-url: https://raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-download.0.1.5.1/tools/score-download/score-download.nf

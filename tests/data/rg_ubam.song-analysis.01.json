@@ -1,0 +1,68 @@
+{
+  "analysisId": "14159e56-0159-475b-959e-560159c75b85",
+  "study": "TEST-PRO",
+  "analysisState": "UNPUBLISHED",
+  "sample": [
+    {
+      "info": {},
+      "sampleId": "2648e53f-cb71-5eaf-b7ec-6b4766d50e2a",
+      "specimenId": "2648e53f-cb71-5eaf-b7ec-6b4766d50e2a",
+      "sampleSubmitterId": "HCC1143_FASTQ_INPUT",
+      "sampleType": "DNA",
+      "specimen": {
+        "info": {},
+        "specimenId": "2648e53f-cb71-5eaf-b7ec-6b4766d50e2a",
+        "donorId": "96c05977-b40e-5c00-8bc6-3aaa8fbdda35",
+        "specimenSubmitterId": "HCC1143_FASTQ_INPUT",
+        "specimenClass": "Tumour",
+        "specimenType": "Primary tumour - solid tissue"
+      },
+      "donor": {
+        "donorId": "96c05977-b40e-5c00-8bc6-3aaa8fbdda35",
+        "donorSubmitterId": "HCC1143",
+        "studyId": "TEST-PRO",
+        "donorGender": "female",
+        "info": {}
+      }
+    }
+  ],
+  "file": [
+    {
+      "info": {
+        "data_type": "Read Group Unmapped BAM"
+      },
+      "objectId": "2eebd492-07d3-5903-9536-c77c57659751",
+      "studyId": "TEST-PRO",
+      "analysisId": "14159e56-0159-475b-959e-560159c75b85",
+      "fileName": "D0RE2_1.lane.bam",
+      "fileSize": 4551,
+      "fileType": "BAM",
+      "fileMd5sum": "d57f7e84fca26d288ed81eb9dfff5fe7",
+      "fileAccess": "controlled"
+    }
+  ],
+  "analysisType": {
+    "name": "read_group_ubam",
+    "version": 2
+  },
+  "inputs": [
+    {
+      "sequencing_experiment_id": "a29e3ec5-b1b6-4643-9e3e-c5b1b636430e"
+    }
+  ],
+  "workflow": {
+    "name": "dna-seq-alignment",
+    "version": "0.2.3.0",
+    "short_name": "dna-seq-alignment"
+  },
+  "experiment": {},
+  "program_id": "TEST-PRO",
+  "insert_size": 298,
+  "library_name": "Pond-147580",
+  "is_paired_end": true,
+  "platform_unit": "74_8",
+  "read_length_r1": 150,
+  "read_length_r2": 150,
+  "sample_barcode": null,
+  "submitter_read_group_id": "D0RE2.1"
+}

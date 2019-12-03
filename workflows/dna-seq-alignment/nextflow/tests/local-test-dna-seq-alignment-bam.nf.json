@@ -1,6 +1,0 @@
-{
-  "exp_tsv": "input/experiment.tsv",
-  "rg_tsv": "input/read_group.tsv",
-  "file_tsv": "input/file.tsv",
-  "seq_files": "input/test_rg_3.bam"
-}
