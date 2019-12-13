@@ -39,7 +39,7 @@ params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/home/ubuntu/.access_token"
 params.is_submission = false
 
-include payloadGenSeqExperiment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf" params(params)
+include payloadGenSeqExperiment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.1/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf" params(params)
 include SongPayloadUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
 include songAnalysisGet from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
 include scoreManifestGen from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
