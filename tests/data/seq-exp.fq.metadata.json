@@ -1,0 +1,113 @@
+{
+  "type": "sequencing_experiment",
+  "program_id": "TEST-PRO",
+  "submitter_sequencing_experiment_id": "TEST_EXP",
+  "submitter_donor_id": "HCC1143",
+  "gender": "Female",
+  "submitter_specimen_id": "HCC1143_FASTQ_INPUT",
+  "tumour_normal_designation": "Cell line - derived from tumour",
+  "specimen_tissue_source": "Blood derived",
+  "submitter_sample_id": "HCC1143_FASTQ_INPUT",
+  "sample_type": "DNA",
+  "submitter_matched_normal_sample_id": "HCC1143_BAM_INPUT",
+  "sequencing_center": "EXT",
+  "platform": "ILLUMINA",
+  "platform_model": "HiSeq 2000",
+  "library_strategy": "WGS",
+  "sequencing_date": "2014-12-12",
+  "read_group_count": 3,
+  "read_groups": [
+    {
+      "type": "read_group",
+      "submitter_read_group_id": "C0HVY.2",
+      "submitter_sequencing_experiment_id": "TEST_EXP",
+      "platform_unit": "74_8a",
+      "is_paired_end": true,
+      "file_r1": "C0HVY.2_r1.fq",
+      "file_r2": "C0HVY.2_r2.fq",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "insert_size": 298,
+      "sample_barcode": "",
+      "library_name": "Pond-147580"
+    },
+    {
+      "type": "read_group",
+      "submitter_read_group_id": "D0RE2.1",
+      "submitter_sequencing_experiment_id": "TEST_EXP",
+      "platform_unit": "74_8b",
+      "is_paired_end": true,
+      "file_r1": "D0RE2.1_r1.fq",
+      "file_r2": "D0RE2.1_r2.fq",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "insert_size": 298,
+      "sample_barcode": "",
+      "library_name": "Pond-147580"
+    },
+    {
+      "type": "read_group",
+      "submitter_read_group_id": "D0RH0.2",
+      "submitter_sequencing_experiment_id": "TEST_EXP",
+      "platform_unit": "74_8c",
+      "is_paired_end": true,
+      "file_r1": "D0RH0.2_r1.fq",
+      "file_r2": "D0RH0.2_r2.fq",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "insert_size": 298,
+      "sample_barcode": "",
+      "library_name": "Pond-147580"
+    }
+  ],
+  "files": [
+    {
+      "type": "file",
+      "name": "C0HVY.2_r1.fq",
+      "format": "FASTQ",
+      "size": 5381,
+      "md5sum": "6584ebb05edfbd6f59be6307556bd871",
+      "path": "C0HVY.2_r1.fq"
+    },
+    {
+      "type": "file",
+      "name": "C0HVY.2_r2.fq",
+      "format": "FASTQ",
+      "size": 5381,
+      "md5sum": "d649696f346eb75b95b68e8ecd45f44f",
+      "path": "C0HVY.2_r2.fq"
+    },
+    {
+      "type": "file",
+      "name": "D0RE2.1_r1.fq",
+      "format": "FASTQ",
+      "size": 6148,
+      "md5sum": "058510bbdab2dccc14a2d7402a21248d",
+      "path": "D0RE2.1_r1.fq"
+    },
+    {
+      "type": "file",
+      "name": "D0RE2.1_r2.fq",
+      "format": "FASTQ",
+      "size": 6148,
+      "md5sum": "5fb35647198666b6a06e8539074282fd",
+      "path": "D0RE2.1_r2.fq"
+    },
+    {
+      "type": "file",
+      "name": "D0RH0.2_r1.fq",
+      "format": "FASTQ",
+      "size": 4784,
+      "md5sum": "eb109b8774df03084024bc09a86721be",
+      "path": "D0RH0.2_r1.fq"
+    },
+    {
+      "type": "file",
+      "name": "D0RH0.2_r2.fq",
+      "format": "FASTQ",
+      "size": 4784,
+      "md5sum": "ed209fda15a5928087104253a6bfb42d",
+      "path": "D0RH0.2_r2.fq"
+    }
+  ]
+}

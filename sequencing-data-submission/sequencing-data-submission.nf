@@ -24,20 +24,20 @@
 
 nextflow.preview.dsl=2
 name = 'sequencing-data-submission'
-version = "0.1.0.0"
+short_name = 'seq-submission'
 
-params.exp_tsv = "data/experiment.tsv"
-params.rg_tsv = "data/read_group.tsv"
-params.file_tsv = "data/file.tsv"
+params.exp_tsv = "data/experiment.v2.tsv"
+params.rg_tsv = "data/read_group.v2.tsv"
+params.file_tsv = "data/file.v2.tsv"
 params.token_file = "/home/ubuntu/.access_token"
 params.token_file_legacy_data = ""
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
 
-include metadataValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.3.1/tools/metadata-validation/metadata-validation.nf" params(params)
-include seqValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.4.1/tools/seq-validation/seq-validation.nf" params(params)
-include SeqExperimentUpload from "../seq-experiment-upload" params(params)
+include metadataValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.4.0/tools/metadata-validation/metadata-validation.nf" params(params)
+include seqValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.5.0/tools/seq-validation/seq-validation.nf" params(params)
+include SeqExperimentUpload from "../seq-experiment-upload/seq-experiment-upload.nf" params(params)
 
 
 process getDataFiles{
@@ -83,25 +83,28 @@ workflow SequencingDataSubmission {
     song_url
     score_url
     name
+    short_name
     version
 
   main:
     // Validate metadata
-    metadataValidation('tsv', '', exp_tsv, rg_tsv,
-        file_tsv, "seq_exp.json", "seq_rg.json")
+    metadataValidation(exp_tsv, rg_tsv, file_tsv)
 
     getDataFiles(file_tsv, metadataValidation.out.metadata)
     files_to_submit = getDataFiles.out.files_to_submit
 
     // validate sequencing files (FASTQ or BAM)
     seqValidation(metadataValidation.out.metadata, files_to_submit.collect())
+    //seqValidation.out[0].view()
 
     // create SONG entry for sequencing experiment and (upload if it's submission)
-    SeqExperimentUpload(metadataValidation.out.metadata, name, version,
+    SeqExperimentUpload(metadataValidation.out.metadata, name, short_name, version,
         files_to_submit.collect(), song_url, score_url, token_file, 'true')
 
   emit: // outputs
     metadata = metadataValidation.out.metadata
+    files_to_submit = files_to_submit
+    seq_expriment_payload = SeqExperimentUpload.out.seq_expriment_payload
     seq_expriment_analysis = SeqExperimentUpload.out.seq_expriment_analysis
 }
 
@@ -117,10 +120,13 @@ workflow {
       params.song_url,
       params.score_url,
       name,
-      version
+      short_name,
+      workflow.manifest.version
     )
 
   publish:
     SequencingDataSubmission.out.metadata to: "outdir", overwrite: true
+    SequencingDataSubmission.out.files_to_submit to: "outdir", overwrite: true
+    SequencingDataSubmission.out.seq_expriment_payload to: "outdir", overwrite: true
     SequencingDataSubmission.out.seq_expriment_analysis to: "outdir", overwrite: true
 }
