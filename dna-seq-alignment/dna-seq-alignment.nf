@@ -78,20 +78,12 @@ workflow DnaSeqAlignmentWf {
     version
 
   main:
-    SequencingDataMigration(
-      exp_tsv,
-      rg_tsv,
-      file_tsv,
-      token_file,
-      token_file_legacy_data,
-      song_url,
-      score_url,
-      version
-    )
+    SequencingDataMigration(exp_tsv, rg_tsv, file_tsv, token_file,
+      token_file_legacy_data, song_url, score_url, version)
 
     // prepare unmapped BAM
     seqDataToLaneBam(
-      SequencingDataMigration.out.seq_expriment_payload,
+      SequencingDataMigration.out.seq_expriment_analysis,
       SequencingDataMigration.out.files_to_submit.collect(),
       reads_max_discard_fraction
     )
