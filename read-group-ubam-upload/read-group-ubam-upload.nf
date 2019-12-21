@@ -24,22 +24,22 @@
 nextflow.preview.dsl=2
 
 params.seq_experiment = "data/seq_exp-fq.song-analysis.json"
-params.files_to_upload = "data/C0HVY_2.lane.bam"
+params.ubam = "data/C0HVY_2.lane.bam"
 params.all_files = [
   "data/C0HVY_2.lane.bam",
   "data/D0RE2_1.lane.bam",
   "data/D0RH0_2.lane.bam"
 ]
-params.wf_short_name = "dna-seq-alignment"
+params.wf_name = "dna-seq-alignment"
 params.wf_version = "0.2.3.0"
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/home/ubuntu/.access_token"
 params.upload_ubam = false
 
-include payloadGenReadGroupUbam from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-read-group-ubam.0.1.0.0/tools/payload-gen-read-group-ubam/payload-gen-read-group-ubam.nf" params(params)
+include payloadGenReadGroupUbam from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-read-group-ubam.0.1.1.0/tools/payload-gen-read-group-ubam/payload-gen-read-group-ubam.nf" params(params)
 include SongPayloadUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
-include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
+include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.1.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
 include scoreManifestGen from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
 include scoreUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf" params(params)
 include songAnalysisPublish from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf" params(params)
@@ -48,9 +48,9 @@ include songAnalysisPublish from "../modules/raw.githubusercontent.com/icgc-argo
 workflow ReadGroupUbamUpload {
   get:
     seq_experiment
-    files_to_upload
+    ubam
     all_files
-    wf_short_name
+    wf_name
     wf_version
     song_url
     score_url
@@ -58,7 +58,7 @@ workflow ReadGroupUbamUpload {
     upload_ubam
 
   main:
-    payloadGenReadGroupUbam(seq_experiment, files_to_upload, wf_short_name, wf_version)
+    payloadGenReadGroupUbam(seq_experiment, ubam, wf_name, '', wf_version)
 
     SongPayloadUpload(song_url, payloadGenReadGroupUbam.out.payload, token_file)
 
@@ -79,9 +79,9 @@ workflow ReadGroupUbamUpload {
 workflow {
   ReadGroupUbamUpload(
     file(params.seq_experiment),
-    file(params.files_to_upload),
+    file(params.ubam),
     Channel.fromPath(params.all_files).collect(),
-    params.wf_short_name,
+    params.wf_name,
     params.wf_version,
     params.song_url,
     params.score_url,

@@ -18,35 +18,44 @@
  */
 
 /*
- * Author Linda Xiang <linda.xiang@oicr.on.ca>
+ * Author: Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.user_submit_metadata = ""
-params.wf_name = ""
-params.wf_short_name = ""
-params.wf_version = ""
+params.analysis_id = ""
+params.study = ""
+params.song_url = ""
+params.token_file = "NO_FILE"
 
-process payloadGenSeqExperiment {
-  container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.0.1.1.0"
+
+process songAnalysisGet {
+  container "quay.io/icgc-argo/song-analysis-get:song-analysis-get.0.1.1.0"
 
   input:
-    path user_submit_metadata
-    val wf_name
-    val wf_short_name
-    val wf_version
+    val analysis_id
+    val study
+    val song_url
+    path token_file
 
   output:
-    path "*.sequencing_experiment.payload.json", emit: payload
+    path "*.analysis.json", emit: song_analysis
 
   script:
-    args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
+    token_args = token_file.name != "NO_FILE" ? "-t ${token_file}" : ""
     """
-    payload-gen-seq-experiment.py \
-         -m ${user_submit_metadata} \
-         -w ${wf_name} \
-         -r ${workflow.runName} \
-         -v ${wf_version} ${args_wf_short_name}
+    song-analysis-get.py -a ${analysis_id} -p ${study} -s ${song_url} ${token_args}
     """
+}
+
+workflow {
+  main:
+    songAnalysisGet(
+      params.analysis_id,
+      params.study,
+      params.song_url,
+      file(params.token_file)
+    )
+  publish:
+    songAnalysisGet.out.song_analysis to: 'outdir', mode: 'copy', overwrite: true
 }

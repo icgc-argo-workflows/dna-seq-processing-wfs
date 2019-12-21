@@ -86,9 +86,7 @@ workflow DnaSeqAlignmentWf {
       token_file_legacy_data,
       song_url,
       score_url,
-      'sequencing-data-submission',
-      'seq-submission',
-      workflow.manifest.version
+      version
     )
 
     // prepare unmapped BAM
@@ -99,9 +97,9 @@ workflow DnaSeqAlignmentWf {
     )
 
     // create SONG entry for read group ubam (and upload data if upload_ubam set to true)
-    //ReadGroupUbamUpload(SequencingDataMigration.out.seq_expriment_analysis,
-    //    seqDataToLaneBam.out.lane_bams.flatten(), seqDataToLaneBam.out.lane_bams.collect(),
-    //    name, version, song_url, score_url, token_file, upload_ubam)
+    ReadGroupUbamUpload(SequencingDataMigration.out.seq_expriment_analysis,
+        seqDataToLaneBam.out.lane_bams.flatten(), seqDataToLaneBam.out.lane_bams.collect(),
+        name, version, song_url, score_url, token_file, upload_ubam)
 
     // BWA alignment for each ubam in scatter
     bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), aligned_lane_prefix,
@@ -114,18 +112,19 @@ workflow DnaSeqAlignmentWf {
         cpus_mkdup, 'aligned_basename_hardcode_for_now', markdup, aligned_seq_output_format, lossy)
 
     // Create SONG entry for final aligned/merged BAM/CRAM and upload to SCORE server
-    //DnaAlignmentUpload(
-    //    bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
-    //    ReadGroupUbamUpload.out.read_group_ubam_analysis.collect(), name,
-    //    version, song_url, score_url, token_file)
+    DnaAlignmentUpload(
+        bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
+        SequencingDataMigration.out.seq_expriment_analysis,
+        ReadGroupUbamUpload.out.read_group_ubam_analysis.collect(), name, '',
+        version, song_url, score_url, token_file)
 
   emit: // outputs
     metadata = SequencingDataMigration.out.metadata
     seq_expriment_payload = SequencingDataMigration.out.seq_expriment_payload
     seq_expriment_analysis = SequencingDataMigration.out.seq_expriment_analysis
     read_group_ubam = seqDataToLaneBam.out.lane_bams
-    //read_group_ubam_analysis = ReadGroupUbamUpload.out.read_group_ubam_analysis
-    //dna_seq_alignment_analysis = DnaAlignmentUpload.out.dna_seq_alignment_analysis
+    read_group_ubam_analysis = ReadGroupUbamUpload.out.read_group_ubam_analysis
+    dna_seq_alignment_analysis = DnaAlignmentUpload.out.dna_seq_alignment_analysis
     aligned_seq = bamMergeSortMarkdup.out.merged_seq
     aligned_seq_index  = bamMergeSortMarkdup.out.merged_seq_idx
 }
@@ -160,8 +159,8 @@ workflow {
     DnaSeqAlignmentWf.out.seq_expriment_payload to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
-    //DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
-    //DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
+    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.aligned_seq to: "outdir", overwrite: true
     DnaSeqAlignmentWf.out.aligned_seq_index to: "outdir", overwrite: true
 }

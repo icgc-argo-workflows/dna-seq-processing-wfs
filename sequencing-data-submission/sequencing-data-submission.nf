@@ -82,8 +82,6 @@ workflow SequencingDataSubmission {
     token_file_legacy_data
     song_url
     score_url
-    name
-    short_name
     version
 
   main:
@@ -98,7 +96,7 @@ workflow SequencingDataSubmission {
     //seqValidation.out[0].view()
 
     // create SONG entry for sequencing experiment and (upload if it's submission)
-    SeqExperimentUpload(metadataValidation.out.metadata, name, short_name, version,
+    SeqExperimentUpload(metadataValidation.out.metadata, 'sequencing-data-submission', 'seq-submission', version,
         files_to_submit.collect(), song_url, score_url, token_file, 'true')
 
   emit: // outputs
@@ -119,8 +117,6 @@ workflow {
       params.token_file_legacy_data,
       params.song_url,
       params.score_url,
-      name,
-      short_name,
       workflow.manifest.version
     )
 

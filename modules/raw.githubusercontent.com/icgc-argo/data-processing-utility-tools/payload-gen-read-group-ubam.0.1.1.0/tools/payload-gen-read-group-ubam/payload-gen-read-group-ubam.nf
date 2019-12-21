@@ -18,35 +18,55 @@
  */
 
 /*
- * Author Linda Xiang <linda.xiang@oicr.on.ca>
+ * Author: Linda Xiang <linda.xiang@oicr.on.ca>
+ *         Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.user_submit_metadata = ""
+params.sequencing_experiment_analysis = ""
+params.ubam = ""
 params.wf_name = ""
 params.wf_short_name = ""
 params.wf_version = ""
 
-process payloadGenSeqExperiment {
-  container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.0.1.1.0"
+
+process payloadGenReadGroupUbam {
+  container "quay.io/icgc-argo/payload-gen-read-group-ubam:payload-gen-read-group-ubam.0.1.1.0"
 
   input:
-    path user_submit_metadata
+    path sequencing_experiment_analysis
+    path ubam
     val wf_name
     val wf_short_name
     val wf_version
 
   output:
-    path "*.sequencing_experiment.payload.json", emit: payload
+    path "*.read_group_ubam.payload.json", emit: payload
 
   script:
     args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
     """
-    payload-gen-seq-experiment.py \
-         -m ${user_submit_metadata} \
-         -w ${wf_name} \
-         -r ${workflow.runName} \
-         -v ${wf_version} ${args_wf_short_name}
+    payload-gen-read-group-ubam.py \
+      -a ${sequencing_experiment_analysis} \
+      -f ${ubam} \
+      -w ${wf_name} \
+      -r ${workflow.runName} \
+      -v ${wf_version} ${args_wf_short_name}
     """
+}
+
+
+workflow {
+  main:
+    payloadGenReadGroupUbam(
+      file(params.sequencing_experiment_analysis),
+      file(params.ubam),
+      params.wf_name,
+      params.wf_short_name,
+      params.wf_version
+    )
+
+  publish:
+    payloadGenReadGroupUbam.out.payload to: 'outdir', overwrite: true
 }
