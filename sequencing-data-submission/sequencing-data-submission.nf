@@ -26,6 +26,9 @@ nextflow.preview.dsl=2
 name = 'sequencing-data-submission'
 short_name = 'seq-submission'
 
+params.wf_name = name
+params.wf_short_name = short_name
+params.wf_version = workflow.manifest.version
 params.exp_tsv = "data/experiment.v2.tsv"
 params.rg_tsv = "data/read_group.v2.tsv"
 params.file_tsv = "data/file.v2.tsv"
@@ -33,7 +36,6 @@ params.token_file = "/home/ubuntu/.access_token"
 params.token_file_legacy_data = ""
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
-
 
 include metadataValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.4.0/tools/metadata-validation/metadata-validation.nf" params(params)
 include seqValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.5.0/tools/seq-validation/seq-validation.nf" params(params)
@@ -78,11 +80,6 @@ workflow SequencingDataSubmission {
     exp_tsv
     rg_tsv
     file_tsv
-    token_file
-    token_file_legacy_data
-    song_url
-    score_url
-    version
 
   main:
     // Validate metadata
@@ -96,8 +93,8 @@ workflow SequencingDataSubmission {
     //seqValidation.out[0].view()
 
     // create SONG entry for sequencing experiment and (upload if it's submission)
-    SeqExperimentUpload(metadataValidation.out.metadata, 'sequencing-data-submission', 'seq-submission', version,
-        files_to_submit.collect(), song_url, score_url, token_file, 'true')
+    SeqExperimentUpload(metadataValidation.out.metadata, params.wf_name, params.wf_short_name, params.wf_version,
+      files_to_submit.collect(), params.song_url, params.score_url, params.token_file, 'true')
 
   emit: // outputs
     metadata = metadataValidation.out.metadata
@@ -112,12 +109,7 @@ workflow {
     SequencingDataSubmission(
       file(params.exp_tsv),
       file(params.rg_tsv),
-      file(params.file_tsv),
-      params.token_file,
-      params.token_file_legacy_data,
-      params.song_url,
-      params.score_url,
-      workflow.manifest.version
+      file(params.file_tsv)
     )
 
   publish:

@@ -30,8 +30,9 @@ params.all_files = [
   "data/D0RE2_1.lane.bam",
   "data/D0RH0_2.lane.bam"
 ]
-params.wf_name = "dna-seq-alignment"
-params.wf_version = "0.2.3.0"
+params.wf_name = ""
+params.wf_short_name = ""
+params.wf_version = ""
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/home/ubuntu/.access_token"
@@ -50,26 +51,20 @@ workflow ReadGroupUbamUpload {
     seq_experiment
     ubam
     all_files
-    wf_name
-    wf_version
-    song_url
-    score_url
-    token_file
-    upload_ubam
 
   main:
-    payloadGenReadGroupUbam(seq_experiment, ubam, wf_name, '', wf_version)
+    payloadGenReadGroupUbam(seq_experiment, ubam, params.wf_name, params.wf_short_name, params.wf_version)
 
-    SongPayloadUpload(song_url, payloadGenReadGroupUbam.out.payload, token_file)
+    SongPayloadUpload(params.song_url, payloadGenReadGroupUbam.out.payload, params.token_file)
 
-    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
+    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, params.song_url, params.token_file)
 
-    if (upload_ubam) {
+    if (params.upload_ubam) {
       scoreManifestGen(songAnalysisGet.out.song_analysis, all_files)
 
-      scoreUpload(scoreManifestGen.out.manifest_file, all_files, token_file, song_url, score_url)
+      scoreUpload(scoreManifestGen.out.manifest_file, all_files, params.token_file, params.song_url, params.score_url)
 
-      songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], song_url, token_file)
+      songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], params.song_url, params.token_file)
     }
 
   emit:
@@ -80,13 +75,7 @@ workflow {
   ReadGroupUbamUpload(
     file(params.seq_experiment),
     file(params.ubam),
-    Channel.fromPath(params.all_files).collect(),
-    params.wf_name,
-    params.wf_version,
-    params.song_url,
-    params.score_url,
-    params.token_file,
-    params.upload_ubam
+    Channel.fromPath(params.all_files).collect()
   )
 
   publish:

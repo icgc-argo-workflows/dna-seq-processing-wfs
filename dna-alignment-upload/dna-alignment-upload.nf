@@ -32,8 +32,9 @@ params.files_to_upload = [
   "data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam",
   "data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam.bai"
 ]
-params.wf_short_name = "dna-seq-alignment"
-params.wf_version = "0.4.0"
+params.wf_name = ""
+params.wf_short_name = ""
+params.wf_version = ""
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/home/ubuntu/.access_token"
@@ -52,29 +53,24 @@ workflow DnaAlignmentUpload {
     files_to_upload
     seq_experiment_analysis
     read_group_ubam_analysis
-    wf_name
-    wf_short_name
-    wf_version
-    song_url
-    score_url
-    token_file
 
   main:
     payloadGenDnaAlignment(files_to_upload, seq_experiment_analysis,
-      read_group_ubam_analysis, wf_name, wf_short_name, wf_version)
+      read_group_ubam_analysis, params.wf_name, params.wf_short_name, params.wf_version)
 
-    SongPayloadUpload(song_url, payloadGenDnaAlignment.out.payload, token_file)
+    SongPayloadUpload(params.song_url, payloadGenDnaAlignment.out.payload, params.token_file)
 
-    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, song_url, token_file)
+    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, params.song_url, params.token_file)
 
-    scoreManifestGen(songAnalysisGet.out.song_analysis, files_to_upload)
+    scoreManifestGen(songAnalysisGet.out.song_analysis, payloadGenDnaAlignment.out.alignment_files)
 
-    scoreUpload(scoreManifestGen.out.manifest_file, files_to_upload, token_file, song_url, score_url)
+    scoreUpload(scoreManifestGen.out.manifest_file, payloadGenDnaAlignment.out.alignment_files, params.token_file, params.song_url, params.score_url)
 
-    songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], song_url, token_file)
+    songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], params.song_url, params.token_file)
 
   emit:
     dna_seq_alignment_analysis = songAnalysisGet.out.song_analysis
+    alignment_files = payloadGenDnaAlignment.out.alignment_files
 }
 
 workflow {
@@ -83,12 +79,6 @@ workflow {
       Channel.fromPath(params.files_to_upload).collect(),
       file(params.seq_experiment_analysis),
       Channel.fromPath(params.read_group_ubam_analysis).collect(),
-      params.wf_name,
-      params.wf_short_name,
-      params.wf_version,
-      params.song_url,
-      params.score_url,
-      params.token_file
     )
 
   publish:

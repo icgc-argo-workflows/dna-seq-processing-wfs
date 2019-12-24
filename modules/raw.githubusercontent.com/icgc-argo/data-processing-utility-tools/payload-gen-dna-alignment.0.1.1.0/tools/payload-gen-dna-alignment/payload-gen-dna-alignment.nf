@@ -46,6 +46,7 @@ process payloadGenDnaAlignment {
 
   output:
     path "*.dna_alignment.payload.json", emit: payload
+    path "out/*", emit: alignment_files
 
   script:
     args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
