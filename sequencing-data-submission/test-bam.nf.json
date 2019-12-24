@@ -1,0 +1,6 @@
+{
+    "exp_tsv": "data/experiment.v2.tsv",
+    "rg_tsv": "data/read_group.v2.tsv",
+    "file_tsv": "data/file.v2.tsv",
+    "token_file": "/home/ubuntu/.access_token"
+}

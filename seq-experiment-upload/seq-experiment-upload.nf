@@ -23,33 +23,35 @@
 
 nextflow.preview.dsl=2
 
-params.user_submit_metadata = "tests/data/seq_rg-fq.json"
-params.wf_short_name = "dna-seq-alignment"
-params.wf_version = "0.2.3.0"
+params.user_submit_metadata = "data/seq-exp.fq.metadata.json"
+params.wf_name = ""
+params.wf_short_name = ""
+params.wf_version = ""
 params.files_to_upload = [
-  "tests/data/C0HVY.2_r1.fq",
-  "tests/data/C0HVY.2_r2.fq",
-  "tests/data/D0RE2.1_r1.fq",
-  "tests/data/D0RE2.1_r2.fq",
-  "tests/data/D0RH0.2_r1.fq",
-  "tests/data/D0RH0.2_r2.fq"
+  "data/C0HVY.2_r1.fq",
+  "data/C0HVY.2_r2.fq",
+  "data/D0RE2.1_r1.fq",
+  "data/D0RE2.1_r2.fq",
+  "data/D0RH0.2_r1.fq",
+  "data/D0RH0.2_r2.fq"
 ]
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.token_file = "/home/ubuntu/.access_token"
 params.is_submission = false
 
-include payloadGenSeqExperiment from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.0.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf" params(params)
-include SongPayloadUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
-include songAnalysisGet from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.0.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
-include scoreManifestGen from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
-include scoreUpload from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf" params(params)
-include songAnalysisPublish from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf" params(params)
+include payloadGenSeqExperiment from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment.0.1.1.0/tools/payload-gen-seq-experiment/payload-gen-seq-experiment.nf" params(params)
+include SongPayloadUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.0.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
+include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.1.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
+include scoreManifestGen from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
+include scoreUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf" params(params)
+include songAnalysisPublish from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf" params(params)
 
 
 workflow SeqExperimentUpload {
   get:
     user_submit_metadata
+    wf_name
     wf_short_name
     wf_version
     files_to_upload
@@ -57,9 +59,9 @@ workflow SeqExperimentUpload {
     score_url
     token_file
     is_submission
-    
+
   main:
-    payloadGenSeqExperiment(user_submit_metadata, wf_short_name, wf_version)
+    payloadGenSeqExperiment(user_submit_metadata, wf_name, wf_short_name, wf_version)
 
     SongPayloadUpload(song_url, payloadGenSeqExperiment.out.payload, token_file)
 
@@ -74,12 +76,14 @@ workflow SeqExperimentUpload {
     }
 
   emit:
+    seq_expriment_payload = payloadGenSeqExperiment.out.payload
     seq_expriment_analysis = songAnalysisGet.out.song_analysis
 }
 
 workflow {
   SeqExperimentUpload(
     file(params.user_submit_metadata),
+    params.wf_name,
     params.wf_short_name,
     params.wf_version,
     Channel.fromPath(params.files_to_upload).collect(),
@@ -90,5 +94,6 @@ workflow {
   )
 
   publish:
+    SeqExperimentUpload.out.seq_expriment_payload to: "outdir", overwrite: true
     SeqExperimentUpload.out.seq_expriment_analysis to: "outdir", overwrite: true
 }

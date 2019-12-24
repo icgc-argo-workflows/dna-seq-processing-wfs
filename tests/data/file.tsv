@@ -1,4 +1,4 @@
-name	size	submitter_read_group_id	checksum	checksum_type	path	format	type
-test_rg_3.bam	14899	C0HVY.2	247581f6d2324ee3860158334fe517c8	md5	score://collab/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	BAM	sequencing_file
-test_rg_3.bam	14899	D0RE2.1	247581f6d2324ee3860158334fe517c8	md5	score://collab/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	BAM	sequencing_file
-test_rg_3.bam	14899	D0RH0.2	247581f6d2324ee3860158334fe517c8	md5	score://collab/EGAZ00001018588/7aba9867-ffba-5e57-96d0-300c80839504	BAM	sequencing_file
+type	name	size	submitter_read_group_id	checksum	checksum_type	path	format
+file	test_rg_3.bam	14899	C0HVY.2	247581f6d2324ee3860158334fe517c8	md5	test_rg_3.bam	BAM
+file	test_rg_3.bam	14899	D0RE2.1	247581f6d2324ee3860158334fe517c8	md5	test_rg_3.bam	BAM
+file	test_rg_3.bam	14899	D0RH0.2	247581f6d2324ee3860158334fe517c8	md5	test_rg_3.bam	BAM
