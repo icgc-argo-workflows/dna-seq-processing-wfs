@@ -1,8 +1,6 @@
 {
-  "exp_tsv": "data/experiment.v2.tsv",
-  "rg_tsv": "data/read_group.v2.tsv",
-  "file_tsv": "data/file.v2.tsv",
+  "seq_expriment_analysis_id": "0c9d06d5-7f68-4d9b-9d06-d57f685d9be3",
+  "program_id": "TEST-PRO",
   "reads_max_discard_fraction": 0.05,
-  "token_file": "/home/ubuntu/.access_token",
-  "token_file_legacy_data": "NO_FILE"
+  "token_file": "/home/ubuntu/.access_token"
 }

@@ -38,46 +38,11 @@ params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.upload_files = true
 
+include getFilePaths from "./get-file-paths"
 include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.0/tools/file-provisioner/file-provisioner.nf" params(params)
 include metadataValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.4.0/tools/metadata-validation/metadata-validation.nf" params(params)
 include seqValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.5.0/tools/seq-validation/seq-validation.nf" params(params)
 include SeqExperimentUpload from "../seq-experiment-upload/seq-experiment-upload.nf" params(params)
-
-
-process getFilePaths {
-  container "ubuntu:18.04"
-
-  input:
-    path file_tsv
-    path metadata
-  output:
-    path "file_paths.csv", emit: file_paths
-  script:
-    """
-    cols=(\$(head -1 ${file_tsv}))
-    PATH_I=0
-    for i in \${!cols[@]}; do
-      if [ \${cols[\$i]} == "path" ]; then
-        PATH_I=\$i
-        break
-      fi
-    done
-
-    (( PATH_I += 1 ))
-    DIR=\$(dirname \$(realpath ${file_tsv}))
-
-    echo "path" >> file_paths.csv
-    for f in \$(tail -n +2 ${file_tsv} | cut -f \$PATH_I |sort -u); do
-      if [[ \$f == /* ]] ; then
-        echo \$f >> file_paths.csv
-      elif [[ \$f == score://* ]] ; then
-        echo \$f >> file_paths.csv
-      else
-        echo \$DIR/\$f >> file_paths.csv
-      fi
-    done
-    """
-}
 
 
 workflow SequencingDataSubmission {
