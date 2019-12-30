@@ -36,6 +36,7 @@ process payloadGenSeqExperiment {
     val wf_name
     val wf_short_name
     val wf_version
+    val seq_valid
 
   output:
     path "*.sequencing_experiment.payload.json", emit: payload

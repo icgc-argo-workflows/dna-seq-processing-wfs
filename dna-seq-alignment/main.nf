@@ -25,11 +25,12 @@
 nextflow.preview.dsl=2
 name = 'dna-seq-alignment'
 
+params.seq_expriment_analysis_id = ""
 params.exp_tsv = "data/experiment-fq.v2.tsv"
 params.rg_tsv = "data/read_group-fq.v2.tsv"
 params.file_tsv = "data/file-fq.v2.tsv"
 params.token_file = "/home/ubuntu/.access_token"
-params.token_file_legacy_data = ""
+params.token_file_legacy_data = "/home/ubuntu/access_token"
 params.ref_genome_fa = "reference/tiny-grch38-chr11-530001-537000.fa"
 params.cpus_align = -1  // negative means use default
 params.cpus_mkdup = -1  // negative means use default
@@ -48,7 +49,8 @@ include "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools
 include "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
 
 include SequencingDataSubmission as SequencingDataMigration from "../sequencing-data-submission/main.nf" params(
-  "song_url": params.song_url, "score_url": params.score_url, "token_file": params.token_file
+  "song_url": params.song_url, "score_url": params.score_url, "token_file": params.token_file,
+  "token_file_legacy_data": params.token_file_legacy_data, "upload_files": false  // download data from legacy data repo to process but not upload to ARGO RDPC score
 )
 
 include ReadGroupUbamUpload from "../read-group-ubam-upload/read-group-ubam-upload.nf" params(
