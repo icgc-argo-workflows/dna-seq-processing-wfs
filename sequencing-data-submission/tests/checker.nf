@@ -18,36 +18,30 @@
  */
 
 /*
- * Author Linda Xiang <linda.xiang@oicr.on.ca>
+ * authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.user_submit_metadata = ""
-params.wf_name = ""
-params.wf_short_name = ""
-params.wf_version = ""
+params.exp_tsv = ""
+params.rg_tsv = ""
+params.file_tsv = ""
+params.token_file = "/home/ubuntu/.access_token"
 
-process payloadGenSeqExperiment {
-  container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.0.1.1.0"
+include "../main" params(params)
 
-  input:
-    path user_submit_metadata
-    val wf_name
-    val wf_short_name
-    val wf_version
-    val seq_valid
 
-  output:
-    path "*.sequencing_experiment.payload.json", emit: payload
+workflow {
+  main:
+    SequencingDataSubmission(
+      file(params.exp_tsv),
+      file(params.rg_tsv),
+      file(params.file_tsv)
+    )
 
-  script:
-    args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
-    """
-    payload-gen-seq-experiment.py \
-         -m ${user_submit_metadata} \
-         -w ${wf_name} \
-         -r ${workflow.runName} \
-         -v ${wf_version} ${args_wf_short_name}
-    """
+  publish:
+    SequencingDataSubmission.out.metadata to: "outdir", overwrite: true
+    SequencingDataSubmission.out.files_to_submit to: "outdir", overwrite: true
+    SequencingDataSubmission.out.seq_expriment_payload to: "outdir", overwrite: true
+    SequencingDataSubmission.out.seq_expriment_analysis to: "outdir", overwrite: true
 }

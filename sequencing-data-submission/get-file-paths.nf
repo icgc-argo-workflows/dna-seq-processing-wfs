@@ -18,36 +18,44 @@
  */
 
 /*
- * Author Linda Xiang <linda.xiang@oicr.on.ca>
+ * Authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
+ *          Linda Xiang <linda.xiang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.user_submit_metadata = ""
-params.wf_name = ""
-params.wf_short_name = ""
-params.wf_version = ""
 
-process payloadGenSeqExperiment {
-  container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.0.1.1.0"
+process getFilePaths {
+  container "ubuntu:18.04"
 
   input:
-    path user_submit_metadata
-    val wf_name
-    val wf_short_name
-    val wf_version
-    val seq_valid
-
+    path file_tsv
+    path metadata
   output:
-    path "*.sequencing_experiment.payload.json", emit: payload
-
+    path "file_paths.csv", emit: file_paths
   script:
-    args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
     """
-    payload-gen-seq-experiment.py \
-         -m ${user_submit_metadata} \
-         -w ${wf_name} \
-         -r ${workflow.runName} \
-         -v ${wf_version} ${args_wf_short_name}
+    cols=(\$(head -1 ${file_tsv}))
+    PATH_I=0
+    for i in \${!cols[@]}; do
+      if [ \${cols[\$i]} == "path" ]; then
+        PATH_I=\$i
+        break
+      fi
+    done
+
+    (( PATH_I += 1 ))
+    DIR=\$(dirname \$(realpath ${file_tsv}))
+
+    echo "path" >> file_paths.csv
+    for f in \$(tail -n +2 ${file_tsv} | cut -f \$PATH_I |sort -u); do
+      if [[ \$f == /* ]] ; then
+        echo \$f >> file_paths.csv
+      elif [[ \$f == score://* ]] ; then
+        echo \$f >> file_paths.csv
+      else
+        echo \$DIR/\$f >> file_paths.csv
+      fi
+    done
     """
 }

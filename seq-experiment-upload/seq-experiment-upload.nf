@@ -59,9 +59,10 @@ workflow SeqExperimentUpload {
     score_url
     token_file
     is_submission
+    seq_valid
 
   main:
-    payloadGenSeqExperiment(user_submit_metadata, wf_name, wf_short_name, wf_version)
+    payloadGenSeqExperiment(user_submit_metadata, wf_name, wf_short_name, wf_version, seq_valid)
 
     SongPayloadUpload(song_url, payloadGenSeqExperiment.out.payload, token_file)
 
@@ -90,7 +91,8 @@ workflow {
     params.song_url,
     params.score_url,
     params.token_file,
-    params.is_submission
+    params.is_submission,
+    'ok'
   )
 
   publish:
