@@ -29,13 +29,15 @@ short_name = 'seq-submission'
 params.wf_name = name
 params.wf_short_name = short_name
 params.wf_version = workflow.manifest.version
-params.exp_tsv = "data/experiment.v2.tsv"
-params.rg_tsv = "data/read_group.v2.tsv"
-params.file_tsv = "data/file.v2.tsv"
+
+params.exp_tsv = ""
+params.rg_tsv = ""
+params.file_tsv = ""
 params.token_file = "/home/ubuntu/.access_token"
-params.token_file_legacy_data = "NO_FILE"
+
 params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
+params.token_file_legacy_data = "NO_FILE"
 params.upload_files = true
 
 include getFilePaths from "./get-file-paths"

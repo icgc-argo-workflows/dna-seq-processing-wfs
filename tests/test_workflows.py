@@ -12,19 +12,23 @@ is_travis = os.environ.get('TRAVIS')
 def pytest_generate_tests(metafunc):
     if 'job' in metafunc.fixturenames:
         jobs = []
+        for test_dir in glob(os.path.join('*', 'tests')):
+            for test_job in glob(os.path.join(test_dir, '*.json')):
+                if is_travis and os.path.basename(test_job).startswith('local-'): continue
 
-        for test_job in glob(os.path.join('tests', '*.nf.json')):
-            if is_travis and os.path.basename(test_job).startswith('local-'): continue
-
-            jobs.append([os.path.basename(test_job), os.path.abspath(test_job)])
+                jobs.append([
+                                "%s/%s" % (test_dir, os.path.basename(test_job)),
+                                os.path.abspath(test_dir),
+                                os.path.abspath(test_job)
+                            ])
 
         metafunc.parametrize('job', jobs, ids=[j[0] for j in jobs])
 
 
 def test_app(job, rootDir):
-    _, test_job = job
+    _, test_dir, test_job = job
 
-    os.chdir(os.path.join(rootDir, 'tests'))
+    os.chdir(test_dir)
 
     app_outdir = 'outdir'
     if os.path.exists(app_outdir):  # remove if exist
