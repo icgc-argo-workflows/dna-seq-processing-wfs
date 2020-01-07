@@ -6,14 +6,14 @@ params.cpus = 1
 params.mem = 1024
 
 // required params w/ default
-params.container_version = 'payload-gen-dna-alignment.0.1.1.0'
+params.container_version = '0.1.1.0'
 
 process sequencingAlignmentPayloadGen {
 
     cpus params.cpus
     memory "${params.mem} MB"
 
-    container "quay.io/icgc-argo/payload-gen-dna-alignment:${params.container_version}"
+    container "quay.io/icgc-argo/payload-gen-dna-alignment:payload-gen-dna-alignment.${params.container_version}"
 
     tag "${seq_experiment_analysis.baseName}"
  
