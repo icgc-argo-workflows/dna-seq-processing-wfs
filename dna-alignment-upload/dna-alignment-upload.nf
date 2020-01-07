@@ -23,11 +23,7 @@
 
 nextflow.preview.dsl=2
 
-params.input_payloads = [
-  "data/rg_ubam.song-analysis.01.json",
-  "data/rg_ubam.song-analysis.02.json",
-  "data/rg_ubam.song-analysis.03.json"
-]
+params.read_group_ubam_analysis = []
 params.files_to_upload = [
   "data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam",
   "data/HCC1143_BAM_INPUT.3.20190812.wgs.grch38.bam.bai"
@@ -52,21 +48,21 @@ workflow DnaAlignmentUpload {
   get:
     files_to_upload
     seq_experiment_analysis
-    read_group_ubam_analysis
+    token_file
 
   main:
     payloadGenDnaAlignment(files_to_upload, seq_experiment_analysis,
-      read_group_ubam_analysis, params.wf_name, params.wf_short_name, params.wf_version)
+      params.read_group_ubam_analysis, params.wf_name, params.wf_short_name, params.wf_version)
 
-    SongPayloadUpload(params.song_url, payloadGenDnaAlignment.out.payload, params.token_file)
+    SongPayloadUpload(params.song_url, payloadGenDnaAlignment.out.payload, token_file)
 
-    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, params.song_url, params.token_file)
+    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, params.song_url, token_file)
 
     scoreManifestGen(songAnalysisGet.out.song_analysis, payloadGenDnaAlignment.out.alignment_files)
 
-    scoreUpload(scoreManifestGen.out.manifest_file, payloadGenDnaAlignment.out.alignment_files, params.token_file, params.song_url, params.score_url)
+    scoreUpload(scoreManifestGen.out.manifest_file, payloadGenDnaAlignment.out.alignment_files, token_file, params.song_url, params.score_url)
 
-    songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], params.song_url, params.token_file)
+    songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], params.song_url, token_file)
 
   emit:
     dna_seq_alignment_analysis = songAnalysisGet.out.song_analysis
@@ -78,7 +74,7 @@ workflow {
     DnaAlignmentUpload(
       Channel.fromPath(params.files_to_upload).collect(),
       file(params.seq_experiment_analysis),
-      Channel.fromPath(params.read_group_ubam_analysis).collect(),
+      file(params.token_file)
     )
 
   publish:

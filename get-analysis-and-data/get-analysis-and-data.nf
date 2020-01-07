@@ -59,11 +59,12 @@ process getFilePathsFromAnalysis {
 workflow GetAnalysisAndData {
   get:
     analysis_id
+    token_file
 
   main:
-    songAnalysisGet(analysis_id, params.program_id, params.song_url, params.token_file)
+    songAnalysisGet(analysis_id, params.program_id, params.song_url, token_file)
     getFilePathsFromAnalysis(songAnalysisGet.out.song_analysis.getText('UTF-8'))
-    FileProvisioner(getFilePathsFromAnalysis.out.file_paths.flatten(), file(params.token_file), params.song_url, params.score_url)
+    FileProvisioner(getFilePathsFromAnalysis.out.file_paths.flatten(), token_file, params.song_url, params.score_url)
 
   emit:
     analysis = songAnalysisGet.out.song_analysis
@@ -73,7 +74,8 @@ workflow GetAnalysisAndData {
 workflow {
   main:
     GetAnalysisAndData(
-      params.analysis_id
+      params.analysis_id,
+      file(params.token_file)
     )
 
   publish:
