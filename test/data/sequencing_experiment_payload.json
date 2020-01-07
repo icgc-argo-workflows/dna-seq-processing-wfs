@@ -1,0 +1,95 @@
+{
+  "study": "TEST-PRO",
+  "sample": [
+    {
+      "info": {},
+      "sampleId": "SAbc064f25adab65a4c75a539e5e2b8d48",
+      "specimenId": "SPea740f45bacdf68583eeb9183e8bb57a",
+      "sampleSubmitterId": "HCC1143_BAM_INPUT",
+      "sampleType": "DNA",
+      "specimen": {
+        "info": {},
+        "specimenId": "SPea740f45bacdf68583eeb9183e8bb57a",
+        "donorId": "DO1d5c9010f8ddcc4b7be855ddaa9cdd3c",
+        "specimenSubmitterId": "HCC1143_BAM_INPUT",
+        "specimenClass": "Tumour",
+        "specimenType": "Primary tumour - other"
+      },
+      "donor": {
+        "donorId": "DO1d5c9010f8ddcc4b7be855ddaa9cdd3c",
+        "donorSubmitterId": "HCC1143",
+        "studyId": "TEST-PRO",
+        "donorGender": "female",
+        "info": {}
+      }
+    }
+  ],
+  "file": [
+    {
+      "info": {},
+      "studyId": "TEST-PRO",
+      "analysisId": "1a1fbac3-00bf-4606-9fba-c300bf46068d",
+      "fileName": "test_rg_3.v2.bam",
+      "fileSize": 14911,
+      "fileType": "BAM",
+      "fileMd5sum": "178f97f7b1ca8bfc28fd5586bdd56799",
+      "fileAccess": "controlled"
+    }
+  ],
+  "analysisType": {
+    "name": "sequencing_experiment"
+  },
+  "workflow": {
+    "name": "sequencing-data-submission",
+    "run_id": "dreamy_visvesvaraya",
+    "version": "0.4.0",
+    "short_name": "seq-submission"
+  },
+  "experiment": {
+    "platform": "ILLUMINA",
+    "platform_model": "HiSeq 2000",
+    "sequencing_date": "2014-12-12",
+    "library_strategy": "WGS",
+    "sequencing_center": "EXT"
+  },
+  "read_groups": [
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8a",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "submitter_read_group_id": "C0HVY.2"
+    },
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8b",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "submitter_read_group_id": "D0RE2.1"
+    },
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8c",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "submitter_read_group_id": "D0RH0.2"
+    }
+  ],
+  "read_group_count": 3,
+  "submitter_sequencing_experiment_id": "TEST_EXP"
+}
