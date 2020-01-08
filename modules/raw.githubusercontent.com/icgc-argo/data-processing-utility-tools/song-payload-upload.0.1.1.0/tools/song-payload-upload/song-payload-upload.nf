@@ -27,20 +27,20 @@ params.song_url = ""
 params.song_payload = ""
 params.token_file = ""
 
-import groovy.json.JsonSlurper
 
 process getStudyAndAnalysisId {
+
   input:
-    val str
+    path song_analysis
   output:
-    val meta_info.study, emit: study
-    val meta_info.analysisId, emit: analysis_id
+    val study, emit: study
+    val analysis_id, emit: analysis_id
   exec:
-    meta_info = new JsonSlurper().parseText(str)
+    (full, analysis_id, study) = (song_analysis.baseName =~ /(.+)\.(.+)\.analysis/)[0]
 }
 
 process songPayloadUploadPr {
-  container "quay.io/icgc-argo/song-payload-upload:song-payload-upload.0.1.0.0"
+  container "quay.io/icgc-argo/song-payload-upload:song-payload-upload.0.1.1.0"
 
   input:
     val song_url
@@ -48,7 +48,7 @@ process songPayloadUploadPr {
     path token_file
 
   output:
-    stdout()
+    path "*.analysis.json", emit: song_analysis
 
   script:
     """
@@ -70,7 +70,7 @@ workflow SongPayloadUpload{
     )
 
     getStudyAndAnalysisId(
-      songPayloadUploadPr.out[0]
+      songPayloadUploadPr.out.song_analysis
     )
 
   emit:
