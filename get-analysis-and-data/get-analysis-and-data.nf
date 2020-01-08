@@ -21,7 +21,6 @@
  * Authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-import groovy.json.JsonSlurper
 
 nextflow.preview.dsl=2
 name = 'get-analysis-and-data'
@@ -38,21 +37,25 @@ include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/dat
 
 
 process getFilePathsFromAnalysis {
+
+  container "cfmanteiga/alpine-bash-curl-jq:latest"
+
   input:
-    val song_analysis_str
+    path song_analysis
 
   output:
-    val file_paths, emit: file_paths
+    path "file_paths.csv", emit: file_paths
 
-  exec:
-    //String fileContents = song_analysis.getText('UTF-8')
-    analysis = new JsonSlurper().parseText(song_analysis_str)
-    analysis_id = analysis.analysisId
+  script:
+    """
+    analysis_id=(\$(cat ${song_analysis} | jq --raw-output '.analysisId'))
 
-    file_paths = []
-    for (file in analysis.file) {
-      file_paths.add("score://collab/${analysis_id}/${file.objectId}")
-    }
+    echo "path" >> file_paths.csv
+
+    for o in \$(cat ${song_analysis} | jq --raw-output '.file[].objectId'); do
+      echo "score://collab/\$analysis_id/\$o" >> file_paths.csv
+    done
+    """
 }
 
 
@@ -63,8 +66,9 @@ workflow GetAnalysisAndData {
 
   main:
     songAnalysisGet(analysis_id, params.program_id, params.song_url, token_file)
-    getFilePathsFromAnalysis(songAnalysisGet.out.song_analysis.getText('UTF-8'))
-    FileProvisioner(getFilePathsFromAnalysis.out.file_paths.flatten(), token_file, params.song_url, params.score_url)
+    getFilePathsFromAnalysis(songAnalysisGet.out.song_analysis)
+    file_paths = getFilePathsFromAnalysis.out.file_paths.splitCsv(header:true).map{ row->row.path }
+    FileProvisioner(file_paths.flatten(), token_file, params.song_url, params.score_url)
 
   emit:
     analysis = songAnalysisGet.out.song_analysis
