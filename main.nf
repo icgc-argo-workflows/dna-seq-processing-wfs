@@ -57,9 +57,9 @@ params.aligned_seq_output_format = "bam"
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.6.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(params)
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.2.1/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
-include GetAnalysisAndData as G1 from "./get-analysis-and-data/get-analysis-and-data.nf" params(params)
+include GetAnalysisAndData as GAD from "./get-analysis-and-data/get-analysis-and-data.nf" params(params)
 
-include SequencingDataSubmission as S1 from "./sequencing-data-submission/main.nf" params(
+include SequencingDataSubmission as SDS from "./sequencing-data-submission/main.nf" params(
   "song_url": params.song_url, "score_url": params.score_url, "token_file": params.token_file,
   "token_file_legacy_data": params.token_file_legacy_data, "upload_files": false  // download data from legacy data repo to process but not upload to ARGO RDPC score
 )
@@ -69,12 +69,13 @@ include SequencingDataSubmission as S1 from "./sequencing-data-submission/main.n
 //  "score_url": params.score_url, "token_file": params.token_file, "upload_ubam": params.upload_ubam
 //)
 
-include DnaAlignmentUpload as A1 from "./dna-alignment-upload/dna-alignment-upload.nf" params(
+include DnaAlignmentUpload as DAU from "./dna-alignment-upload/dna-alignment-upload.nf" params(
   "wf_name": name, "wf_version": workflow.manifest.version, "song_url": params.song_url,
   "score_url": params.score_url, "token_file": params.token_file
 )
 
 process genTokenFile {
+
   input:
     val token_str
 
@@ -88,7 +89,7 @@ process genTokenFile {
 }
 
 
-workflow DnaSeqAlignmentWf {
+workflow Alignment {
   get:
     seq_expriment_analysis_id
     exp_tsv
@@ -104,14 +105,14 @@ workflow DnaSeqAlignmentWf {
      * migrate data from ICGC legacy repository or just get ARGO data already submitted to RDPC repository
      */
     if (seq_expriment_analysis_id.length() == 0) {  // start from migrating ICGC legacy data
-      S1(file(exp_tsv), file(rg_tsv), file(file_tsv))
-      seq_expriment_analysis = S1.out.seq_expriment_analysis
-      files_to_process = S1.out.files_to_submit
+      SDS(file(exp_tsv), file(rg_tsv), file(file_tsv))
+      seq_expriment_analysis = SDS.out.seq_expriment_analysis
+      files_to_process = SDS.out.files_to_submit
 
     } else {  // start from submitted ARGO data
-      G1(seq_expriment_analysis_id, genTokenFile.out.token_file)
-      seq_expriment_analysis = G1.out.analysis
-      files_to_process = G1.out.files
+      GAD(seq_expriment_analysis_id, genTokenFile.out.token_file)
+      seq_expriment_analysis = GAD.out.analysis
+      files_to_process = GAD.out.files
 
     }
 
@@ -143,7 +144,7 @@ workflow DnaSeqAlignmentWf {
         params.aligned_seq_output_format, params.lossy)
 
     // Create SONG entry for final aligned/merged BAM/CRAM and upload to SCORE server
-    A1(
+    DAU(
         bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
         seq_expriment_analysis,
         genTokenFile.out.token_file
@@ -153,14 +154,14 @@ workflow DnaSeqAlignmentWf {
     seq_expriment_analysis = seq_expriment_analysis
     //read_group_ubam = seqDataToLaneBam.out.lane_bams
     //read_group_ubam_analysis = ReadGroupUbamUpload.out.read_group_ubam_analysis
-    alignment_files = A1.out.alignment_files
-    dna_seq_alignment_analysis = A1.out.dna_seq_alignment_analysis
+    alignment_files = DAU.out.alignment_files
+    dna_seq_alignment_analysis = DAU.out.dna_seq_alignment_analysis
 }
 
 
 workflow {
   main:
-    DnaSeqAlignmentWf(
+    Alignment(
       params.seq_expriment_analysis_id,
       params.exp_tsv,
       params.rg_tsv,
@@ -170,9 +171,9 @@ workflow {
     )
 
   publish:
-    DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", overwrite: true
-    //DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
-    //DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.alignment_files to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
+    Alignment.out.seq_expriment_analysis to: "outdir", overwrite: true
+    //Alignment.out.read_group_ubam to: "outdir", overwrite: true
+    //Alignment.out.read_group_ubam_analysis to: "outdir", overwrite: true
+    Alignment.out.alignment_files to: "outdir", overwrite: true
+    Alignment.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
 }

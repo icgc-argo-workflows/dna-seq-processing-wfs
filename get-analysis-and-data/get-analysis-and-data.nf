@@ -33,10 +33,10 @@ params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
 
 include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.1.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
-include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.1/tools/file-provisioner/file-provisioner.nf" params(params)
+include FileProvisioner as FP from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.1/tools/file-provisioner/file-provisioner.nf" params(params)
 
 
-process getFilePathsFromAnalysis {
+process getFilePaths {
 
   container "cfmanteiga/alpine-bash-curl-jq:latest"
 
@@ -66,13 +66,13 @@ workflow GetAnalysisAndData {
 
   main:
     songAnalysisGet(analysis_id, params.program_id, params.song_url, token_file)
-    getFilePathsFromAnalysis(songAnalysisGet.out.song_analysis)
-    file_paths = getFilePathsFromAnalysis.out.file_paths.splitCsv(header:true).map{ row->row.path }
-    FileProvisioner(file_paths.flatten(), token_file, params.song_url, params.score_url)
+    getFilePaths(songAnalysisGet.out.song_analysis)
+    file_paths = getFilePaths.out.file_paths.splitCsv(header:true).map{ row->row.path }
+    FP(file_paths.flatten(), token_file, params.song_url, params.score_url)
 
   emit:
     analysis = songAnalysisGet.out.song_analysis
-    files = FileProvisioner.out.file
+    files = FP.out.file
 }
 
 workflow {
