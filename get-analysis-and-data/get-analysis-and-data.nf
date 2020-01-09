@@ -33,7 +33,7 @@ params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
 
 include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.1.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
-include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.0/tools/file-provisioner/file-provisioner.nf" params(params)
+include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.1/tools/file-provisioner/file-provisioner.nf" params(params)
 
 
 process getFilePathsFromAnalysis {
