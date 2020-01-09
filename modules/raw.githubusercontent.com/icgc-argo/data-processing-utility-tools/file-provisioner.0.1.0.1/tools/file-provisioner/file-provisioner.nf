@@ -32,7 +32,7 @@ params.score_url = ""
 
 
 process scoreDownload {
-  container "quay.io/icgc-argo/file-provisioner:file-provisioner.0.1.0.0"
+  container "quay.io/icgc-argo/file-provisioner:file-provisioner.0.1.0.1"
 
   label "fileProvisioner_scoreDownload"
 
@@ -57,7 +57,7 @@ process scoreDownload {
 
 
 process localFilePathToFile {
-  container "quay.io/icgc-argo/file-provisioner:file-provisioner.0.1.0.0"
+  container "quay.io/icgc-argo/file-provisioner:file-provisioner.0.1.0.1"
 
   label "fileProvisioner_localFilePathToFile"
 
