@@ -33,7 +33,6 @@ process songPublish {
     export CLIENT_ACCESS_TOKEN=${params.api_token}
     export CLIENT_STUDY_ID=${study_id}
 
-    cd /song-client/bin
-    ./sing publish -a  ${analysis_id}
+    sing publish -a  ${analysis_id}
     """
 }

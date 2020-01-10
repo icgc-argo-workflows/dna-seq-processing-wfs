@@ -35,8 +35,6 @@ process scoreUpload {
     export STORAGE_URL=${params.score_url}
     export ACCESSTOKEN=${params.api_token}
     
-    export DATADIR=\$PWD
-    cd /score-client/bin
-    ./score-client upload --manifest \$DATADIR/${manifest}
+    score-client upload --manifest ${manifest}
     """
 }

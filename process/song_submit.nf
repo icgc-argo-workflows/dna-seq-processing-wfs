@@ -20,7 +20,7 @@ process songSubmit {
     container "overture/song-client:${params.container_version}"
     
     tag "${study_id} -- ${payload.baseName}"
-
+    
     input:
         val study_id
         path payload
@@ -33,8 +33,6 @@ process songSubmit {
     export CLIENT_ACCESS_TOKEN=${params.api_token}
     export CLIENT_STUDY_ID=${study_id}
 
-    export DATADIR=\$PWD
-    cd /song-client/bin
-    ./sing submit -f \$DATADIR/${payload} > \$DATADIR/download_payload.json
+    sing submit -f ${payload} > download_payload.json
     """
 }
