@@ -52,7 +52,7 @@ process getFilePaths {
 
     echo "path" >> file_paths.csv
 
-    for o in \$(cat ${song_analysis} | jq --raw-output '.file[].objectId'); do
+    for o in \$(cat ${song_analysis} | jq --raw-output '.files[].objectId'); do
       echo "score://collab/\$analysis_id/\$o" >> file_paths.csv
     done
     """
