@@ -39,7 +39,7 @@ params.token_file = "/home/ubuntu/.access_token"
 include payloadGenDnaAlignment from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.2.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(params)
 include SongPayloadUpload as SPU from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.1.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
 include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.1.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
-include scoreManifestGen from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.0.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
+include scoreManifestGen from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.1.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
 include scoreUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.0.0/tools/score-upload/score-upload.nf" params(params)
 include songAnalysisPublish from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-publish.0.1.0.0/tools/song-analysis-publish/song-analysis-publish.nf" params(params)
 
