@@ -19,7 +19,8 @@ process songSubmit {
  
     container "overture/song-client:${params.container_version}"
     
-    tag "${study_id} -- ${payload.baseName}"
+    tag "${study_id}"
+    label "songSubmit"
     
     input:
         val study_id

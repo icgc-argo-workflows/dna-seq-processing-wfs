@@ -15,7 +15,7 @@ process sequencingAlignmentPayloadGen {
 
     container "quay.io/icgc-argo/payload-gen-dna-alignment:payload-gen-dna-alignment.${params.container_version}"
 
-    tag "${seq_experiment_analysis.baseName}"
+    label "sequencingAlignmentPayloadGen"
  
     input:
         path seq_experiment_analysis

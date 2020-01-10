@@ -22,7 +22,7 @@ process scoreDownload {
     // TODO: Update to official container  
     container "lepsalex/song-score-jq:${params.container_version}"
 
-    tag "${analysis.baseName}"
+    label "scoreDownload"
 
     input:
         path analysis

@@ -16,6 +16,8 @@ process extractAnalysisId {
     // TODO: replace with an ICGC-ARGO container
     container "cfmanteiga/alpine-bash-curl-jq:${params.container_version}"
 
+    label "extractAnalysisId"
+
     input:
         path submit_json
 
