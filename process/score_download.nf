@@ -3,7 +3,7 @@ nextflow.preview.dsl=2
 
 // processes resources
 params.cpus = 8
-params.mem = 10240
+params.mem = 19264
 
 // required params w/ default
 params.container_version = 'latest'
