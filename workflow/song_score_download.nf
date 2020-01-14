@@ -9,8 +9,8 @@ params.score_mem = 19264
 params.score_transport_mem = 2
 
 // required params w/ default
-params.song_container_version = '15b6559f' // TODO: Use latest once it's fixed
-params.score_container_version = 'latest'
+params.song_container_version = '4.0.0'
+params.score_container_version = '3.0.0'
 
 // required params, no default
 // --song_url         song url for download process (defaults to main song_url param)

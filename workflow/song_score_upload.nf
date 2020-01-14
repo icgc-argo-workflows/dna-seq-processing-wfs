@@ -11,8 +11,8 @@ params.extract_cpu = 1
 params.extract_mem = 1024
 
 // required params w/ default
-params.song_container_version = '15b6559f' // TODO: Use latest once it's fixed
-params.score_container_version = 'edge' // TODO: Use latest once it's fixed
+params.song_container_version = '4.0.0'
+params.score_container_version = '3.0.0'
 params.extract_container_version = 'latest'
 
 // required params, no default
