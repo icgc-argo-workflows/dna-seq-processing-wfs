@@ -21,6 +21,8 @@ song_params = [
 
 score_params = [
     *:params,
+    'cpu': 8,
+    'mem': 18240,
     'container_version': params.score_container_version
 ]
 
