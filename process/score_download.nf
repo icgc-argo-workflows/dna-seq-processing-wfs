@@ -6,7 +6,7 @@ params.cpus = 8
 params.mem = 19264
 
 // required params w/ default
-params.container_version = 'latest'
+params.container_version = '3.0.1'
 params.transport_mem = 2 // Transport memory is in number of GBs
 
 // required params, no default
@@ -20,13 +20,15 @@ process scoreDownload {
     cpus params.cpus
     memory "${params.mem} MB"
  
-    // TODO: Update to official container  
-    container "lepsalex/song-score-jq:${params.container_version}"
+    container "overture/score:${params.container_version}"
 
     label "scoreDownload"
+    tag "${analysis_id}"
 
     input:
         path analysis
+        val study_id
+        val analysis_id
 
     output:
         tuple path(analysis), path('out/*'), emit: analysis_json_and_files
@@ -40,6 +42,6 @@ process scoreDownload {
     export TRANSPORT_MEMORY=${params.transport_mem}
     
     mkdir out
-    cat ${analysis} | jq -r '.files[].objectId' | while IFS=\$'\\\t' read -r objectId; do score-client download --object-id "\$objectId" --output-dir ./out; done
+    score-client download --analysis-id ${analysis_id} --study-id ${study_id} --output-dir ./out 
     """
 }

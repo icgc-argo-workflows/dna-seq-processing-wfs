@@ -10,7 +10,7 @@ params.score_transport_mem = 2
 
 // required params w/ default
 params.song_container_version = '4.0.0'
-params.score_container_version = '3.0.0'
+params.score_container_version = '3.0.1'
 
 // required params, no default
 // --song_url         song url for download process (defaults to main song_url param)
@@ -42,7 +42,7 @@ workflow songScoreDownload {
 
     main:
         songGetAnalysis(study_id, analysis_id)
-        scoreDownload(songGetAnalysis.out.json)
+        scoreDownload(songGetAnalysis.out.json, study_id, analysis_id)
 
     emit:
         analysis_json = songGetAnalysis.out.json

@@ -6,7 +6,7 @@ params.cpus = 8
 params.mem = 19264
 
 // required params w/ default
-params.container_version = 'latest'
+params.container_version = '3.0.1'
 params.transport_mem = 2 // Transport memory is in number of GBs
 
 // required params, no default
