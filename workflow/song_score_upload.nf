@@ -2,8 +2,13 @@
 nextflow.preview.dsl=2
 
 // processes resources
-params.cpus = 1
-params.mem = 1024
+params.song_cpu = 1
+params.song_mem = 1024
+params.score_cpu = 8
+params.score_mem = 19264
+params.score_transport_mem = 2
+params.extract_cpu = 1
+params.extract_mem = 1024
 
 // required params w/ default
 params.song_container_version = '15b6559f' // TODO: Use latest once it's fixed
@@ -17,18 +22,22 @@ params.extract_container_version = 'latest'
 
 song_params = [
     *:params,
+    'cpu': params.song_cpu,
+    'mem': params.song_mem,
     'container_version': params.song_container_version
 ]
 
 score_params = [
     *:params,
-    'cpu': 8,
-    'mem': 19264,
+    'cpu': params.score_cpu,
+    'mem': params.score_mem,
+    'transport_mem': params.score_transport_mem,
     'container_version': params.score_container_version
 ]
 
 extract_params = [
-    *:params,
+    'cpu': params.extract_cpu,
+    'mem': params.extract_mem,
     'container_version': params.extract_container_version
 ]
 
