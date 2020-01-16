@@ -5,13 +5,15 @@
     "score_url": "https://score.server.url",
     "api_token": "INSERT-TOKEN-HERE",
     "reference_dir": "./reference-dir",
-    "a2_template_path": "./some-dir/a2_template.json",
     "aligned_lane_prefix": "grch38-aligned",
     "aligned_basename": "SOME.NAME",
     "download": {},
     "preprocess": {},
-    "align": {},
+    "align": {
+        "cpus": 32,
+        "mem": 32000
+    },
     "merge": {},
-    "a2_gen_params": {},
+    "sequencing_alignment_payload_gen": {},
     "upload": {}
 }
