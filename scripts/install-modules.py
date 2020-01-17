@@ -52,6 +52,7 @@ def install_modules(remote_module_paths):
     except:
       sys.exit('Error: unable to fetch remote module file at: %s' % url)
 
+    os.makedirs(os.path.dirname(local_path), exist_ok=True)
     open(local_path, 'wb').write(r.content)
 
 
