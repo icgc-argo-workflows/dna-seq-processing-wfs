@@ -23,6 +23,7 @@
  */
 
 nextflow.preview.dsl=2
+
 name = 'dna-seq-alignment'
 
 // params for starting from migrating legacy ICGC data
@@ -46,8 +47,6 @@ params.reads_max_discard_fraction = 0.08
 
 // params for alignment
 params.ref_genome_fa = "tests/reference/tiny-grch38-chr11-530001-537000.fa"
-params.cpus_align = -1  // negative means use default
-params.cpus_mkdup = -1  // negative means use default
 params.upload_ubam = false
 params.markdup = true
 params.lossy = false
@@ -55,8 +54,9 @@ params.aligned_seq_output_format = "bam"
 
 
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.7.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(params)
-include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.2.1/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
-include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.4.1/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.3.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
+include bamMergeSortMarkdup from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
+include getFaiFile from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
 include GetAnalysisAndData as GAD from "./get-analysis-and-data/get-analysis-and-data.nf" params(params)
 
 include SequencingDataSubmission as SDS from "./sequencing-data-submission/main.nf" params(
@@ -71,7 +71,7 @@ include SequencingDataSubmission as SDS from "./sequencing-data-submission/main.
 
 include DnaAlignmentUpload as DAU from "./dna-alignment-upload/dna-alignment-upload.nf" params(
   "wf_name": name, "wf_version": workflow.manifest.version, "song_url": params.song_url,
-  "score_url": params.score_url, "token_file": params.token_file
+  "score_url": params.score_url
 )
 
 process genTokenFile {
@@ -134,13 +134,13 @@ workflow Alignment {
      */
     // BWA alignment for each ubam in scatter
     bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), "grch38-aligned",
-        params.cpus_align, file(params.ref_genome_fa + ".gz"),
+        file(params.ref_genome_fa + ".gz"),
         Channel.fromPath(getBwaSecondaryFiles(params.ref_genome_fa + ".gz"), checkIfExists: true).collect())
 
     // merge aligned lane BAM and mark dups, convert to CRAM if specified
     bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(params.ref_genome_fa),
         Channel.fromPath(getFaiFile(params.ref_genome_fa), checkIfExists: true).collect(),
-        params.cpus_mkdup, 'aligned_seq_basename', params.markdup,
+        'aligned_seq_basename', params.markdup,
         params.aligned_seq_output_format, params.lossy)
 
     // Create SONG entry for final aligned/merged BAM/CRAM and upload to SCORE server

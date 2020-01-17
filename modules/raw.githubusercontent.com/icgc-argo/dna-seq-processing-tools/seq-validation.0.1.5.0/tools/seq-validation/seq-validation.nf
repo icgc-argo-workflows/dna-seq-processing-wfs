@@ -1,4 +1,4 @@
-#!/bin/bash nextflow
+#!/usr/bin/env nextflow
 
 /*
  * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
@@ -25,9 +25,11 @@ nextflow.preview.dsl=2
 
 params.seq_rg_json = "tests/input/seq-exp.bam.metadata.json"
 params.seq_files = "tests/input/test_rg_3.bam"
+params.container_version = '0.1.5.0'
+
 
 process seqValidation {
-  container 'quay.io/icgc-argo/seq-validation:seq-validation.0.1.5.0'
+  container "quay.io/icgc-argo/seq-validation:seq-validation.${params.container_version}"
 
   input:
     path metadata_json

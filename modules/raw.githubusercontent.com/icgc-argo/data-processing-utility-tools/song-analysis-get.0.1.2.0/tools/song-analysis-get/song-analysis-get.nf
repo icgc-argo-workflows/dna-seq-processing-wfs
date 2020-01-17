@@ -18,33 +18,44 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Author: Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.exp_tsv = "tests/input/experiment-fq.tsv"
-params.rg_tsv = "tests/input/read_group-fq.tsv"
-params.file_tsv = "tests/input/file-fq.tsv"
-params.container_version = '0.1.4.0'
+params.analysis_id = ""
+params.study = ""
+params.song_url = ""
+params.token_file = "NO_FILE"
+params.container_version = "0.1.2.0"
 
-
-process metadataValidation {
-  container "quay.io/icgc-argo/metadata-validation:metadata-validation.${params.container_version}"
+process songAnalysisGet {
+  container "quay.io/icgc-argo/song-analysis-get:song-analysis-get.${params.container_version}"
 
   input:
-    path exp_tsv
-    path rg_tsv
-    path file_tsv
+    val analysis_id
+    val study
+    val song_url
+    path token_file
 
   output:
-    path "metadata.json", emit: metadata
+    path "*.analysis.json", emit: song_analysis
 
   script:
+    token_args = token_file.name != "NO_FILE" ? "-t ${token_file}" : ""
     """
-    metadata-validation.py \
-      -e ${exp_tsv} \
-      -r ${rg_tsv} \
-      -f ${file_tsv}
+    song-analysis-get.py -a ${analysis_id} -p ${study} -s ${song_url} ${token_args}
     """
+}
+
+workflow {
+  main:
+    songAnalysisGet(
+      params.analysis_id,
+      params.study,
+      params.song_url,
+      file(params.token_file)
+    )
+  publish:
+    songAnalysisGet.out.song_analysis to: 'outdir', mode: 'copy', overwrite: true
 }
