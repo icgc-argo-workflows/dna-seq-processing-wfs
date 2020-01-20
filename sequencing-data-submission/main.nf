@@ -41,10 +41,10 @@ params.token_file_legacy_data = "NO_FILE"
 params.upload_files = true
 
 include getFilePaths from "./get-file-paths"
-include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.1.0/tools/file-provisioner/file-provisioner.nf" params(params)
+include FileProvisioner as FP from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.1.0/tools/file-provisioner/file-provisioner.nf" params(params)
 include metadataValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.4.0/tools/metadata-validation/metadata-validation.nf" params(params)
 include seqValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.5.0/tools/seq-validation/seq-validation.nf" params(params)
-include SeqExperimentUpload from "../seq-experiment-upload/seq-experiment-upload.nf" params(params)
+include SeqExperimentUpload as SEU from "../seq-experiment-upload/seq-experiment-upload.nf" params(params)
 
 
 workflow SequencingDataSubmission {
@@ -62,21 +62,21 @@ workflow SequencingDataSubmission {
 
     file_paths = getFilePaths.out.file_paths.splitCsv(header:true).map{ row->row.path }
 
-    FileProvisioner(file_paths, file(params.token_file_legacy_data), '', '')
+    FP(file_paths, file(params.token_file_legacy_data), '', '')
 
     // validate sequencing files (FASTQ or BAM)
-    seqValidation(metadataValidation.out.metadata, FileProvisioner.out.file.collect())
+    seqValidation(metadataValidation.out.metadata, FP.out.file.collect())
 
     // create SONG entry for sequencing experiment and upload
-    SeqExperimentUpload(metadataValidation.out.metadata, params.wf_name, params.wf_short_name, params.wf_version,
-      FileProvisioner.out.file.collect(), params.song_url, params.score_url, params.token_file,
+    SEU(metadataValidation.out.metadata, params.wf_name, params.wf_short_name, params.wf_version,
+      FP.out.file.collect(), params.song_url, params.score_url, params.token_file,
       params.upload_files, seqValidation.out[0])
 
   emit: // outputs
     metadata = metadataValidation.out.metadata
-    files_to_submit = FileProvisioner.out.file
-    seq_expriment_payload = SeqExperimentUpload.out.seq_expriment_payload
-    seq_expriment_analysis = SeqExperimentUpload.out.seq_expriment_analysis
+    files_to_submit = FP.out.file
+    seq_expriment_payload = SEU.out.seq_expriment_payload
+    seq_expriment_analysis = SEU.out.seq_expriment_analysis
 }
 
 

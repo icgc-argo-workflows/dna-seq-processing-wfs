@@ -39,7 +39,7 @@ params.token_file = "/home/ubuntu/.access_token"
 params.upload_ubam = false
 
 include payloadGenReadGroupUbam from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-read-group-ubam.0.1.2.0/tools/payload-gen-read-group-ubam/payload-gen-read-group-ubam.nf" params(params)
-include SongPayloadUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.2.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
+include SongPayloadUpload as SPU from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-payload-upload.0.1.2.0/tools/song-payload-upload/song-payload-upload.nf" params(params)
 include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.2.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
 include scoreManifestGen from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-manifest-gen.0.1.1.0/tools/score-manifest-gen/score-manifest-gen.nf" params(params)
 include scoreUpload from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/score-upload.0.1.1.0/tools/score-upload/score-upload.nf" params(params)
@@ -55,16 +55,16 @@ workflow ReadGroupUbamUpload {
   main:
     payloadGenReadGroupUbam(seq_experiment, ubam, params.wf_name, params.wf_short_name, params.wf_version)
 
-    SongPayloadUpload(params.song_url, payloadGenReadGroupUbam.out.payload, params.token_file)
+    SPU(params.song_url, payloadGenReadGroupUbam.out.payload, params.token_file)
 
-    songAnalysisGet(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, params.song_url, params.token_file)
+    songAnalysisGet(SPU.out.analysis_id, SPU.out.study, params.song_url, params.token_file)
 
     if (params.upload_ubam) {
       scoreManifestGen(songAnalysisGet.out.song_analysis, all_files)
 
       scoreUpload(scoreManifestGen.out.manifest_file, all_files, params.token_file, params.song_url, params.score_url)
 
-      songAnalysisPublish(SongPayloadUpload.out.analysis_id, SongPayloadUpload.out.study, scoreUpload.out[0], params.song_url, params.token_file)
+      songAnalysisPublish(SPU.out.analysis_id, SPU.out.study, scoreUpload.out[0], params.song_url, params.token_file)
     }
 
   emit:

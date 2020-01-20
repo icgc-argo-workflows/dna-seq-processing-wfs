@@ -42,18 +42,17 @@ include "../main" params(params)
 
 workflow {
   main:
-    DnaSeqAlignmentWf(
+    Alignment(
       params.seq_expriment_analysis_id,
       params.exp_tsv,
       params.rg_tsv,
       params.file_tsv,
-      params.reads_max_discard_fraction
+      params.reads_max_discard_fraction,
+      params.token_str
     )
 
   publish:
-    DnaSeqAlignmentWf.out.seq_expriment_analysis to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.read_group_ubam to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.read_group_ubam_analysis to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.alignment_files to: "outdir", overwrite: true
-    DnaSeqAlignmentWf.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
+    Alignment.out.seq_expriment_analysis to: "outdir", overwrite: true
+    Alignment.out.alignment_files to: "outdir", overwrite: true
+    Alignment.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
 }
