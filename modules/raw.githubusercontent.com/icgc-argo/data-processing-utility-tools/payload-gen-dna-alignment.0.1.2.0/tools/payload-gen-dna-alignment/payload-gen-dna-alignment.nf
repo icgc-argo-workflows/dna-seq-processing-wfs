@@ -1,4 +1,4 @@
-#!/bin/bash nextflow
+#!/usr/bin/env nextflow
 
 /*
  * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
@@ -31,10 +31,10 @@ params.read_group_ubam_analysis = ""
 params.wf_name = ""
 params.wf_short_name = ""
 params.wf_version = ""
-
+params.container_version = '0.1.2.0'
 
 process payloadGenDnaAlignment {
-  container "quay.io/icgc-argo/payload-gen-dna-alignment:payload-gen-dna-alignment.0.1.2.0"
+  container "quay.io/icgc-argo/payload-gen-dna-alignment:payload-gen-dna-alignment.${params.container_version}"
 
   input:
     path files_to_upload

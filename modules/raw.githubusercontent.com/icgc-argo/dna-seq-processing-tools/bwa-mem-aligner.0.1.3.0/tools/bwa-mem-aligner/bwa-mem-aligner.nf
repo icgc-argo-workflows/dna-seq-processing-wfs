@@ -23,28 +23,39 @@
 
 nextflow.preview.dsl=2
 
-params.exp_tsv = "tests/input/experiment-fq.tsv"
-params.rg_tsv = "tests/input/read_group-fq.tsv"
-params.file_tsv = "tests/input/file-fq.tsv"
-params.container_version = '0.1.4.0'
+params.input_bam = "tests/input/?????_?.lane.bam"
+params.aligned_lane_prefix = 'grch38-aligned'
+params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
+params.container_version = '0.1.3.0'
 
+def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
+  def all_files = []
+  for (ext in ['.fai', '.sa', '.bwt', '.ann', '.amb', '.pac', '.alt']) {
+    all_files.add(main_file + ext)
+  }
+  return all_files
+}
 
-process metadataValidation {
-  container "quay.io/icgc-argo/metadata-validation:metadata-validation.${params.container_version}"
+process bwaMemAligner {
+  container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
 
   input:
-    path exp_tsv
-    path rg_tsv
-    path file_tsv
+    path input_bam
+    val aligned_lane_prefix
+    path ref_genome_gz
+    path ref_genome_gz_secondary_files
 
   output:
-    path "metadata.json", emit: metadata
+    path "${aligned_lane_prefix}.${input_bam.baseName}.bam", emit: aligned_bam
 
   script:
     """
-    metadata-validation.py \
-      -e ${exp_tsv} \
-      -r ${rg_tsv} \
-      -f ${file_tsv}
+    bwa-mem-aligner.py \
+      -i ${input_bam} \
+      -r ${ref_genome_gz} \
+      -o ${aligned_lane_prefix} \
+      -n ${task.cpus}
     """
 }
+
+

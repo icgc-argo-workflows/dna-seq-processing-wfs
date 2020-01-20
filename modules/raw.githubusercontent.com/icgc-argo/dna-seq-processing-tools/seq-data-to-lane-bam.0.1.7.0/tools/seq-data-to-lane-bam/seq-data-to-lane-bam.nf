@@ -1,4 +1,4 @@
-#!/bin/bash nextflow
+#!/usr/bin/env nextflow
 
 /*
  * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
@@ -28,10 +28,11 @@ import groovy.json.JsonSlurper
 params.metadata_json = ""
 params.seq_files = ""
 params.reads_max_discard_fraction = -1
+params.container_version = '0.1.7.0'
 
 
 process seqDataToLaneBam {
-  container 'quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.0.1.7.0'
+  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version}"
 
   input:
     path metadata_json

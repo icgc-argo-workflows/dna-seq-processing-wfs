@@ -41,7 +41,7 @@ params.token_file_legacy_data = "NO_FILE"
 params.upload_files = true
 
 include getFilePaths from "./get-file-paths"
-include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.1/tools/file-provisioner/file-provisioner.nf" params(params)
+include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.1.0/tools/file-provisioner/file-provisioner.nf" params(params)
 include metadataValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/metadata-validation.0.1.4.0/tools/metadata-validation/metadata-validation.nf" params(params)
 include seqValidation from "../modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-validation.0.1.5.0/tools/seq-validation/seq-validation.nf" params(params)
 include SeqExperimentUpload from "../seq-experiment-upload/seq-experiment-upload.nf" params(params)

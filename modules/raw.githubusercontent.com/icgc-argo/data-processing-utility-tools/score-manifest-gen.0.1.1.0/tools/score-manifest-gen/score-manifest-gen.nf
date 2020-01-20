@@ -1,4 +1,4 @@
-#!/bin/bash nextflow
+#!/usr/bin/env nextflow
 
 /*
  * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
@@ -25,9 +25,10 @@ nextflow.preview.dsl=2
 
 params.song_analysis = ""
 params.files = ""
+params.container_version = '0.1.1.0'
 
 process scoreManifestGen {
-  container "quay.io/icgc-argo/score-manifest-gen:score-manifest-gen.0.1.1.0"
+  container "quay.io/icgc-argo/score-manifest-gen:score-manifest-gen.${params.container_version}"
 
   input:
     path song_analysis

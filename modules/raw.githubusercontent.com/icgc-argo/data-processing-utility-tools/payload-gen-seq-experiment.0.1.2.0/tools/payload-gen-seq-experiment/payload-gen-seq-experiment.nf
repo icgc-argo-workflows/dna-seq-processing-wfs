@@ -1,4 +1,4 @@
-#!/bin/bash nextflow
+#!/usr/bin/env nextflow
 
 /*
  * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
@@ -27,9 +27,10 @@ params.user_submit_metadata = ""
 params.wf_name = ""
 params.wf_short_name = ""
 params.wf_version = ""
+params.container_version = '0.1.2.0'
 
 process payloadGenSeqExperiment {
-  container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.0.1.2.0"
+  container "quay.io/icgc-argo/payload-gen-seq-experiment:payload-gen-seq-experiment.${params.container_version}"
 
   input:
     path user_submit_metadata
