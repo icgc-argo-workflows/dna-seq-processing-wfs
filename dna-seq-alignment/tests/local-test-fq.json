@@ -1,5 +1,6 @@
 {
-  "seq_expriment_analysis_id": "a866ae59-acdc-424a-a6ae-59acdc424a7a",
-  "program_id": "TEST-PRO",
+  "seq_expriment_analysis_id": "d0ccd007-a41c-4c23-8cd0-07a41cbc23a3",
+  "program_id": "TEST-PR",
+  "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "token_file": "/home/ubuntu/.access_token"
 }

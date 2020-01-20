@@ -22,14 +22,15 @@
  */
 
 nextflow.preview.dsl=2
+version = '0.1.5.0'
 
 params.seq_rg_json = "tests/input/seq-exp.bam.metadata.json"
 params.seq_files = "tests/input/test_rg_3.bam"
-params.container_version = '0.1.5.0'
+params.container_version = ''
 
 
 process seqValidation {
-  container "quay.io/icgc-argo/seq-validation:seq-validation.${params.container_version}"
+  container "quay.io/icgc-argo/seq-validation:seq-validation.${params.container_version ?: version}"
 
   input:
     path metadata_json

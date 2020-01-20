@@ -23,7 +23,6 @@
  */
 
 nextflow.preview.dsl=2
-
 name = 'dna-seq-alignment'
 
 // params for starting from migrating legacy ICGC data
@@ -46,17 +45,17 @@ params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 params.reads_max_discard_fraction = 0.08
 
 // params for alignment
-params.ref_genome_fa = "tests/reference/tiny-grch38-chr11-530001-537000.fa"
+params.ref_genome_fa = ""
+params.submit_ubam = false
 params.upload_ubam = false
 params.markdup = true
 params.lossy = false
-params.aligned_seq_output_format = "bam"
+params.aligned_seq_output_format = "cram"
 
 
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.7.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(params)
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.3.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
-include bamMergeSortMarkdup from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
-include getFaiFile from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
 include GetAnalysisAndData as GAD from "./get-analysis-and-data/get-analysis-and-data.nf" params(params)
 
 include SequencingDataSubmission as SDS from "./sequencing-data-submission/main.nf" params(
@@ -64,18 +63,17 @@ include SequencingDataSubmission as SDS from "./sequencing-data-submission/main.
   "token_file_legacy_data": params.token_file_legacy_data, "upload_files": false  // download data from legacy data repo to process but not upload to ARGO RDPC score
 )
 
-//include ReadGroupUbamUpload from "./read-group-ubam-upload/read-group-ubam-upload.nf" params(
-//  "wf_name": name, "wf_version": workflow.manifest.version, "song_url": params.song_url,
-//  "score_url": params.score_url, "token_file": params.token_file, "upload_ubam": params.upload_ubam
-//)
+include ReadGroupUbamUpload as RGUU from "./read-group-ubam-upload/read-group-ubam-upload.nf" params(
+  "wf_name": name, "wf_version": workflow.manifest.version, "song_url": params.song_url,
+  "score_url": params.score_url, "token_file": params.token_file, "upload_ubam": params.upload_ubam
+)
 
 include DnaAlignmentUpload as DAU from "./dna-alignment-upload/dna-alignment-upload.nf" params(
   "wf_name": name, "wf_version": workflow.manifest.version, "song_url": params.song_url,
-  "score_url": params.score_url
+  "score_url": params.score_url, "token_file": params.token_file
 )
 
 process genTokenFile {
-
   input:
     val token_str
 
@@ -124,8 +122,10 @@ workflow Alignment {
     seqDataToLaneBam(seq_expriment_analysis, files_to_process.collect(), reads_max_discard_fraction)
 
     // create SONG entry for read group ubam (and upload data if upload_ubam set to true)
-    //ReadGroupUbamUpload(seq_expriment_analysis,
-    //    seqDataToLaneBam.out.lane_bams.flatten(), seqDataToLaneBam.out.lane_bams.collect())
+    if (params.submit_ubam) {
+      RGUU(seq_expriment_analysis,
+        seqDataToLaneBam.out.lane_bams.flatten(), seqDataToLaneBam.out.lane_bams.collect())
+    }
 
     /*
      * Section 3:
@@ -144,16 +144,11 @@ workflow Alignment {
         params.aligned_seq_output_format, params.lossy)
 
     // Create SONG entry for final aligned/merged BAM/CRAM and upload to SCORE server
-    DAU(
-        bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
-        seq_expriment_analysis,
-        genTokenFile.out.token_file
-        )
+    DAU(bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
+        seq_expriment_analysis, genTokenFile.out.token_file)
 
   emit: // outputs
     seq_expriment_analysis = seq_expriment_analysis
-    //read_group_ubam = seqDataToLaneBam.out.lane_bams
-    //read_group_ubam_analysis = ReadGroupUbamUpload.out.read_group_ubam_analysis
     alignment_files = DAU.out.alignment_files
     dna_seq_alignment_analysis = DAU.out.dna_seq_alignment_analysis
 }
@@ -172,8 +167,6 @@ workflow {
 
   publish:
     Alignment.out.seq_expriment_analysis to: "outdir", overwrite: true
-    //Alignment.out.read_group_ubam to: "outdir", overwrite: true
-    //Alignment.out.read_group_ubam_analysis to: "outdir", overwrite: true
     Alignment.out.alignment_files to: "outdir", overwrite: true
     Alignment.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
 }

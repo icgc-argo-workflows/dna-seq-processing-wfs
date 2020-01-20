@@ -22,15 +22,16 @@
  */
 
 nextflow.preview.dsl=2
+version = '0.1.4.0'
 
 params.exp_tsv = "tests/input/experiment-fq.tsv"
 params.rg_tsv = "tests/input/read_group-fq.tsv"
 params.file_tsv = "tests/input/file-fq.tsv"
-params.container_version = '0.1.4.0'
+params.container_version = ''
 
 
 process metadataValidation {
-  container "quay.io/icgc-argo/metadata-validation:metadata-validation.${params.container_version}"
+  container "quay.io/icgc-argo/metadata-validation:metadata-validation.${params.container_version ?: version}"
 
   input:
     path exp_tsv

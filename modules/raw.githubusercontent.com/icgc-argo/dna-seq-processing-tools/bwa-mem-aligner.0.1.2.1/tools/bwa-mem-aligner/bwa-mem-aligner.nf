@@ -18,37 +18,40 @@
  */
 
 /*
- * Author: Linda Xiang <linda.xiang@oicr.on.ca>
- *         Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * author Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 
-params.sequencing_experiment_analysis = ""
-params.file_to_upload = ""
-params.wf_short_name = ""
-params.wf_version = ""
+params.input_bam = "tests/input/?????_?.lane.bam"
+params.cpus = -1  // optional input param
+params.aligned_lane_prefix = 'grch38-aligned'
+params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
 
+def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
+  def all_files = []
+  for (ext in ['.fai', '.sa', '.bwt', '.ann', '.amb', '.pac', '.alt']) {
+    all_files.add(main_file + ext)
+  }
+  return all_files
+}
 
-process payloadGenReadGroupUbam {
-  container "quay.io/icgc-argo/payload-gen-read-group-ubam:payload-gen-read-group-ubam.0.1.0.0"
+process bwaMemAligner {
+  container 'quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.0.1.2'
 
   input:
-    path sequencing_experiment_analysis
-    path file_to_upload
-    val wf_short_name
-    val wf_version
+    path input_bam
+    val aligned_lane_prefix
+    val cpus
+    path ref_genome_gz
+    path ref_genome_gz_secondary_files
 
   output:
-    path "*.json", emit: payload
+    path "${aligned_lane_prefix}.${input_bam.baseName}.bam", emit: aligned_bam
 
   script:
-    args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
-    args_wf_version = wf_version.length() > 0 ? "-v ${wf_version}" : ""
+    arg_cpus = cpus > 0 ? "-n ${cpus}" : ""
     """
-    payload-gen-read-group-ubam.py \
-      -a ${sequencing_experiment_analysis} \
-      -f ${file_to_upload} \
-      ${args_wf_short_name} ${args_wf_version}
+    bwa-mem-aligner.py -i ${input_bam} -r ${ref_genome_gz} -o ${aligned_lane_prefix} ${arg_cpus}
     """
 }

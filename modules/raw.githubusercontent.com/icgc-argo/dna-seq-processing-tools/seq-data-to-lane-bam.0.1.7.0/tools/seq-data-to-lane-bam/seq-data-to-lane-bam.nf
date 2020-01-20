@@ -22,17 +22,16 @@
  */
 
 nextflow.preview.dsl=2
-
-import groovy.json.JsonSlurper
+version = '0.1.7.0'
 
 params.metadata_json = ""
 params.seq_files = ""
 params.reads_max_discard_fraction = -1
-params.container_version = '0.1.7.0'
+params.container_version = ''
 
 
 process seqDataToLaneBam {
-  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version}"
+  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
 
   input:
     path metadata_json

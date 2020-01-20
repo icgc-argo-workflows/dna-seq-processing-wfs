@@ -22,11 +22,12 @@
  */
 
 nextflow.preview.dsl=2
+version = '0.1.3.0'
 
 params.input_bam = "tests/input/?????_?.lane.bam"
 params.aligned_lane_prefix = 'grch38-aligned'
 params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
-params.container_version = '0.1.3.0'
+params.container_version = ""
 
 def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
   def all_files = []
@@ -37,7 +38,7 @@ def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary fil
 }
 
 process bwaMemAligner {
-  container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version}"
+  container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version ?: version}"
 
   input:
     path input_bam
@@ -57,5 +58,3 @@ process bwaMemAligner {
       -n ${task.cpus}
     """
 }
-
-

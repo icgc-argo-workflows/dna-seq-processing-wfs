@@ -1,2 +1,2 @@
 type	program_id	submitter_sequencing_experiment_id	submitter_donor_id	gender	submitter_specimen_id	tumour_normal_designation	specimen_type	specimen_tissue_source	submitter_sample_id	sample_type	submitter_matched_normal_sample_id	sequencing_center	platform	platform_model	library_strategy	sequencing_date	read_group_count
-sequencing_experiment	TEST-PRO	TEST_EXP	HCC1143	Female	HCC1143_FASTQ_INPUT	Tumour	Cell line - derived from tumour	Blood derived	HCC1143_FASTQ_INPUT	DNA	HCC1143_BAM_INPUT	EXT	ILLUMINA	HiSeq 2000	WGS	2014-12-12	3
+sequencing_experiment	TEST-PR	TEST_EXP1	HCC1143	Female	HCC1143_BAM_INPUT	Normal	Normal	Blood derived	HCC1143_BAM_INPUT	Total DNA		EXT	ILLUMINA	HiSeq 2000	WGS	2014-12-12	3
