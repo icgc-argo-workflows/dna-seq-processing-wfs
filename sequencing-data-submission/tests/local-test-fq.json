@@ -2,5 +2,7 @@
     "exp_tsv": "data/experiment-fq.v2.tsv",
     "rg_tsv": "data/read_group-fq.v2.tsv",
     "file_tsv": "data/file-fq.v2.tsv",
-    "token_file": "/home/ubuntu/.access_token"
+    "token_file": "/home/ubuntu/.access_token",
+    "song_url": "https://song.qa.argo.cancercollaboratory.org",
+    "score_url": "https://score.qa.argo.cancercollaboratory.org"
 }

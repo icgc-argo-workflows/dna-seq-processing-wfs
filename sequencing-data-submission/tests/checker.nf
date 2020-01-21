@@ -39,6 +39,10 @@ workflow {
       file(params.file_tsv)
     )
 
+  println "Project : $workflow.projectDir"
+  println "Config file: $workflow.configFiles"
+  println "Cmd line: $workflow.commandLine"
+
   publish:
     SequencingDataSubmission.out.metadata to: "outdir", overwrite: true
     SequencingDataSubmission.out.files_to_submit to: "outdir", overwrite: true

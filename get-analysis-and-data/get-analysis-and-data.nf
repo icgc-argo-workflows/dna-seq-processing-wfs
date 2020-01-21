@@ -21,7 +21,6 @@
  * Authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-import groovy.json.JsonSlurper
 
 nextflow.preview.dsl=2
 name = 'get-analysis-and-data'
@@ -33,47 +32,54 @@ params.song_url = "https://song.qa.argo.cancercollaboratory.org"
 params.score_url = "https://score.qa.argo.cancercollaboratory.org"
 
 
-include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.1.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
-include FileProvisioner from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.0.0/tools/file-provisioner/file-provisioner.nf" params(params)
+include songAnalysisGet from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/song-analysis-get.0.1.2.0/tools/song-analysis-get/song-analysis-get.nf" params(params)
+include FileProvisioner as FP from "../modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/file-provisioner.0.1.1.0/tools/file-provisioner/file-provisioner.nf" params(params)
 
 
-process getFilePathsFromAnalysis {
+process getFilePaths {
+
+  container "cfmanteiga/alpine-bash-curl-jq:latest"
+
   input:
-    val song_analysis_str
+    path song_analysis
 
   output:
-    val file_paths, emit: file_paths
+    path "file_paths.csv", emit: file_paths
 
-  exec:
-    //String fileContents = song_analysis.getText('UTF-8')
-    analysis = new JsonSlurper().parseText(song_analysis_str)
-    analysis_id = analysis.analysisId
+  script:
+    """
+    analysis_id=(\$(cat ${song_analysis} | jq --raw-output '.analysisId'))
 
-    file_paths = []
-    for (file in analysis.file) {
-      file_paths.add("score://collab/${analysis_id}/${file.objectId}")
-    }
+    echo "path" >> file_paths.csv
+
+    for o in \$(cat ${song_analysis} | jq --raw-output '.files[].objectId'); do
+      echo "score://collab/\$analysis_id/\$o" >> file_paths.csv
+    done
+    """
 }
 
 
 workflow GetAnalysisAndData {
   get:
     analysis_id
+    token_file
 
   main:
-    songAnalysisGet(analysis_id, params.program_id, params.song_url, params.token_file)
-    getFilePathsFromAnalysis(songAnalysisGet.out.song_analysis.getText('UTF-8'))
-    FileProvisioner(getFilePathsFromAnalysis.out.file_paths.flatten(), file(params.token_file), params.song_url, params.score_url)
+    songAnalysisGet(analysis_id, params.program_id, params.song_url, token_file)
+    getFilePaths(songAnalysisGet.out.song_analysis)
+    file_paths = getFilePaths.out.file_paths.splitCsv(header:true).map{ row->row.path }
+    FP(file_paths.flatten(), token_file, params.song_url, params.score_url)
 
   emit:
     analysis = songAnalysisGet.out.song_analysis
-    files = FileProvisioner.out.file
+    files = FP.out.file
 }
 
 workflow {
   main:
     GetAnalysisAndData(
-      params.analysis_id
+      params.analysis_id,
+      file(params.token_file)
     )
 
   publish:
