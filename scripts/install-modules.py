@@ -7,7 +7,7 @@ import re
 import requests
 
 PIPELINE_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LOCAL_MODULE_DIR = os.path.join(PIPELINE_ROOT_DIR, 'modules')
+IMPORTED_MODULE_DIR = os.path.join(PIPELINE_ROOT_DIR, 'modules')
 
 # path pattern can be modified to cover for other remote repo servers, such as gitlab and bitbucket
 NF_REMOTE_INCLUDE_PATTERN = r'^\s*include[\s\w]+?(\'|")\.{1,2}\/modules\/(raw.githubusercontent.com\/\S+)(\'|")'
@@ -29,9 +29,9 @@ def collect_included_remote_modules(nf_file):
 
 def search_for_remote_module_includes():
   remote_module_paths = set([])
-  for root, _, files in os.walk(PIPELINE_ROOT_DIR):
-    if root.startswith(LOCAL_MODULE_DIR) or os.path.basename(root).startswith('.'):
-      continue
+  for root, dirs, files in os.walk(PIPELINE_ROOT_DIR):
+    files = [f for f in files if not f[0] == '.']
+    dirs[:] = [d for d in dirs if not (d[0] == '.' or (root == PIPELINE_ROOT_DIR and d == 'modules'))]
 
     for file in files:
       if not os.path.basename(file).endswith('.nf'):
@@ -45,7 +45,7 @@ def search_for_remote_module_includes():
 def install_modules(remote_module_paths):
   for p in remote_module_paths:
     url = 'https://%s' % p
-    local_path = os.path.join(LOCAL_MODULE_DIR, p)
+    local_path = os.path.join(IMPORTED_MODULE_DIR, p)
 
     try:
       r = requests.get(url, allow_redirects=True)
@@ -54,11 +54,20 @@ def install_modules(remote_module_paths):
 
     os.makedirs(os.path.dirname(local_path), exist_ok=True)
     open(local_path, 'wb').write(r.content)
+    print("Installed: %s" % local_path)
 
 
 def clean_up_unused_modules(remote_module_paths):
-  # to be implemented
-  pass
+  for root, _, files in os.walk(IMPORTED_MODULE_DIR):
+    for file in files:
+      if not os.path.basename(file).endswith('.nf'):
+        continue
+
+      relative_root = root.replace(IMPORTED_MODULE_DIR + os.sep, '')
+
+      if os.path.join(relative_root, file) not in remote_module_paths:
+        os.remove(os.path.join(root, file))
+        print('Deleted unused module file: %s' % os.path.join(root, file))
 
 
 def main():
