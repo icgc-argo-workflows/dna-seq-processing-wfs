@@ -57,7 +57,7 @@ process scoreDownload {
 
 
 process localFilePathToFile {
-  container "quay.io/icgc-argo/file-provisioner:file-provisioner.0.1.0.1"
+  container "quay.io/icgc-argo/file-provisioner:file-provisioner.${params.container_version}"
 
   input:
     val file_path
