@@ -44,13 +44,14 @@ Download Parameters (object):
     score_transport_mem                 TODO: Description
 }
 
-Preprocess Parameters (object):
----preprocess
+SeqToLaneBam Parameters (object):
+---seqtolanebam
 {
     container_version                   docker container version, defaults set below
-    reads_max_discard_fraction          preprocess reads max discard function
-    cpus                                cpus for preprocess container, defaults to cpus parameter
-    mem                                 memory (MB) for preprocess container, defaults to memory parameter
+    reads_max_discard_fraction          SeqToLaneBam reads max discard function
+    cpus                                cpus for SeqToLaneBam container, defaults to cpus parameter
+    mem                                 memory (MB) for SeqToLaneBam container, defaults to memory parameter
+    tool                                splitting tool, choices=['picard', 'samtools'], default="samtools"
 }
 
 Align Parameters (object):
@@ -103,10 +104,10 @@ download_params = [
     *:(params.download ?: [:])
 ]
 
-preprocess_params = [
-    'container_version': '0.1.7.0',
-    'reads_max_discard_fraction': 0.08,
-    *:(params.preprocess ?: [:])
+seqtolanebam_params = [
+    'container_version': '0.2.0.0',
+    'reads_max_discard_fraction': -1,
+    *:(params.seqtolanebam ?: [:])
 ]
 
 align_params = [
@@ -138,7 +139,7 @@ upload_params = [
 
 // Include all modules and pass params
 include songScoreDownload as download from './data-processing/workflow/song_score_download' params(download_params)                                                                             
-include preprocess from './dna-seq-processing/workflow/preprocess' params(preprocess_params)
+include seqDataToLaneBam from './dna-seq-processing/process/seq_data_to_lane_bam' params(seqtolanebam_params)
 include bwaMemAligner as align from './dna-seq-processing/process/bwa_mem_aligner' params(align_params)
 include merge from './dna-seq-processing/workflow/merge' params(merge_params)
 include sequencingAlignmentPayloadGen from './data-processing/process/sequencing_alignment_payload_gen' params(sequencing_alignment_payload_gen_params) 
@@ -150,11 +151,11 @@ workflow {
     // download files and metadata from song/score (A1)
     download(params.study_id, params.analysis_id)
 
-    // run files through preprocess step (split to lanes)
-    preprocess(download.out.analysis_json_and_files)
+    // run file through seqDataToLaneBam (split to lanes)
+    seqDataToLaneBam(download.out.analysis_json_and_files)
 
     // align each lane independently
-    align(preprocess.out.unaligned_lanes, ref_gnome, params.aligned_lane_prefix)
+    align(seqDataToLaneBam.out.unaligned_lanes.flatten(), ref_gnome, params.aligned_lane_prefix)
 
     // collect aligned lanes for merge and markdup
     merge(align.out.aligned_file.collect(), ref_gnome, params.aligned_basename)

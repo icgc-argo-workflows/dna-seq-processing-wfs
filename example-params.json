@@ -8,7 +8,7 @@
     "aligned_lane_prefix": "grch38-aligned",
     "aligned_basename": "SOME.NAME",
     "download": {},
-    "preprocess": {},
+    "seqtolanebam": {},
     "align": {
         "cpus": 32,
         "mem": 32000
