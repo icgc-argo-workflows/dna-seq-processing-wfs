@@ -37,9 +37,9 @@ Download Parameters (object):
     song_url                            song url for download process (defaults to main song_url param)
     score_url                           score url for download process (defaults to main score_url param)
     api_token                           song/score API token for download process (defaults to main api_token param)
-    song_cpu
+    song_cpus
     song_mem
-    score_cpu
+    score_cpus
     score_mem
     score_transport_mem                 TODO: Description
 }
@@ -81,12 +81,12 @@ Upload Parameters (object):
     song_url                            song url for upload process (defaults to main song_url param)
     score_url                           score url for upload process (defaults to main score_url param)
     api_token                           song/score API token for upload process (defaults to main api_token param)
-    song_cpu
+    song_cpus
     song_mem
-    score_cpu
+    score_cpus
     score_mem
     score_transport_mem                 TODO: Description
-    extract_cpu
+    extract_cpus
     extract_mem
 }
 
