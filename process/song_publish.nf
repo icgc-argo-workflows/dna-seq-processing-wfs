@@ -3,7 +3,7 @@ nextflow.preview.dsl=2
 
 // processes resources
 params.cpus = 1
-params.mem = 1024
+params.mem = 1
 
 // required params w/ default
 params.container_version = '4.0.0'
@@ -15,7 +15,7 @@ params.container_version = '4.0.0'
 process songPublish {
     
     cpus params.cpus
-    memory "${params.mem} MB"
+    memory "${params.mem} GB"
  
     container "overture/song-client:${params.container_version}"
 

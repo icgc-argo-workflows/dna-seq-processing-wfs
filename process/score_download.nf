@@ -3,7 +3,7 @@ nextflow.preview.dsl=2
 
 // processes resources
 params.cpus = 8
-params.mem = 19264
+params.mem = 20
 
 // required params w/ default
 params.container_version = '3.0.1'
@@ -18,7 +18,7 @@ params.transport_mem = 2 // Transport memory is in number of GBs
 process scoreDownload {
     
     cpus params.cpus
-    memory "${params.mem} MB"
+    memory "${params.mem} GB"
  
     container "overture/score:${params.container_version}"
 

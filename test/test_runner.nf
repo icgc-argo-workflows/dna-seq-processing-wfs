@@ -3,7 +3,7 @@ nextflow.preview.dsl=2
 
 // processes resources
 params.cpus = 1
-params.mem = 1024
+params.mem = 1
 
 // test data
 test_data_dir = "data"

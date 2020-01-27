@@ -2,10 +2,10 @@
 nextflow.preview.dsl=2
 
 // processes resources
-params.song_cpu = 1
-params.song_mem = 1024
-params.score_cpu = 8
-params.score_mem = 19264
+params.song_cpus = 1
+params.song_mem = 1
+params.score_cpus = 8
+params.score_mem = 20
 params.score_transport_mem = 2
 
 // required params w/ default
@@ -19,14 +19,14 @@ params.score_container_version = '3.0.1'
 
 song_params = [
     *:params,
-    'cpu': params.song_cpu,
+    'cpus': params.song_cpus,
     'mem': params.song_mem,
     'container_version': params.song_container_version
 ]
 
 score_params = [
     *:params,
-    'cpu': params.score_cpu,
+    'cpus': params.score_cpus,
     'mem': params.score_mem,
     'transport_mem': params.score_transport_mem,
     'container_version': params.score_container_version
