@@ -21,7 +21,8 @@ song_params = [
     *:params,
     'cpus': params.song_cpus,
     'mem': params.song_mem,
-    'container_version': params.song_container_version
+    'container_version': params.song_container_version,
+    'api_token': params.song_api_token ?: params.api_token
 ]
 
 score_params = [
@@ -29,7 +30,8 @@ score_params = [
     'cpus': params.score_cpus,
     'mem': params.score_mem,
     'transport_mem': params.score_transport_mem,
-    'container_version': params.score_container_version
+    'container_version': params.score_container_version,
+    'api_token': params.score_api_token ?: params.api_token
 ]
 
 // import modules
