@@ -53,7 +53,7 @@ params.lossy = false
 params.aligned_seq_output_format = "cram"
 
 
-include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.1.7.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.2.0.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(params)
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.3.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
 include GetAnalysisAndData as GAD from "./get-analysis-and-data/get-analysis-and-data.nf" params(params)
@@ -119,7 +119,7 @@ workflow Alignment {
      * preprocessing input data into read group level unmapped BAM (uBAM)
      */
     // prepare unmapped BAM
-    seqDataToLaneBam(seq_expriment_analysis, files_to_process.collect(), reads_max_discard_fraction)
+    seqDataToLaneBam(seq_expriment_analysis, files_to_process.collect())
 
     // create SONG entry for read group ubam (and upload data if upload_ubam set to true)
     if (params.submit_ubam) {
