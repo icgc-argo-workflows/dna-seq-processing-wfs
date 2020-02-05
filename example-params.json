@@ -1,0 +1,19 @@
+{
+    "study_id": "SOME-STUDY",
+    "analysis_id": "SOME-A1-ID",
+    "song_url": "https://song.server.url",
+    "score_url": "https://score.server.url",
+    "api_token": "INSERT-TOKEN-HERE",
+    "reference_dir": "./reference-dir",
+    "aligned_lane_prefix": "grch38-aligned",
+    "aligned_basename": "SOME.NAME",
+    "download": {},
+    "seqtolanebam": {},
+    "align": {
+        "cpus": 32,
+        "mem": 64
+    },
+    "merge": {},
+    "sequencing_alignment_payload_gen": {},
+    "upload": {}
+}
