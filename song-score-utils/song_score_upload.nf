@@ -4,14 +4,16 @@ nextflow.preview.dsl=2
 // processes resources
 params.song_cpus = 1
 params.song_mem = 1
+params.song_api_token = ''
 params.score_cpus = 8
 params.score_mem = 20
 params.score_transport_mem = 2
+params.score_api_token = ''
 params.extract_cpus = 1
 params.extract_mem = 1
 
 // required params w/ default
-params.song_container_version = '4.0.0'
+params.song_container_version = '4.0.1'
 params.score_container_version = '3.0.1'
 params.extract_container_version = 'latest'
 
@@ -44,11 +46,12 @@ extract_params = [
 ]
 
 // import modules
-include songSubmit from '../process/song_submit' params(song_params)
-include songManifest from '../process/song_manifest' params(song_params)
-include scoreUpload from '../process/score_upload' params(score_params)
-include songPublish from '../process/song_publish' params(song_params)
-include extractAnalysisId from '../process/extract_analysis_id' params(extract_params)
+// TODO: change import for song_manifest after it's updated (use non-root docker image) on the other git repo
+include songSubmit from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_submit' params(song_params)
+include songManifest from '../nextflow-data-processing-utility-tools/process/song_manifest' params(song_params)
+include scoreUpload from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/score_upload' params(score_params)
+include songPublish from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_publish' params(song_params)
+include extractAnalysisId from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/extract_analysis_id' params(extract_params)
 
 workflow songScoreUpload {
     get: study_id

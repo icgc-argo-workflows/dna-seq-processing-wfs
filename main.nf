@@ -1,14 +1,19 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
+name = 'dna-seq-alignment'
+
 
 /*
 ========================================================================================
                         ICGC-ARGO DNA SEQ ALIGNMENT
 ========================================================================================
 #### Homepage / Documentation
-https://github.com/icgc-argo/nextflow-dna-seq-alignment
+https://github.com/icgc-argo/dna-seq-processing-wfs
 #### Authors
 Alexandru Lepsa @lepsalex <alepsa@oicr.on.ca>
+Linda Xiang @lindaxiang <linda.xiang@oicr.on.ca>
+Junjun Zhang @junjun-zhang <junjun.zhang@oicr.on.ca>
+
 ----------------------------------------------------------------------------------------
 
 #### WORK IN PROGRESS
@@ -21,7 +26,6 @@ Required Parameters (no default):
 --song_url                              song server URL
 --score_url                             score server URL
 --api_token                             song/score API Token
---aligned_basename                      final aligned filename
 
 General Parameters (with defaults):
 --reference_dir                         reference genome directory
@@ -129,7 +133,7 @@ sequencing_alignment_payload_gen_params = [
 ]
 
 upload_params = [
-    'song_container_version': '4.0.0',
+    'song_container_version': '4.0.1',
     'score_container_version': '3.0.1',
     'song_url': params.song_url,
     'score_url': params.score_url,
@@ -138,31 +142,35 @@ upload_params = [
 ]
 
 // Include all modules and pass params
-include songScoreDownload as download from './data-processing/workflow/song_score_download' params(download_params)                                                                             
-include seqDataToLaneBam from './dna-seq-processing/process/seq_data_to_lane_bam' params(seqtolanebam_params)
-include bwaMemAligner as align from './dna-seq-processing/process/bwa_mem_aligner' params(align_params)
-include merge from './dna-seq-processing/workflow/merge' params(merge_params)
-include sequencingAlignmentPayloadGen from './data-processing/process/sequencing_alignment_payload_gen' params(sequencing_alignment_payload_gen_params) 
-include songScoreUpload as upload from './data-processing/workflow/song_score_upload' params(upload_params)
+include songScoreDownload as download from './song-score-utils/song_score_download' params(download_params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.2.0.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.3.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(params)
+include "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.2.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(params)
+include songScoreUpload as upload from './song-score-utils/song_score_upload' params(upload_params)
 
-ref_gnome = Channel.fromPath("${params.reference_dir}/*").collect()
 
 workflow {
-    // download files and metadata from song/score (A1)
+    // download files and metadata from song/score (analysis type: sequencing_experiment)
     download(params.study_id, params.analysis_id)
 
-    // run file through seqDataToLaneBam (split to lanes)
-    seqDataToLaneBam(download.out.analysis_json_and_files)
+    // preprocessing input data (BAM or FASTQ) into read group level unmapped BAM (uBAM)
+    seqDataToLaneBam(download.out.song_analysis, download.out.files.collect())
 
-    // align each lane independently
-    align(seqDataToLaneBam.out.unaligned_lanes.flatten(), ref_gnome, params.aligned_lane_prefix)
+    // use scatter to run BWA alignment for each ubam in parallel
+    bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), "grch38-aligned",
+        file(params.ref_genome_fa + ".gz"),
+        Channel.fromPath(getBwaSecondaryFiles(params.ref_genome_fa + ".gz"), checkIfExists: true).collect())
 
-    // collect aligned lanes for merge and markdup
-    merge(align.out.aligned_file.collect(), ref_gnome, params.aligned_basename)
+    // collect aligned lane bams for merge and markdup
+    bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(params.ref_genome_fa),
+        Channel.fromPath(getFaiFile(params.ref_genome_fa), checkIfExists: true).collect(),
+        'aligned_seq_basename', true, 'cram', false)
 
-    // generate A2 payload
-    sequencingAlignmentPayloadGen(download.out.analysis_json, merge.out.merged_aligned_file.collect())
+    // generate payload for aligned seq (analysis type: sequencing_alignment)
+    payloadGenDnaAlignment(bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
+        download.out.song_analysis, [], name, '', workflow.manifest.version)
 
-    // upload aligned file and metadata to song/score (A2)
-    upload(params.study_id, sequencingAlignmentPayloadGen.out.analysis, sequencingAlignmentPayloadGen.out.upload_files.collect())
+    // upload aligned file and metadata to song/score
+    upload(params.study_id, payloadGenDnaAlignment.out.payload, payloadGenDnaAlignment.out.alignment_files.collect())
 }

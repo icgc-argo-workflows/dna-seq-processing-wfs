@@ -67,3 +67,14 @@ docs/_build
 .nextflow*
 work
 outdir
+.nextflow*
+.idea*
+results
+my-results
+input
+reference
+out
+reports
+remote_reports
+params.json
+params.*.json

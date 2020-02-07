@@ -31,7 +31,8 @@ process scoreDownload {
         val analysis_id
 
     output:
-        tuple path(analysis), path('out/*'), emit: analysis_json_and_files
+        path analysis, emit: song_analysis
+        path 'out/*', emit: files
 
 
     """

@@ -4,9 +4,11 @@ nextflow.preview.dsl=2
 // processes resources
 params.song_cpus = 1
 params.song_mem = 1
+params.song_api_token = ''
 params.score_cpus = 8
 params.score_mem = 20
 params.score_transport_mem = 2
+params.score_api_token = ''
 
 // required params w/ default
 params.song_container_version = '4.0.0'
@@ -35,8 +37,9 @@ score_params = [
 ]
 
 // import modules
-include songGetAnalysis from '../process/song_get_analysis' params(song_params)
-include scoreDownload from '../process/score_download' params(score_params)
+// TODO: change import for score_download after it's updated on the other git repo
+include songGetAnalysis from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_get_analysis.nf' params(song_params)
+include scoreDownload from '../nextflow-data-processing-utility-tools/process/score_download' params(score_params)
 
 workflow songScoreDownload {
     get: study_id
@@ -47,6 +50,6 @@ workflow songScoreDownload {
         scoreDownload(songGetAnalysis.out.json, study_id, analysis_id)
 
     emit:
-        analysis_json = songGetAnalysis.out.json
-        analysis_json_and_files = scoreDownload.out.analysis_json_and_files
+        song_analysis = songGetAnalysis.out.json
+        files = scoreDownload.out.files
 }
