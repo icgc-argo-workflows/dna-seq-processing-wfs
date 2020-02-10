@@ -1,6 +1,48 @@
 {
-  "seq_expriment_analysis_id": "d0ccd007-a41c-4c23-8cd0-07a41cbc23a3",
-  "program_id": "TEST-PR",
+  "study_id": "TEST-PR",
+  "analysis_id": "d0ccd007-a41c-4c23-8cd0-07a41cbc23a3",
+  "song_url": "https://song.qa.argo.cancercollaboratory.org",
+  "score_url": "https://score.qa.argo.cancercollaboratory.org",
+  "api_token": "INSERT-TOKEN-HERE",
   "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
-  "token_file": "/home/ubuntu/.access_token"
+  "cpus": 1,
+  "mem": 1,
+  "download": {
+    "song_url": "https://song.qa.argo.cancercollaboratory.org",
+    "song_cpus": 2,
+    "song_mem": 2,
+    "score_url": "https://score.qa.argo.cancercollaboratory.org",
+    "score_cpus": 3,
+    "score_mem": 8
+  },
+  "seqDataToLaneBam": {
+    "cpus": 2,
+    "mem": 4
+  },
+  "bwaMemAligner": {
+    "cpus": 2,
+    "mem": 4
+  },
+  "bamMergeSortMarkdup": {
+    "cpus": 2,
+    "mem": 4
+  },
+  "payloadGenDnaAlignment": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "readGroupUBamQC": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "alignedSeqQC": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "upload": {
+    "song_cpus": 2,
+    "song_mem": 2,
+    "score_cpus": 3,
+    "score_mem": 8
+  }
 }

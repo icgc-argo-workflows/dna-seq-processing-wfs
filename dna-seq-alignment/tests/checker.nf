@@ -23,36 +23,20 @@
 
 nextflow.preview.dsl=2
 
-// params for starting from migrating legacy ICGC data
-params.exp_tsv = ""
-params.rg_tsv = ""
-params.file_tsv = ""
-params.token_file_legacy_data = "/home/ubuntu/access_token"
-
-// params for starting from submitted ARGO data
-params.seq_expriment_analysis_id = ""
-params.program_id = ""
-params.token_file = "/home/ubuntu/.access_token"
-
-// params for preprocessing: bam to ubam
-params.reads_max_discard_fraction = 0.08
+params.study_id = ""
+params.analysis_id = ""
+params.ref_genome_fa = ""
 
 include "../main" params(params)
 
-
 workflow {
   main:
-    Alignment(
-      params.seq_expriment_analysis_id,
-      params.exp_tsv,
-      params.rg_tsv,
-      params.file_tsv,
-      params.reads_max_discard_fraction,
-      params.token_str
+    DnaAlignment(
+        params.study_id,
+        params.analysis_id,
+        params.ref_genome_fa
     )
 
   publish:
-    Alignment.out.seq_expriment_analysis to: "outdir", overwrite: true
-    Alignment.out.alignment_files to: "outdir", overwrite: true
-    Alignment.out.dna_seq_alignment_analysis to: "outdir", overwrite: true
+    DnaAlignment.out.alignment_files to: "outdir", overwrite: true
 }
