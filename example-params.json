@@ -1,19 +1,48 @@
 {
-    "study_id": "SOME-STUDY",
-    "analysis_id": "SOME-A1-ID",
-    "song_url": "https://song.server.url",
-    "score_url": "https://score.server.url",
-    "api_token": "INSERT-TOKEN-HERE",
-    "reference_dir": "./reference-dir",
-    "aligned_lane_prefix": "grch38-aligned",
-    "aligned_basename": "SOME.NAME",
-    "download": {},
-    "seqtolanebam": {},
-    "align": {
-        "cpus": 32,
-        "mem": 64
-    },
-    "merge": {},
-    "sequencing_alignment_payload_gen": {},
-    "upload": {}
+  "study_id": "TEST-PR",
+  "analysis_id": "ef1317a5-38ff-4c39-9317-a538ff5c39e1",
+  "song_url": "https://song.qa.argo.cancercollaboratory.org",
+  "score_url": "https://score.qa.argo.cancercollaboratory.org",
+  "api_token": "INSERT-TOKEN-HERE",
+  "ref_genome_fa": "tests/reference/tiny-grch38-chr11-530001-537000.fa",
+  "cpus": 1,
+  "mem": 1,
+  "download": {
+    "song_url": "https://song.qa.argo.cancercollaboratory.org",
+    "song_cpus": 2,
+    "song_mem": 2,
+    "score_url": "https://score.qa.argo.cancercollaboratory.org",
+    "score_cpus": 3,
+    "score_mem": 8
+  },
+  "seqDataToLaneBam": {
+    "cpus": 24,
+    "mem": 50
+  },
+  "bwaMemAligner": {
+    "cpus": 24,
+    "mem": 66
+  },
+  "bamMergeSortMarkdup": {
+    "cpus": 14,
+    "mem": 74
+  },
+  "payloadGenDnaAlignment": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "readGroupUBamQC": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "alignedSeqQC": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "upload": {
+    "song_cpus": 2,
+    "song_mem": 2,
+    "score_cpus": 3,
+    "score_mem": 8
+  }
 }
