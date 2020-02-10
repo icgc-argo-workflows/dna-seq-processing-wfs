@@ -189,8 +189,8 @@ workflow DnaAlignment {
             download.out.song_analysis, [], name, '', workflow.manifest.version)
 
         // perform aligned seq QC
-        alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(),
-            file(ref_genome_fa + ".gz"), true, "", "")
+        alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(ref_genome_fa + ".gz"),
+            Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + ".gz"), checkIfExists: true).collect())
 
         // upload aligned file and metadata to song/score
         upload(params.study_id, payloadGenDnaAlignment.out.payload, payloadGenDnaAlignment.out.alignment_files.collect())
