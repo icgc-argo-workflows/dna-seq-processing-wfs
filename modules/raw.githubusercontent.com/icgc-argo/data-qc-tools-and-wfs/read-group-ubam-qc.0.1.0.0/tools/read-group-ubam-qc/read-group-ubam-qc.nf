@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 /*
- * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
+ * Copyright (c) 2019-2020, Ontario Institute for Cancer Research (OICR).
  *                                                                                                               
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -22,31 +22,27 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.7.0'
+version = '0.1.0.0'
 
-params.metadata_json = ""
-params.seq_files = ""
-params.reads_max_discard_fraction = -1
+params.ubam = "tests/data/C0HVY_2.lane.bam"
 params.container_version = ''
+params.cpus = 1
+params.mem = 1.5  // in GB
 
 
-process seqDataToLaneBam {
-  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
+process readGroupUBamQC {
+  container "quay.io/icgc-argo/read-group-ubam-qc:read-group-ubam-qc.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
 
   input:
-    path metadata_json
-    path seq_files
-    val reads_max_discard_fraction
+    path ubam
 
   output:
-    path "*.lane.bam", emit: lane_bams
+    path "*.ubam_qc_metrics.tgz", emit: ubam_qc_metrics
 
   script:
-    reads_max_discard_fraction = reads_max_discard_fraction < 0 ? 0.05: reads_max_discard_fraction
     """
-    seq-data-to-lane-bam.py \
-      -p ${metadata_json} \
-      -d ${seq_files} \
-      -m ${reads_max_discard_fraction}
+    read-group-ubam-qc.py -b ${ubam} -m ${(int) (params.mem * 1000)}
     """
 }
