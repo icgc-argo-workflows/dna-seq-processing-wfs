@@ -181,7 +181,7 @@ workflow DnaAlignment {
             download.out.song_analysis)
 
         // perform ubam QC
-        readGroupUBamQC(bwaMemAligner.out.aligned_bam.flatten())
+        readGroupUBamQC(seqDataToLaneBam.out.lane_bams.flatten())
 
         // collect aligned lane bams for merge and markdup
         bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome_gz),
