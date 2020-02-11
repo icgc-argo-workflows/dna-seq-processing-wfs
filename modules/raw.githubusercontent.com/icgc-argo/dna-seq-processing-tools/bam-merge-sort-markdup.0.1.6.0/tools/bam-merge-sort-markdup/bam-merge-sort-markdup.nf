@@ -22,39 +22,52 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.3.0'
+version = '0.1.6.0'
 
-params.input_bam = "tests/input/?????_?.lane.bam"
-params.aligned_lane_prefix = 'grch38-aligned'
-params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
+params.aligned_lane_bams = ""
+params.ref_genome_gz = ""
+params.aligned_basename = "grch38-aligned.merged"
+params.markdup = true
+params.output_format = "cram"
+params.lossy = false
 params.container_version = ""
+params.cpus = 1
+params.mem = 2  // in GB
 
-def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
+
+def getMdupSecondaryFile(main_file){  //this is kind of like CWL's secondary files
   def all_files = []
-  for (ext in ['.fai', '.sa', '.bwt', '.ann', '.amb', '.pac', '.alt']) {
+  for (ext in ['.fai', '.gzi']) {
     all_files.add(main_file + ext)
   }
   return all_files
 }
 
-process bwaMemAligner {
-  container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version ?: version}"
+process bamMergeSortMarkdup {
+  container "quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
+
 
   input:
-    path input_bam
-    val aligned_lane_prefix
+    path aligned_lane_bams
     path ref_genome_gz
-    path ref_genome_gz_secondary_files
+    path ref_genome_gz_secondary_file
 
   output:
-    path "${aligned_lane_prefix}.${input_bam.baseName}.bam", emit: aligned_bam
+    path "${params.aligned_basename}.{bam,cram}", emit: merged_seq
+    path "${params.aligned_basename}.{bam.bai,cram.crai}", emit: merged_seq_idx
+    path "${params.aligned_basename}.duplicates-metrics.tgz", emit: duplicates_metrics
 
   script:
+    arg_markdup = params.markdup ? "-d" : ""
+    arg_lossy = params.lossy ? "-l" : ""
     """
-    bwa-mem-aligner.py \
-      -i ${input_bam} \
+    bam-merge-sort-markdup.py \
+      -i ${aligned_lane_bams} \
       -r ${ref_genome_gz} \
-      -o ${aligned_lane_prefix} \
-      -n ${task.cpus}
+      -n ${params.cpus} \
+      -b ${params.aligned_basename} ${arg_markdup} \
+      -o ${params.output_format} ${arg_lossy}
     """
 }

@@ -4,7 +4,7 @@
   "song_url": "https://song.qa.argo.cancercollaboratory.org",
   "score_url": "https://score.qa.argo.cancercollaboratory.org",
   "api_token": "INSERT-TOKEN-HERE",
-  "ref_genome_fa": "tests/reference/tiny-grch38-chr11-530001-537000.fa",
+  "ref_genome_gz": "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz",
   "cpus": 1,
   "mem": 1,
   "download": {
@@ -16,16 +16,16 @@
     "score_mem": 8
   },
   "seqDataToLaneBam": {
-    "cpus": 24,
-    "mem": 50
+    "cpus": 2,
+    "mem": 2
   },
   "bwaMemAligner": {
-    "cpus": 24,
-    "mem": 66
+    "cpus": 2,
+    "mem": 2
   },
   "bamMergeSortMarkdup": {
-    "cpus": 14,
-    "mem": 74
+    "cpus": 2,
+    "mem": 2
   },
   "payloadGenDnaAlignment": {
     "cpus": 2,

@@ -18,7 +18,7 @@ Junjun Zhang @junjun-zhang <junjun.zhang@oicr.on.ca>
 Required Parameters (no default):
 --study_id                              song study ID
 --analysis_id                           song sequencing_experiment analysis ID
---ref_genome_fa                         reference genome '.fa' file, other secondary files are expected to be under the same folder
+--ref_genome_gz                         reference genome '.fa.gz' file, other secondary files are expected to be under the same folder
 --song_url                              song server URL
 --score_url                             score server URL
 --api_token                             song/score API Token
@@ -98,6 +98,10 @@ Upload Parameters (object):
 
 */
 
+params.study_id = ""
+params.analysis_id = ""
+params.ref_genome_gz = ""
+
 params.cpus = 1
 params.mem = 1
 
@@ -120,7 +124,7 @@ bwaMemAligner_params = [
 ]
 
 bamMergeSortMarkdup_params = [
-    'output_format': ['cram'],
+    'output_format': 'cram',
     'markdup': true,
     'lossy': false,
     *:(params.bamMergeSortMarkdup ?: [:])
@@ -149,10 +153,10 @@ upload_params = [
 
 // Include all modules and pass params
 include songScoreDownload as download from './song-score-utils/song_score_download' params(download_params)
-include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.2.0.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(seqDataToLaneBam_params)
-include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.3.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.2.1.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(seqDataToLaneBam_params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.5.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.0.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
-include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.5.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
+include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.6.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.0.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
 include songScoreUpload as upload from './song-score-utils/song_score_upload' params(upload_params)
@@ -162,7 +166,7 @@ workflow DnaAlignment {
     get:
         study_id
         analysis_id
-        ref_genome_fa
+        ref_genome_gz
 
     main:
         // download files and metadata from song/score (analysis type: sequencing_experiment)
@@ -172,25 +176,24 @@ workflow DnaAlignment {
         seqDataToLaneBam(download.out.song_analysis, download.out.files.collect())
 
         // use scatter to run BWA alignment for each ubam in parallel
-        bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), "grch38-aligned",
-            file(ref_genome_fa + ".gz"),
-            Channel.fromPath(getBwaSecondaryFiles(ref_genome_fa + ".gz"), checkIfExists: true).collect())
+        bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), file(ref_genome_gz),
+            Channel.fromPath(getBwaSecondaryFiles(ref_genome_gz), checkIfExists: true).collect(),
+            download.out.song_analysis)
 
         // perform ubam QC
         readGroupUBamQC(bwaMemAligner.out.aligned_bam.flatten())
 
         // collect aligned lane bams for merge and markdup
-        bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome_fa),
-            Channel.fromPath(getFaiFile(ref_genome_fa), checkIfExists: true).collect(),
-            'aligned_seq_basename', true, 'cram', false)
+        bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome_gz),
+            Channel.fromPath(getMdupSecondaryFile(ref_genome_gz), checkIfExists: true).collect())
 
         // generate payload for aligned seq (analysis type: sequencing_alignment)
         payloadGenDnaAlignment(bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
             download.out.song_analysis, [], name, '', workflow.manifest.version)
 
         // perform aligned seq QC
-        alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(ref_genome_fa + ".gz"),
-            Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + ".gz"), checkIfExists: true).collect())
+        alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(ref_genome_gz),
+            Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_gz), checkIfExists: true).collect())
 
         // upload aligned file and metadata to song/score
         upload(params.study_id, payloadGenDnaAlignment.out.payload, payloadGenDnaAlignment.out.alignment_files.collect())
@@ -205,7 +208,7 @@ workflow {
     DnaAlignment(
         params.study_id,
         params.analysis_id,
-        params.ref_genome_fa
+        params.ref_genome_gz
     )
 
     publish:
