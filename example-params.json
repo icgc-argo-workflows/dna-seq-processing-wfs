@@ -39,6 +39,10 @@
     "cpus": 2,
     "mem": 2
   },
+  "payloadGenDnaSeqQc": {
+    "cpus": 1,
+    "mem": 1
+  },
   "uploadAlignment": {
     "song_cpus": 2,
     "song_mem": 2,
