@@ -39,6 +39,10 @@
     "cpus": 2,
     "mem": 2
   },
+  "gatkCollectOxogMetrics": {
+    "cpus": 2,
+    "mem": 2
+  },
   "payloadGenDnaSeqQc": {
     "cpus": 1,
     "mem": 1

@@ -146,7 +146,7 @@ payloadGenDnaSeqQc_params = [
 ]
 
 uploadAlignment_params = [
-    'song_container_version': '4.0.1',
+    'song_container_version': '4.0.0',
     'score_container_version': '3.0.1',
     'song_url': params.song_url,
     'score_url': params.score_url,
@@ -155,7 +155,7 @@ uploadAlignment_params = [
 ]
 
 uploadQc_params = [
-    'song_container_version': '4.0.1',
+    'song_container_version': '4.0.0',
     'score_container_version': '3.0.1',
     'song_url': params.song_url,
     'score_url': params.score_url,
