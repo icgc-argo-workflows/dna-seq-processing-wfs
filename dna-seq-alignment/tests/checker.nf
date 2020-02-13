@@ -25,7 +25,7 @@ nextflow.preview.dsl=2
 
 params.study_id = ""
 params.analysis_id = ""
-params.ref_genome_gz = ""
+params.ref_genome_fa = ""
 
 include "../main" params(params)
 
@@ -34,7 +34,7 @@ workflow {
     DnaAlignment(
         params.study_id,
         params.analysis_id,
-        params.ref_genome_gz
+        params.ref_genome_fa
     )
 
   publish:

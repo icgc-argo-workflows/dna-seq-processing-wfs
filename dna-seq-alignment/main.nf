@@ -17,7 +17,7 @@ Junjun Zhang @junjun-zhang <junjun.zhang@oicr.on.ca>
 Required Parameters (no default):
 --study_id                              song study ID
 --analysis_id                           song sequencing_experiment analysis ID
---ref_genome_gz                         reference genome '.fa.gz' file, other secondary files are expected to be under the same folder
+--ref_genome_fa                         reference genome '.fa' file, other secondary files are expected to be under the same folder
 --song_url                              song server URL
 --score_url                             score server URL
 --api_token                             song/score API Token
@@ -99,7 +99,7 @@ Upload Parameters (object):
 
 params.study_id = ""
 params.analysis_id = ""
-params.ref_genome_gz = ""
+params.ref_genome_fa = ""
 
 params.cpus = 1
 params.mem = 1
@@ -163,6 +163,10 @@ uploadQc_params = [
     *:(params.uploadQc ?: [:])
 ]
 
+gatkCollectOxogMetrics_params = [
+    *:(params.gatkCollectOxogMetrics ?: [:])
+]
+
 
 // Include all modules and pass params
 include songScoreDownload as download from './song-score-utils/song_score_download' params(download_params)
@@ -173,6 +177,7 @@ include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/
 include "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.0.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.1.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
+include "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include songScoreUpload as uploadAlignment from './song-score-utils/song_score_upload' params(uploadAlignment_params)
 include songScoreUpload as uploadQc from './song-score-utils/song_score_upload' params(uploadQc_params)
 
@@ -181,7 +186,7 @@ workflow DnaAlignment {
     get:
         study_id
         analysis_id
-        ref_genome_gz
+        ref_genome_fa
 
     main:
         // download files and metadata from song/score (analysis type: sequencing_experiment)
@@ -191,16 +196,16 @@ workflow DnaAlignment {
         seqDataToLaneBam(download.out.song_analysis, download.out.files.collect())
 
         // use scatter to run BWA alignment for each ubam in parallel
-        bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), file(ref_genome_gz),
-            Channel.fromPath(getBwaSecondaryFiles(ref_genome_gz), checkIfExists: true).collect(),
+        bwaMemAligner(seqDataToLaneBam.out.lane_bams.flatten(), file(ref_genome_fa + '.gz'),
+            Channel.fromPath(getBwaSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect(),
             download.out.song_analysis)
 
         // perform ubam QC
         readGroupUBamQC(seqDataToLaneBam.out.lane_bams.flatten())
 
         // collect aligned lane bams for merge and markdup
-        bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome_gz),
-            Channel.fromPath(getMdupSecondaryFile(ref_genome_gz), checkIfExists: true).collect())
+        bamMergeSortMarkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome_fa + '.gz'),
+            Channel.fromPath(getMdupSecondaryFile(ref_genome_fa + '.gz'), checkIfExists: true).collect())
 
         // generate payload for aligned seq (analysis type: sequencing_alignment)
         payloadGenDnaAlignment(bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
@@ -210,12 +215,19 @@ workflow DnaAlignment {
         uploadAlignment(params.study_id, payloadGenDnaAlignment.out.payload, payloadGenDnaAlignment.out.alignment_files.collect())
 
         // perform aligned seq QC
-        alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(ref_genome_gz),
-            Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_gz), checkIfExists: true).collect())
+        alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(ref_genome_fa + '.gz'),
+            Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect())
+
+        // perform gatkCollectOxogMetrics
+        gatkCollectOxogMetrics(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(params.ref_genome_fa),
+            Channel.fromPath(getOxogSecondaryFiles(params.ref_genome_fa), checkIfExists: true).collect())
 
         // prepare song payload for qc metrics
         payloadGenDnaSeqQc(download.out.song_analysis,
-            alignedSeqQC.out.metrics.concat(bamMergeSortMarkdup.out.duplicates_metrics, readGroupUBamQC.out.ubam_qc_metrics).collect(),
+            alignedSeqQC.out.metrics.concat(
+                bamMergeSortMarkdup.out.duplicates_metrics,
+                gatkCollectOxogMetrics.out.oxog_metrics,
+                readGroupUBamQC.out.ubam_qc_metrics).collect(),
             workflow.manifest.name, workflow.manifest.version)
 
         // upload aligned file and metadata to song/score
@@ -231,7 +243,7 @@ workflow {
     DnaAlignment(
         params.study_id,
         params.analysis_id,
-        params.ref_genome_gz
+        params.ref_genome_fa
     )
 
     publish:

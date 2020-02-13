@@ -4,7 +4,7 @@
   "song_url": "https://song.qa.argo.cancercollaboratory.org",
   "score_url": "https://score.qa.argo.cancercollaboratory.org",
   "api_token": "INSERT-TOKEN-HERE",
-  "ref_genome_gz": "reference/tiny-grch38-chr11-530001-537000.fa.gz",
+  "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 1,
   "mem": 1,
   "download": {
