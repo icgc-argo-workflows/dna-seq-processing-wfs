@@ -1,6 +1,5 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl=2
-name = 'dna-seq-alignment'
 
 
 /*
@@ -142,14 +141,28 @@ alignedSeqQC_params = [
     *:(params.alignedSeqQC ?: [:])
 ]
 
-upload_params = [
+payloadGenDnaSeqQc_params = [
+    *:(params.payloadGenDnaSeqQc ?: [:])
+]
+
+uploadAlignment_params = [
     'song_container_version': '4.0.1',
     'score_container_version': '3.0.1',
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
-    *:(params.upload ?: [:])
+    *:(params.uploadAlignment ?: [:])
 ]
+
+uploadQc_params = [
+    'song_container_version': '4.0.1',
+    'score_container_version': '3.0.1',
+    'song_url': params.song_url,
+    'score_url': params.score_url,
+    'api_token': params.api_token,
+    *:(params.uploadQc ?: [:])
+]
+
 
 // Include all modules and pass params
 include songScoreDownload as download from './song-score-utils/song_score_download' params(download_params)
@@ -159,7 +172,9 @@ include "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/rea
 include "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.6.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.0.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
 include "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
-include songScoreUpload as upload from './song-score-utils/song_score_upload' params(upload_params)
+include "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.1.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
+include songScoreUpload as uploadAlignment from './song-score-utils/song_score_upload' params(uploadAlignment_params)
+include songScoreUpload as uploadQc from './song-score-utils/song_score_upload' params(uploadQc_params)
 
 
 workflow DnaAlignment {
@@ -189,17 +204,25 @@ workflow DnaAlignment {
 
         // generate payload for aligned seq (analysis type: sequencing_alignment)
         payloadGenDnaAlignment(bamMergeSortMarkdup.out.merged_seq.concat(bamMergeSortMarkdup.out.merged_seq_idx).collect(),
-            download.out.song_analysis, [], name, '', workflow.manifest.version)
+            download.out.song_analysis, [], workflow.manifest.name, '', workflow.manifest.version)
+
+        // upload aligned file and metadata to song/score
+        uploadAlignment(params.study_id, payloadGenDnaAlignment.out.payload, payloadGenDnaAlignment.out.alignment_files.collect())
 
         // perform aligned seq QC
         alignedSeqQC(payloadGenDnaAlignment.out.alignment_files.flatten().first(), file(ref_genome_gz),
             Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_gz), checkIfExists: true).collect())
 
+        // prepare song payload for qc metrics
+        payloadGenDnaSeqQc(download.out.song_analysis,
+            alignedSeqQC.out.metrics.concat(bamMergeSortMarkdup.out.duplicates_metrics, readGroupUBamQC.out.ubam_qc_metrics).collect(),
+            workflow.manifest.name, workflow.manifest.version)
+
         // upload aligned file and metadata to song/score
-        upload(params.study_id, payloadGenDnaAlignment.out.payload, payloadGenDnaAlignment.out.alignment_files.collect())
+        uploadQc(params.study_id, payloadGenDnaSeqQc.out.payload, payloadGenDnaSeqQc.out.qc_files.collect())
 
     emit:
-        analysis_id = upload.out.analysis_id
+        analysis_id = uploadAlignment.out.analysis_id
         alignment_files = payloadGenDnaAlignment.out.alignment_files
 }
 
