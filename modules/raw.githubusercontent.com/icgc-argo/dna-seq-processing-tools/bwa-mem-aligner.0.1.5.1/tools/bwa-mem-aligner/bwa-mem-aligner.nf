@@ -46,6 +46,8 @@ process bwaMemAligner {
   cpus params.cpus
   memory "${params.mem} GB"
 
+  tag "${input_bam.size()}"
+
   input:
     path input_bam
     path ref_genome_gz

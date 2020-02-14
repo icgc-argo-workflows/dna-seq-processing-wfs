@@ -31,7 +31,7 @@ process scoreDownload {
         val analysis_id
 
     output:
-        path analysis, emit: song_analysis
+        path analysis, emit: analysis_json
         path 'out/*', emit: files
 
 

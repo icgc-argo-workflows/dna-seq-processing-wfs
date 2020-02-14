@@ -13,7 +13,7 @@ params.extract_cpus = 1
 params.extract_mem = 1
 
 // required params w/ default
-params.song_container_version = '4.0.1'
+params.song_container_version = '4.0.0'
 params.score_container_version = '3.0.1'
 params.extract_container_version = 'latest'
 
@@ -48,7 +48,7 @@ extract_params = [
 // import modules
 // TODO: change import for song_manifest after it's updated (use non-root docker image) on the other git repo
 include songSubmit from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_submit' params(song_params)
-include songManifest from '../nextflow-data-processing-utility-tools/process/song_manifest' params(song_params)
+include songManifest from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_manifest' params(song_params)
 include scoreUpload from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/score_upload' params(score_params)
 include songPublish from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_publish' params(song_params)
 include extractAnalysisId from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/extract_analysis_id' params(extract_params)
