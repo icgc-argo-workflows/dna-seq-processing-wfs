@@ -29,7 +29,7 @@ params.token_file = "NO_FILE"
 params.song_url = ""
 params.score_url = ""
 params.transport_mem = 2
-params.container_version = '0.1.1.0'
+params.container_version = '0.1.1.1'
 
 process scoreDownload {
   container "quay.io/icgc-argo/file-provisioner:file-provisioner.${params.container_version}"
@@ -78,7 +78,7 @@ process localFilePathToFile {
 
 
 workflow FileProvisioner {
-  get:
+  take:
     file_path
     token_file
     song_url

@@ -54,9 +54,9 @@ include songPublish from '../modules/raw.githubusercontent.com/icgc-argo/nextflo
 include extractAnalysisId from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/extract_analysis_id' params(extract_params)
 
 workflow songScoreUpload {
-    get: study_id
-    get: payload
-    get: upload
+    take: study_id
+          payload
+          upload
 
     main:
         // Create new analysis

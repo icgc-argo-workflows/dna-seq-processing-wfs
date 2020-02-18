@@ -26,7 +26,7 @@ nextflow.preview.dsl=2
 params.song_url = ""
 params.song_payload = ""
 params.token_file = ""
-params.container_version = '0.1.2.0'
+params.container_version = '0.1.2.1'
 
 process getStudyAndAnalysisId {
 
@@ -57,7 +57,7 @@ process songPayloadUploadPr {
 }
 
 workflow SongPayloadUpload{
-  get:
+  take:
     song_url
     song_payload
     token_file

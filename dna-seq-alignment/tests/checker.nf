@@ -27,7 +27,7 @@ params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
 
-include "../main" params(params)
+include DnaAlignment from "../main" params(params)
 
 workflow {
   main:

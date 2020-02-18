@@ -28,7 +28,7 @@ params.rg_tsv = ""
 params.file_tsv = ""
 params.token_file = "/home/ubuntu/.access_token"
 
-include "../main" params(params)
+include SequencingDataSubmission from "../main" params(params)
 
 
 workflow {
@@ -38,10 +38,6 @@ workflow {
       file(params.rg_tsv),
       file(params.file_tsv)
     )
-
-  println "Project : $workflow.projectDir"
-  println "Config file: $workflow.configFiles"
-  println "Cmd line: $workflow.commandLine"
 
   publish:
     SequencingDataSubmission.out.metadata to: "outdir", overwrite: true
