@@ -22,17 +22,21 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.2.0.0'
+version = '0.2.1.0'
 
 params.metadata_json = ""
 params.seq_files = ""
-params.reads_max_discard_fraction = -1
-params.container_version = ''
-params.tool = ""
+params.reads_max_discard_fraction = 0.05
+params.container_version = ""
+params.tool = "samtools"
+params.cpus = 1
+params.mem = 2  // in GB
 
 
 process seqDataToLaneBam {
   container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
 
   input:
     path metadata_json
@@ -42,14 +46,13 @@ process seqDataToLaneBam {
     path "*.lane.bam", emit: lane_bams
 
   script:
-    reads_max_discard_fraction = params.reads_max_discard_fraction < 0 ? 0.05: params.reads_max_discard_fraction
-    arg_tool = params.tool != "" ? "-t ${params.tool}" : ""
     """
     seq-data-to-lane-bam.py \
       -p ${metadata_json} \
-      -d ${seq_files} \
-      -m ${reads_max_discard_fraction} \
-      -n ${task.cpus} \
-      ${arg_tool}
+      -s ${seq_files} \
+      -d ${params.reads_max_discard_fraction} \
+      -n ${params.cpus} \
+      -m ${(int) (params.mem * 1000)} \
+      -t ${params.tool}
     """
 }

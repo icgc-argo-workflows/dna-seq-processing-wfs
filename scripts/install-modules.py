@@ -13,7 +13,7 @@ IMPORTED_MODULE_DIR = os.path.join(PIPELINE_ROOT_DIR, 'modules')
 NF_REMOTE_INCLUDE_PATTERN = r'^\s*include[\s\w]+?(\'|")\.{1,2}\/modules\/(raw.githubusercontent.com\/\S+)(\'|")'
 
 
-def collect_included_remote_modules(nf_file):
+def extract_remote_module_path_from_include_statements(nf_file):
   remote_module_paths = set([])
   with open(nf_file, 'r') as f:
     for l in f:
@@ -27,17 +27,20 @@ def collect_included_remote_modules(nf_file):
   return remote_module_paths
 
 
-def search_for_remote_module_includes():
+def collect_remote_module_paths():
   remote_module_paths = set([])
   for root, dirs, files in os.walk(PIPELINE_ROOT_DIR):
+    # skip file starts with '.'
     files = [f for f in files if not f[0] == '.']
+
+    # skip folder starts with '.' and local installation of nf modules
     dirs[:] = [d for d in dirs if not (d[0] == '.' or (root == PIPELINE_ROOT_DIR and d == 'modules'))]
 
     for file in files:
       if not os.path.basename(file).endswith('.nf'):
         continue
 
-      remote_module_paths = remote_module_paths | collect_included_remote_modules(os.path.join(root, file))
+      remote_module_paths = remote_module_paths | extract_remote_module_path_from_include_statements(os.path.join(root, file))
 
   return remote_module_paths
 
@@ -77,7 +80,7 @@ def main():
 
   args = parser.parse_args()
 
-  remote_module_paths = search_for_remote_module_includes()
+  remote_module_paths = collect_remote_module_paths()
 
   install_modules(remote_module_paths)
 

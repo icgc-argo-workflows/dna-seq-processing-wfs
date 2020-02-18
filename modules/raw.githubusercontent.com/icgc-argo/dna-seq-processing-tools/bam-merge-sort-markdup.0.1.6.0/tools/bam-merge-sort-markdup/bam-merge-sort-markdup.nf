@@ -22,46 +22,52 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.5.0'
+version = '0.1.6.0'
 
-params.aligned_lane_bams = "tests/input/grch38-aligned.*.lane.bam"
-params.ref_genome = "tests/reference/tiny-grch38-chr11-530001-537000.fa"
-params.aligned_basename = "HCC1143.3.20190726.wgs.grch38"
+params.aligned_lane_bams = ""
+params.ref_genome_gz = ""
+params.aligned_basename = "grch38-aligned.merged"
 params.markdup = true
-params.output_format = 'cram'
+params.output_format = "cram"
 params.lossy = false
-params.container_version = ''
+params.container_version = ""
+params.cpus = 1
+params.mem = 2  // in GB
 
-def getFaiFile(main_file){  //this is kind of like CWL's secondary files
-  return main_file + '.fai'
+
+def getMdupSecondaryFile(main_file){  //this is kind of like CWL's secondary files
+  def all_files = []
+  for (ext in ['.fai', '.gzi']) {
+    all_files.add(main_file + ext)
+  }
+  return all_files
 }
 
 process bamMergeSortMarkdup {
   container "quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
+
 
   input:
     path aligned_lane_bams
-    path ref_genome
-    path ref_genome_fai
-    val aligned_basename
-    val markdup
-    val output_format
-    val lossy
+    path ref_genome_gz
+    path ref_genome_gz_secondary_file
 
   output:
-    path "${aligned_basename}*.{bam,cram}", emit: merged_seq
-    path "${aligned_basename}*.{bam.bai,cram.crai}", emit: merged_seq_idx
-    path "${aligned_basename}.duplicates-metrics.txt", emit: duplicates_metrics
+    path "${params.aligned_basename}.{bam,cram}", emit: merged_seq
+    path "${params.aligned_basename}.{bam.bai,cram.crai}", emit: merged_seq_idx
+    path "${params.aligned_basename}.duplicates-metrics.tgz", emit: duplicates_metrics
 
   script:
-    arg_markdup = markdup ? "-d" : ""
-    arg_lossy = lossy ? "-l" : ""
+    arg_markdup = params.markdup ? "-d" : ""
+    arg_lossy = params.lossy ? "-l" : ""
     """
     bam-merge-sort-markdup.py \
       -i ${aligned_lane_bams} \
-      -r ${ref_genome} \
-      -n ${task.cpus} \
-      -b ${aligned_basename} ${arg_markdup} \
-      -o ${output_format} ${arg_lossy}
+      -r ${ref_genome_gz} \
+      -n ${params.cpus} \
+      -b ${params.aligned_basename} ${arg_markdup} \
+      -o ${params.output_format} ${arg_lossy}
     """
 }

@@ -1,6 +1,6 @@
 {
   "study_id": "TEST-PR",
-  "analysis_id": "ef1317a5-38ff-4c39-9317-a538ff5c39e1",
+  "analysis_id": "2a686e1f-345f-48b4-a86e-1f345f48b4bd",
   "song_url": "https://song.qa.argo.cancercollaboratory.org",
   "score_url": "https://score.qa.argo.cancercollaboratory.org",
   "api_token": "INSERT-TOKEN-HERE",
@@ -16,16 +16,16 @@
     "score_mem": 8
   },
   "seqDataToLaneBam": {
-    "cpus": 24,
-    "mem": 50
+    "cpus": 2,
+    "mem": 2
   },
   "bwaMemAligner": {
-    "cpus": 24,
-    "mem": 66
+    "cpus": 2,
+    "mem": 2
   },
   "bamMergeSortMarkdup": {
-    "cpus": 14,
-    "mem": 74
+    "cpus": 2,
+    "mem": 2
   },
   "payloadGenDnaAlignment": {
     "cpus": 2,
@@ -39,10 +39,24 @@
     "cpus": 2,
     "mem": 2
   },
-  "upload": {
+  "gatkCollectOxogMetrics": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "payloadGenDnaSeqQc": {
+    "cpus": 1,
+    "mem": 1
+  },
+  "uploadAlignment": {
     "song_cpus": 2,
     "song_mem": 2,
     "score_cpus": 3,
     "score_mem": 8
+  },
+  "uploadQc": {
+    "song_cpus": 1,
+    "song_mem": 1,
+    "score_cpus": 1,
+    "score_mem": 1
   }
 }

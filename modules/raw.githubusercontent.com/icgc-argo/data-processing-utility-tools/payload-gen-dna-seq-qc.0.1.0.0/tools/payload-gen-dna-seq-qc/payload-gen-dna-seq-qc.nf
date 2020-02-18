@@ -18,43 +18,44 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Authors:
+ *   Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
-version = '0.1.3.0'
+version = '0.1.0.0'
 
-params.input_bam = "tests/input/?????_?.lane.bam"
-params.aligned_lane_prefix = 'grch38-aligned'
-params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
+params.seq_experiment_analysis = ""
+params.qc_files = []
+params.wf_name = ""
+params.wf_version = ""
 params.container_version = ""
+params.cpus = 1
+params.mem = 1  // GB
 
-def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
-  def all_files = []
-  for (ext in ['.fai', '.sa', '.bwt', '.ann', '.amb', '.pac', '.alt']) {
-    all_files.add(main_file + ext)
-  }
-  return all_files
-}
 
-process bwaMemAligner {
-  container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version ?: version}"
+process payloadGenDnaSeqQc {
+  container "quay.io/icgc-argo/payload-gen-dna-seq-qc:payload-gen-dna-seq-qc.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
 
   input:
-    path input_bam
-    val aligned_lane_prefix
-    path ref_genome_gz
-    path ref_genome_gz_secondary_files
+    path seq_experiment_analysis
+    path qc_files
+    val wf_name
+    val wf_version
 
   output:
-    path "${aligned_lane_prefix}.${input_bam.baseName}.bam", emit: aligned_bam
+    path "*.dna_seq_qc.payload.json", emit: payload
+    path "out/*.tgz", emit: qc_files
 
   script:
     """
-    bwa-mem-aligner.py \
-      -i ${input_bam} \
-      -r ${ref_genome_gz} \
-      -o ${aligned_lane_prefix} \
-      -n ${task.cpus}
+    payload-gen-dna-seq-qc.py \
+      -a ${seq_experiment_analysis} \
+      -f ${qc_files} \
+      -w ${wf_name} \
+      -r ${workflow.runName} \
+      -v ${wf_version}
     """
 }
