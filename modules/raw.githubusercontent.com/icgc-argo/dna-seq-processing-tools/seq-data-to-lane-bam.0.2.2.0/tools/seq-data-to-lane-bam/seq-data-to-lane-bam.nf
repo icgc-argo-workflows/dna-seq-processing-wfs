@@ -22,52 +22,37 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.6.0'
+version = '0.2.2.0'
 
-params.aligned_lane_bams = ""
-params.ref_genome_gz = ""
-params.aligned_basename = "grch38-aligned.merged"
-params.markdup = true
-params.output_format = "cram"
-params.lossy = false
+params.metadata_json = ""
+params.seq_files = ""
+params.reads_max_discard_fraction = 0.05
 params.container_version = ""
+params.tool = "samtools"
 params.cpus = 1
 params.mem = 2  // in GB
 
 
-def getMdupSecondaryFile(main_file){  //this is kind of like CWL's secondary files
-  def all_files = []
-  for (ext in ['.fai', '.gzi']) {
-    all_files.add(main_file + ext)
-  }
-  return all_files
-}
-
-process bamMergeSortMarkdup {
-  container "quay.io/icgc-argo/bam-merge-sort-markdup:bam-merge-sort-markdup.${params.container_version ?: version}"
+process seqDataToLaneBam {
+  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
 
-
   input:
-    path aligned_lane_bams
-    path ref_genome_gz
-    path ref_genome_gz_secondary_file
+    path metadata_json
+    path seq_files
 
   output:
-    path "${params.aligned_basename}.{bam,cram}", emit: merged_seq
-    path "${params.aligned_basename}.{bam.bai,cram.crai}", emit: merged_seq_idx
-    path "${params.aligned_basename}.duplicates-metrics.tgz", emit: duplicates_metrics
+    path "*.lane.bam", emit: lane_bams
 
   script:
-    arg_markdup = params.markdup ? "-d" : ""
-    arg_lossy = params.lossy ? "-l" : ""
     """
-    bam-merge-sort-markdup.py \
-      -i ${aligned_lane_bams} \
-      -r ${ref_genome_gz} \
+    seq-data-to-lane-bam.py \
+      -p ${metadata_json} \
+      -s ${seq_files} \
+      -d ${params.reads_max_discard_fraction} \
       -n ${params.cpus} \
-      -b ${params.aligned_basename} ${arg_markdup} \
-      -o ${params.output_format} ${arg_lossy}
+      -m ${(int) (params.mem * 1000)} \
+      -t ${params.tool}
     """
 }
