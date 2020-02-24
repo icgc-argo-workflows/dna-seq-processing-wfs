@@ -38,8 +38,8 @@ score_params = [
 
 // import modules
 // TODO: change import for score_download after it's updated on the other git repo
-include songGetAnalysis from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/song_get_analysis.nf' params(song_params)
-include scoreDownload from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/score_download' params(score_params)
+include songGetAnalysis as songGet from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/song_get_analysis.nf' params(song_params)
+include scoreDownload as scoreDn from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/score_download' params(score_params)
 
 workflow songScoreDownload {
     take:
@@ -47,10 +47,10 @@ workflow songScoreDownload {
         analysis_id
 
     main:
-        songGetAnalysis(study_id, analysis_id)
-        scoreDownload(songGetAnalysis.out.json, study_id, analysis_id)
+        songGet(study_id, analysis_id)
+        scoreDn(songGet.out.json, study_id, analysis_id)
 
     emit:
-        song_analysis = songGetAnalysis.out.json
-        files = scoreDownload.out.files
+        song_analysis = songGet.out.json
+        files = scoreDn.out.files
 }

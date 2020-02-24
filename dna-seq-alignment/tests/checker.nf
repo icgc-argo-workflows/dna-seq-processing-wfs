@@ -27,16 +27,16 @@ params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
 
-include DnaAlignment from "../main" params(params)
+include DnaAln from "../main" params(params)
 
 workflow {
   main:
-    DnaAlignment(
+    DnaAln(
         params.study_id,
         params.analysis_id,
         params.ref_genome_fa
     )
 
   publish:
-    DnaAlignment.out.alignment_files to: "outdir", overwrite: true
+    DnaAln.out.alignment_files to: "outdir", overwrite: true
 }
