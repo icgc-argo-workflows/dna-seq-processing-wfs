@@ -42,8 +42,9 @@ include songGetAnalysis from '../modules/raw.githubusercontent.com/icgc-argo/nex
 include scoreDownload from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/score_download' params(score_params)
 
 workflow songScoreDownload {
-    take: study_id
-          analysis_id
+    take:
+        study_id
+        analysis_id
 
     main:
         songGetAnalysis(study_id, analysis_id)
