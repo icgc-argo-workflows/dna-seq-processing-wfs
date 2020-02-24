@@ -47,11 +47,11 @@ extract_params = [
 
 // import modules
 // TODO: change import for song_manifest after it's updated (use non-root docker image) on the other git repo
-include songSubmit from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_submit' params(song_params)
-include songManifest from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_manifest' params(song_params)
-include scoreUpload from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/score_upload' params(score_params)
-include songPublish from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/song_publish' params(song_params)
-include extractAnalysisId from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/master/process/extract_analysis_id' params(extract_params)
+include songSubmit from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/song_submit' params(song_params)
+include songManifest from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/song_manifest' params(song_params)
+include scoreUpload from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/score_upload' params(score_params)
+include songPublish from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/song_publish' params(song_params)
+include extractAnalysisId from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c3584220006df06f118077fc3487a19327fab15b/process/extract_analysis_id' params(extract_params)
 
 workflow songScoreUpload {
     take: study_id
