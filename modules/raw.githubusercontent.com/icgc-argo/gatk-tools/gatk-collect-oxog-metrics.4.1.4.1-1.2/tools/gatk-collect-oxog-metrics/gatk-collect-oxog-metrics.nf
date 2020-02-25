@@ -23,7 +23,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '4.1.4.1-1.1'
+version = '4.1.4.1-1.2'
 
 params.seq = ""
 params.container_version = ""
