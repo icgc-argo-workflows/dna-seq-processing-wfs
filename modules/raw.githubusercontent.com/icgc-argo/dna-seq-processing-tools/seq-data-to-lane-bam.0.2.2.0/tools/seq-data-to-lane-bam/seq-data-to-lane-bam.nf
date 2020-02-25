@@ -18,25 +18,41 @@
  */
 
 /*
- * authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * author Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
+version = '0.2.2.0'
 
-params.study_id = ""
-params.analysis_id = ""
-params.ref_genome_fa = ""
+params.metadata_json = ""
+params.seq_files = ""
+params.reads_max_discard_fraction = 0.05
+params.container_version = ""
+params.tool = "samtools"
+params.cpus = 1
+params.mem = 2  // in GB
 
-include DnaAln from "../main" params(params)
 
-workflow {
-  main:
-    DnaAln(
-        params.study_id,
-        params.analysis_id,
-        params.ref_genome_fa
-    )
+process seqDataToLaneBam {
+  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
 
-  publish:
-    DnaAln.out.alignment_files to: "outdir", overwrite: true
+  input:
+    path metadata_json
+    path seq_files
+
+  output:
+    path "*.lane.bam", emit: lane_bams
+
+  script:
+    """
+    seq-data-to-lane-bam.py \
+      -p ${metadata_json} \
+      -s ${seq_files} \
+      -d ${params.reads_max_discard_fraction} \
+      -n ${params.cpus} \
+      -m ${(int) (params.mem * 1000)} \
+      -t ${params.tool}
+    """
 }

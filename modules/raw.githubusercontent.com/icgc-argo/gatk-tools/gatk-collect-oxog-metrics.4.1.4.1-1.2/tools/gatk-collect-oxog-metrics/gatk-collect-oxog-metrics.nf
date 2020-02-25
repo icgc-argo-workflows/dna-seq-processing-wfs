@@ -2,7 +2,7 @@
 
 /*
  * Copyright (c) 2019-2020, Ontario Institute for Cancer Research (OICR).
- *                                                                                                               
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -19,31 +19,43 @@
 
 /*
  * author Junjun Zhang <junjun.zhang@oicr.on.ca>
+ *        Linda Xiang <linda.xiang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
-version = '0.1.1.0'
+version = '4.1.4.1-1.2'
 
-params.ubam = "tests/data/C0HVY_2.lane.bam"
-params.container_version = ''
+params.seq = ""
+params.container_version = ""
+params.ref_genome_fa = ""
 params.cpus = 1
-params.mem = 1.5  // in GB
+params.mem = 2  // in GB
 
+def getOxogSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
+  def all_files = []
+  all_files.add(main_file + '.fai')
+  all_files.add(main_file.take(main_file.lastIndexOf('.')) + '.dict')
+  return all_files
+}
 
-process readGroupUBamQC {
-  container "quay.io/icgc-argo/read-group-ubam-qc:read-group-ubam-qc.${params.container_version ?: version}"
+process gatkCollectOxogMetrics {
+  container "quay.io/icgc-argo/gatk-collect-oxog-metrics:gatk-collect-oxog-metrics.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
 
   input:
-    path ubam
+    path seq
+    path ref_genome_fa
+    path ref_genome_secondary_file
+
 
   output:
-    path "*.ubam_qc_metrics.tgz", emit: ubam_qc_metrics
-    path "*.ubam_info.json", emit: ubam_info_json  // may be used for decider
+    path "*.oxog_metrics.tgz", emit: oxog_metrics
 
   script:
     """
-    read-group-ubam-qc.py -b ${ubam} -m ${(int) (params.mem * 1000)}
+    gatk-collect-oxog-metrics.py -s ${seq} \
+                      -r ${ref_genome_fa} \
+                      -m ${(int) (params.mem * 1000)}
     """
 }
