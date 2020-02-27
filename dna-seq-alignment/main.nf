@@ -182,6 +182,21 @@ include songScoreUpload as upAln from './song-score-utils/song-score-upload' par
 include songScoreUpload as upQc from './song-score-utils/song-score-upload' params(uploadQc_params)
 
 
+process cleanup {
+    container "ubuntu:18.04"
+
+    input:
+        path file_to_delete
+        val aligned_seq_analysis_id
+        val qc_metrics_analysis_id
+
+    script:
+        """
+        rm -rf \$( readlink -f ${file_to_delete} )
+        """
+}
+
+
 workflow DnaAln {
     take:
         study_id
@@ -232,6 +247,11 @@ workflow DnaAln {
 
         // upload aligned file and metadata to song/score
         upQc(params.study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
+
+        cleanup(
+            dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
+                alignedSeqQC.out, oxog.out, rgQC.out).flatten(),
+            upAln.out.analysis_id, upQc.out.analysis_id)
 
     emit:
         analysis_id = upAln.out.analysis_id
