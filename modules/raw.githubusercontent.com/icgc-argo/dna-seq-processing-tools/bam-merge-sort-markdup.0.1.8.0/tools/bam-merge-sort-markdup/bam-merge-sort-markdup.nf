@@ -22,7 +22,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.7.0'
+version = '0.1.8.0'
 
 params.aligned_lane_bams = ""
 params.ref_genome_gz = ""

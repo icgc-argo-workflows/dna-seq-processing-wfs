@@ -23,39 +23,40 @@
  */
 
 nextflow.preview.dsl=2
-version = '4.1.4.1-1.2'
+version = '0.2.1.0'
 
 params.seq = ""
 params.container_version = ""
-params.ref_genome_fa = ""
+params.ref_genome_gz = ""
 params.cpus = 1
 params.mem = 2  // in GB
 
-def getOxogSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
+def getAlignedQCSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
   def all_files = []
-  all_files.add(main_file + '.fai')
-  all_files.add(main_file.take(main_file.lastIndexOf('.')) + '.dict')
+  for (ext in ['.fai', '.gzi']) {
+    all_files.add(main_file + ext)
+  }
   return all_files
 }
 
-process gatkCollectOxogMetrics {
-  container "quay.io/icgc-argo/gatk-collect-oxog-metrics:gatk-collect-oxog-metrics.${params.container_version ?: version}"
+
+process alignedSeqQC {
+  container "quay.io/icgc-argo/aligned-seq-qc:aligned-seq-qc.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
 
   input:
     path seq
-    path ref_genome_fa
-    path ref_genome_secondary_file
-
+    path ref_genome_gz
+    path ref_genome_gz_secondary_file
 
   output:
-    path "*.oxog_metrics.tgz", emit: oxog_metrics
+    path "*.qc_metrics.tgz", emit: metrics
 
   script:
     """
-    gatk-collect-oxog-metrics.py -s ${seq} \
-                      -r ${ref_genome_fa} \
-                      -m ${(int) (params.mem * 1000)}
+    aligned-seq-qc.py -s ${seq} \
+                      -r ${ref_genome_gz} \
+                      -n ${params.cpus}
     """
 }
