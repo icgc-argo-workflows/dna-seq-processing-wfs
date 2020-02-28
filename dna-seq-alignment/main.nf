@@ -269,7 +269,4 @@ workflow {
         params.analysis_id,
         params.ref_genome_fa
     )
-
-    publish:
-        DnaAln.out.alignment_files to: "outdir", overwrite: true
 }
