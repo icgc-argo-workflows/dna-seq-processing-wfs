@@ -100,6 +100,7 @@ Upload Parameters (object):
 params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
+params.cleanup = true
 
 params.cpus = 1
 params.mem = 1
@@ -252,10 +253,12 @@ workflow DnaAln {
         // upload aligned file and metadata to song/score
         upQc(params.study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
 
-        cleanup(
-            dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
-                alignedSeqQC.out, oxog.out, rgQC.out).collect(),
-            upAln.out.analysis_id, upQc.out.analysis_id)
+        if (params.cleanup) {
+            cleanup(
+                dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
+                    alignedSeqQC.out, oxog.out, rgQC.out).collect(),
+                upAln.out.analysis_id, upQc.out.analysis_id)
+        }
 
     emit:
         analysis_id = upAln.out.analysis_id
