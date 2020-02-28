@@ -186,13 +186,17 @@ process cleanup {
     container "ubuntu:18.04"
 
     input:
-        path file_to_delete
+        path files_to_delete
         val aligned_seq_analysis_id
         val qc_metrics_analysis_id
 
     script:
         """
-        rm -rf \$( readlink -f ${file_to_delete} )
+        IFS=" "
+        read -a files <<< "${files_to_delete}"
+        for f in "\${files[@]}"
+            do rm -fr \$(dirname \$(readlink -f \$f))/*  # delete all files and subdirs but not hidden ones
+        done
         """
 }
 
@@ -250,7 +254,7 @@ workflow DnaAln {
 
         cleanup(
             dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
-                alignedSeqQC.out, oxog.out, rgQC.out).flatten(),
+                alignedSeqQC.out, oxog.out, rgQC.out).collect(),
             upAln.out.analysis_id, upQc.out.analysis_id)
 
     emit:
