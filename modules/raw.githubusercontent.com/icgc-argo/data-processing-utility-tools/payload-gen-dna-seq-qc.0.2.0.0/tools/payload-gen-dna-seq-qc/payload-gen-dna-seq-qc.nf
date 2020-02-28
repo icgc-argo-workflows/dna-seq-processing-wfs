@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 
 /*
- * Copyright (c) 2019-2020, Ontario Institute for Cancer Research (OICR).
- *
+ * Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
+ *                                                                                                               
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -18,45 +18,44 @@
  */
 
 /*
- * author Junjun Zhang <junjun.zhang@oicr.on.ca>
- *        Linda Xiang <linda.xiang@oicr.on.ca>
+ * Authors:
+ *   Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
 version = '0.2.0.0'
 
-params.seq = ""
+params.seq_experiment_analysis = ""
+params.qc_files = []
+params.wf_name = ""
+params.wf_version = ""
 params.container_version = ""
-params.ref_genome_gz = ""
 params.cpus = 1
-params.mem = 2  // in GB
-
-def getAlignedQCSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
-  def all_files = []
-  for (ext in ['.fai', '.gzi']) {
-    all_files.add(main_file + ext)
-  }
-  return all_files
-}
+params.mem = 1  // GB
 
 
-process alignedSeqQC {
-  container "quay.io/icgc-argo/aligned-seq-qc:aligned-seq-qc.${params.container_version ?: version}"
+process payloadGenDnaSeqQc {
+  container "quay.io/icgc-argo/payload-gen-dna-seq-qc:payload-gen-dna-seq-qc.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
 
   input:
-    path seq
-    path ref_genome_gz
-    path ref_genome_gz_secondary_file
+    path seq_experiment_analysis
+    path qc_files
+    val wf_name
+    val wf_version
 
   output:
-    path "*.qc_metrics.tgz", emit: metrics
+    path "*.dna_seq_qc.payload.json", emit: payload
+    path "out/*.tgz", emit: qc_files
 
   script:
     """
-    aligned-seq-qc.py -s ${seq} \
-                      -r ${ref_genome_gz} \
-                      -n ${params.cpus}
+    payload-gen-dna-seq-qc.py \
+      -a ${seq_experiment_analysis} \
+      -f ${qc_files} \
+      -w ${wf_name} \
+      -r ${workflow.runName} \
+      -v ${wf_version}
     """
 }

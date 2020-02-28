@@ -22,7 +22,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.1.0'
+version = '0.1.2.0'
 
 params.ubam = "tests/data/C0HVY_2.lane.bam"
 params.container_version = ''
@@ -40,7 +40,7 @@ process readGroupUBamQC {
 
   output:
     path "*.ubam_qc_metrics.tgz", emit: ubam_qc_metrics
-    path "*.ubam_info.json", emit: ubam_info_json  // may be used for decider
+    path "*.extra_info.json", emit: ubam_info_json  // may be used for decider
 
   script:
     """

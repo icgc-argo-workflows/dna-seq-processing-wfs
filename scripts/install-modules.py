@@ -10,7 +10,7 @@ PIPELINE_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMPORTED_MODULE_DIR = os.path.join(PIPELINE_ROOT_DIR, 'modules')
 
 # path pattern can be modified to cover for other remote repo servers, such as gitlab and bitbucket
-NF_REMOTE_INCLUDE_PATTERN = r'^\s*include[\s\w]+?(\'|")\.{1,2}\/modules\/(raw.githubusercontent.com\/\S+)(\'|")'
+NF_REMOTE_INCLUDE_PATTERN = r'^\s*include[\s\w\d_;\{\}]+?(\'|")\.{1,2}\/modules\/(raw.githubusercontent.com\/\S+)(\'|")'
 
 
 def extract_remote_module_path_from_include_statements(nf_file):
@@ -54,6 +54,9 @@ def install_modules(remote_module_paths):
       r = requests.get(url, allow_redirects=True)
     except:
       sys.exit('Error: unable to fetch remote module file at: %s' % url)
+
+    if r.status_code != 200:
+      sys.exit('Error: unable to download remote file at: %s' % url)
 
     os.makedirs(os.path.dirname(local_path), exist_ok=True)
     open(local_path, 'wb').write(r.content)
