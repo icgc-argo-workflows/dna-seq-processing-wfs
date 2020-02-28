@@ -100,6 +100,7 @@ Upload Parameters (object):
 params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
+params.cleanup = true
 
 params.cpus = 1
 params.mem = 1
@@ -174,7 +175,7 @@ include seqDataToLaneBam as toLaneBam from "./modules/raw.githubusercontent.com/
 include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.6.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
 include readGroupUBamQC as rgQC from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
 include {bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.8.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
-include {alignedSeqQC; getAlignedQCSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.1.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
+include {alignedSeqQC; getAlignedQCSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
 include payloadGenDnaAlignment as pGenDnaAln from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
 include payloadGenDnaSeqQc as pGenDnaSeqQc from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.2.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
 include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.3/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
@@ -252,10 +253,12 @@ workflow DnaAln {
         // upload aligned file and metadata to song/score
         upQc(params.study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
 
-        cleanup(
-            dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
-                alignedSeqQC.out, oxog.out, rgQC.out).collect(),
-            upAln.out.analysis_id, upQc.out.analysis_id)
+        if (params.cleanup) {
+            cleanup(
+                dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
+                    alignedSeqQC.out, oxog.out, rgQC.out).collect(),
+                upAln.out.analysis_id, upQc.out.analysis_id)
+        }
 
     emit:
         analysis_id = upAln.out.analysis_id
@@ -269,7 +272,4 @@ workflow {
         params.analysis_id,
         params.ref_genome_fa
     )
-
-    publish:
-        DnaAln.out.alignment_files to: "outdir", overwrite: true
 }
