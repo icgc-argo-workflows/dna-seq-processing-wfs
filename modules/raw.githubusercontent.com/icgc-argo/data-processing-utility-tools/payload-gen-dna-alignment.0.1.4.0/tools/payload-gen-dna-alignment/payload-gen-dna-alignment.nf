@@ -24,13 +24,12 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.3.0'
+version = '0.1.4.0'
 
 params.files_to_upload = ""
 params.seq_experiment_analysis = ""
 params.read_group_ubam_analysis = ""
 params.wf_name = ""
-params.wf_short_name = ""
 params.wf_version = ""
 params.container_version = ''
 
@@ -42,7 +41,6 @@ process payloadGenDnaAlignment {
     path seq_experiment_analysis
     path read_group_ubam_analysis
     val wf_name
-    val wf_short_name
     val wf_version
 
   output:
@@ -50,7 +48,6 @@ process payloadGenDnaAlignment {
     path "out/*", emit: alignment_files
 
   script:
-    args_wf_short_name = wf_short_name.length() > 0 ? "-c ${wf_short_name}" : ""
     args_read_group_ubam_analysis = read_group_ubam_analysis.size() > 0 ? "-u ${read_group_ubam_analysis}" : ""
     """
     payload-gen-dna-alignment.py \
@@ -58,6 +55,6 @@ process payloadGenDnaAlignment {
       -a ${seq_experiment_analysis} \
       -w ${wf_name} \
       -r ${workflow.runName} \
-      -v ${wf_version} ${args_wf_short_name} ${args_read_group_ubam_analysis}
+      -v ${wf_version} ${args_read_group_ubam_analysis}
     """
 }

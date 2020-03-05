@@ -1,6 +1,7 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl=2
-
+nextflow.preview.dsl = 2
+name = 'dna-seq-alignment'
+version = '0.6.0-dev'
 
 /*
 ========================================================================================
@@ -101,7 +102,6 @@ params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
 params.cleanup = true
-params.oxog_scatter = 5
 params.cpus = 1
 params.mem = 1
 
@@ -165,6 +165,7 @@ uploadQc_params = [
 ]
 
 gatkCollectOxogMetrics_params = [
+    'oxog_scatter': 5,  // default, may be overwritten by params file
     *:(params.gatkCollectOxogMetrics ?: [:])
 ]
 
@@ -176,7 +177,7 @@ include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercont
 include readGroupUBamQC as rgQC from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
 include {bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.8.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include {alignedSeqQC; getAlignedQCSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
-include payloadGenDnaAlignment as pGenDnaAln from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
+include payloadGenDnaAlignment as pGenDnaAln from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.4.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
 include payloadGenDnaSeqQc as pGenDnaSeqQc from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.2.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
 include {gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
 include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.4/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
@@ -230,23 +231,23 @@ workflow DnaAln {
 
         // generate payload for aligned seq (analysis type: sequencing_alignment)
         pGenDnaAln(merSorMkdup.out.merged_seq.concat(merSorMkdup.out.merged_seq_idx).collect(),
-            dnld.out.song_analysis, [], workflow.manifest.name, '', workflow.manifest.version)
+            dnld.out.song_analysis, [], name, version)
 
         // upload aligned file and metadata to song/score
-        upAln(params.study_id, pGenDnaAln.out.payload, pGenDnaAln.out.alignment_files.collect())
+        upAln(study_id, pGenDnaAln.out.payload, pGenDnaAln.out.alignment_files.collect())
 
         // perform aligned seq QC
         alignedSeqQC(pGenDnaAln.out.alignment_files.flatten().first(), file(ref_genome_fa + '.gz'),
             Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect())
 
         // prepare intervals for oxog
-        splitItvls(params.oxog_scatter, file(params.ref_genome_fa),
-            Channel.fromPath(getSIIdx(params.ref_genome_fa), checkIfExists: true).collect(), file('NO_FILE'))
+        splitItvls(gatkCollectOxogMetrics_params.oxog_scatter, file(ref_genome_fa),
+            Channel.fromPath(getSIIdx(ref_genome_fa), checkIfExists: true).collect(), file('NO_FILE'))
 
         // perform gatkCollectOxogMetrics
         oxog(pGenDnaAln.out.alignment_files.flatten().first(), pGenDnaAln.out.alignment_files.flatten().last(),
-            file(params.ref_genome_fa),
-            Channel.fromPath(getOxogSecondaryFiles(params.ref_genome_fa), checkIfExists: true).collect(),
+            file(ref_genome_fa),
+            Channel.fromPath(getOxogSecondaryFiles(ref_genome_fa), checkIfExists: true).collect(),
             splitItvls.out.interval_files.flatten())
 
         // gatherOxogMatrics
@@ -258,10 +259,10 @@ workflow DnaAln {
                 merSorMkdup.out.duplicates_metrics,
                 gatherOM.out.oxog_metrics,
                 rgQC.out.ubam_qc_metrics).collect(),
-            workflow.manifest.name, workflow.manifest.version)
+            name, version)
 
         // upload aligned file and metadata to song/score
-        upQc(params.study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
+        upQc(study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
 
         if (params.cleanup) {
             cleanup(
