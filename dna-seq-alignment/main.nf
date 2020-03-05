@@ -183,25 +183,7 @@ include {gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx} from "
 include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.4/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include songScoreUpload as upAln from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include songScoreUpload as upQc from './song-score-utils/song-score-upload' params(uploadQc_params)
-
-
-process cleanup {
-    container "ubuntu:18.04"
-
-    input:
-        path files_to_delete
-        val aligned_seq_analysis_id
-        val qc_metrics_analysis_id
-
-    script:
-        """
-        IFS=" "
-        read -a files <<< "${files_to_delete}"
-        for f in "\${files[@]}"
-            do rm -fr \$(dirname \$(readlink -f \$f))/*  # delete all files and subdirs but not hidden ones
-        done
-        """
-}
+include cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c5188792473f41d4501b4dc8c514b8524671852c/process/cleanup'
 
 
 workflow DnaAln {
@@ -268,7 +250,7 @@ workflow DnaAln {
             cleanup(
                 dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
                     alignedSeqQC.out, oxog.out, rgQC.out).collect(),
-                upAln.out.analysis_id, upQc.out.analysis_id)
+                upAln.out.analysis_id.concat(upQc.out.analysis_id).collect())
         }
 
     emit:
