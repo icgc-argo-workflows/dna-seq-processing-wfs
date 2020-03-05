@@ -5,6 +5,7 @@
   "score_url": "https://score.qa.argo.cancercollaboratory.org",
   "api_token": "INSERT-TOKEN-HERE",
   "ref_genome_fa": "tests/reference/tiny-grch38-chr11-530001-537000.fa",
+  "oxog_scatter": 5,
   "cpus": 1,
   "mem": 1,
   "download": {

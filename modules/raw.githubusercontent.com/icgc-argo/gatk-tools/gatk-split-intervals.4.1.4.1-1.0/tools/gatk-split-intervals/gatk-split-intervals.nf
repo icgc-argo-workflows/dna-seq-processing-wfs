@@ -23,39 +23,41 @@
  */
 
 nextflow.preview.dsl=2
-version = '4.1.4.1-1.3'
+version = '4.1.4.1-1.0'
 
-params.seq = ""
-params.container_version = ""
+params.scatter_count = null
 params.ref_genome_fa = ""
+params.intervals = "NO_FILE"  // starting intervals from a bed file, optional
+params.container_version = ""
 params.cpus = 1
 params.mem = 2  // in GB
 
-def getOxogSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
+def getSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
   def all_files = []
   all_files.add(main_file + '.fai')
   all_files.add(main_file.take(main_file.lastIndexOf('.')) + '.dict')
   return all_files
 }
 
-process gatkCollectOxogMetrics {
-  container "quay.io/icgc-argo/gatk-collect-oxog-metrics:gatk-collect-oxog-metrics.${params.container_version ?: version}"
+process gatkSplitIntervals {
+  container "quay.io/icgc-argo/gatk-split-intervals:gatk-split-intervals.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
 
   input:
-    path seq
+    val scatter_count
     path ref_genome_fa
     path ref_genome_secondary_file
-
+    path intervals
 
   output:
-    path "*.oxog_metrics.tgz", emit: oxog_metrics
+    path "*.interval_list", emit: interval_files
 
   script:
+    arg_intervals = intervals.name != 'NO_FILE' ? "-L ${intervals}" : ""
     """
-    gatk-collect-oxog-metrics.py -s ${seq} \
-                      -r ${ref_genome_fa} \
-                      -m ${(int) (params.mem * 1000)}
+    gatk-split-intervals.py --scatter ${scatter_count} \
+                      -R ${ref_genome_fa} \
+                      -j ${(int) (params.mem * 1000)} ${arg_intervals}
     """
 }

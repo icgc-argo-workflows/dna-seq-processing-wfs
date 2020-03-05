@@ -101,7 +101,7 @@ params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
 params.cleanup = true
-
+params.oxog_scatter = 5
 params.cpus = 1
 params.mem = 1
 
@@ -178,7 +178,8 @@ include {bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile} from "./modul
 include {alignedSeqQC; getAlignedQCSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
 include payloadGenDnaAlignment as pGenDnaAln from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.1.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
 include payloadGenDnaSeqQc as pGenDnaSeqQc from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.2.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
-include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.3/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
+include {gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
+include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.4/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include songScoreUpload as upAln from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include songScoreUpload as upQc from './song-score-utils/song-score-upload' params(uploadQc_params)
 
@@ -238,15 +239,24 @@ workflow DnaAln {
         alignedSeqQC(pGenDnaAln.out.alignment_files.flatten().first(), file(ref_genome_fa + '.gz'),
             Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect())
 
+        // prepare intervals for oxog
+        splitItvls(params.oxog_scatter, file(params.ref_genome_fa),
+            Channel.fromPath(getSIIdx(params.ref_genome_fa), checkIfExists: true).collect(), file('NO_FILE'))
+
         // perform gatkCollectOxogMetrics
-        oxog(pGenDnaAln.out.alignment_files.flatten().first(), file(params.ref_genome_fa),
-            Channel.fromPath(getOxogSecondaryFiles(params.ref_genome_fa), checkIfExists: true).collect())
+        oxog(pGenDnaAln.out.alignment_files.flatten().first(), pGenDnaAln.out.alignment_files.flatten().last(),
+            file(params.ref_genome_fa),
+            Channel.fromPath(getOxogSecondaryFiles(params.ref_genome_fa), checkIfExists: true).collect(),
+            splitItvls.out.interval_files.flatten())
+
+        // gatherOxogMatrics
+        gatherOM(oxog.out.oxog_metrics.collect())
 
         // prepare song payload for qc metrics
         pGenDnaSeqQc(dnld.out.song_analysis,
             alignedSeqQC.out.metrics.concat(
                 merSorMkdup.out.duplicates_metrics,
-                oxog.out.oxog_metrics,
+                gatherOM.out.oxog_metrics,
                 rgQC.out.ubam_qc_metrics).collect(),
             workflow.manifest.name, workflow.manifest.version)
 
