@@ -40,6 +40,7 @@
     "mem": 2
   },
   "gatkCollectOxogMetrics": {
+    "oxog_scatter": 3,
     "cpus": 2,
     "mem": 2
   },
