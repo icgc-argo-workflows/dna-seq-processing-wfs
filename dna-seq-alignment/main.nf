@@ -183,7 +183,7 @@ include {gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx} from "
 include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.4/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include songScoreUpload as upAln from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include songScoreUpload as upQc from './song-score-utils/song-score-upload' params(uploadQc_params)
-include cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/c5188792473f41d4501b4dc8c514b8524671852c/process/cleanup'
+include cleanupWorkdir as cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/b45093d3ecc3cb98407549158c5315991802526b/process/cleanup-workdir'
 
 
 workflow DnaAln {

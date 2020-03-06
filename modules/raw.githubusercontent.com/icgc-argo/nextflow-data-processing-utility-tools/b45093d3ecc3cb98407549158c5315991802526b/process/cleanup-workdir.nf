@@ -7,7 +7,7 @@ params.files_to_delete = 'NO_FILE'
 params.container_version = '18.04'
 
 
-process cleanup {
+process cleanupWorkdir {
     cpus params.cpus
     memory "${params.mem} GB"
  
@@ -22,7 +22,16 @@ process cleanup {
         IFS=" "
         read -a files <<< "${files_to_delete}"
         for f in "\${files[@]}"
-            do rm -fr \$(dirname \$(readlink -f \$f))/*  # delete all files and subdirs but not hidden ones
+        do
+            dir_to_rm=\$(dirname \$(readlink -f \$f))
+
+            if [[ \$dir_to_rm != ${workflow.workDir}/* ]]; then  # skip dir not under workdir, like from input file dir
+                echo "Not delete: \$dir_to_rm/*\"
+                continue
+            fi
+
+            rm -fr \$dir_to_rm/*  # delete all files and subdirs but not hidden ones
+            echo "Deleted: \$dir_to_rm/*"
         done
         """
 }
