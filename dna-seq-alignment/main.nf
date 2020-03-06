@@ -79,6 +79,15 @@ payloadGenDnaAlignment (object):
     mem                                 memory (GB) for align container, defaults to mem parameter
 }
 
+gatkCollectOxogMetrics (object):
+--gatkCollectOxogMetrics
+{
+    container_version                   docker container version, defaults to unset
+    cpus                                cpus for align container, defaults to cpus parameter
+    mem                                 memory (GB) for align container, defaults to mem parameter
+    oxog_scatter                        number of parallel tasks for scattering OxoG metrics collection
+}
+
 Upload Parameters (object):
 --upload
 {
@@ -165,7 +174,7 @@ uploadQc_params = [
 ]
 
 gatkCollectOxogMetrics_params = [
-    'oxog_scatter': 5,  // default, may be overwritten by params file
+    'oxog_scatter': 8,  // default, may be overwritten by params file
     *:(params.gatkCollectOxogMetrics ?: [:])
 ]
 
