@@ -2,7 +2,7 @@
 # ICGC ARGO DNA Seq Processing Pipeline
 
 
-### Introduction
+## Introduction
 
 This repository maintains the source code of the ICGC ARGO DNA Seq Processing Pipeline. The pipeline is written
 in [Nextflow](https://www.nextflow.io/) workflow language using DSLv2, with modules imported from other ICGC
@@ -18,20 +18,19 @@ version controlled and released independently. To ensure reproducibility the pip
 which specific version of a module is to be imported.
 
 
-### Run the pipeline
+## Run the pipeline
 
 To run the pipeline, please follow instruction [here](https://www.nextflow.io/docs/latest/getstarted.html#installation) to install Nextflow (version `20.01.0` or higher) first.
 
 Run `0.6.0` version of the pipeline:
 ```
 nextflow run icgc-argo/dna-seq-processing-wfs -r 0.6.0 -params-file <your_params_file.json>
-
 ```
 
-You may need to run `nextflow pull` if the version `0.6.0` is new since last time pipeline was run.
+You may need to run `nextflow pull` if the version `0.6.0` is new since last time the pipeline was run.
 
 
-### Testing
+## Testing
 
 Automated Travis CI testing has been set up. However, tests will be skipped when CI is triggered on a Travis server due to reliance on SONG/SCORE services which are not available. A possible solution is to spin up
 SONG/SCORE services running use Docker at Travis, this will require some work but should be doable. Before this
