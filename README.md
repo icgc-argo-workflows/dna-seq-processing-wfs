@@ -22,12 +22,12 @@ which specific version of a module is to be imported.
 
 To run the pipeline, please follow instruction [here](https://www.nextflow.io/docs/latest/getstarted.html#installation) to install Nextflow (version `20.01.0` or higher) first.
 
-Run `0.6.0` version of the pipeline:
+Run `1.0.0` version of the pipeline:
 ```
-nextflow run icgc-argo/dna-seq-processing-wfs -r 0.6.0 -params-file <your_params_file.json>
+nextflow run icgc-argo/dna-seq-processing-wfs -r 1.0.0 -params-file <your_params_file.json>
 ```
 
-You may need to run `nextflow pull` if the version `0.6.0` is new since last time the pipeline was run.
+You may need to run `nextflow pull` if the version `1.0.0` is new since last time the pipeline was run.
 
 
 ## Testing
