@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl = 2
 name = 'dna-seq-alignment'
-version = '0.6.0'
+version = '1.0.0-dev'
 
 /*
 ========================================================================================
@@ -231,11 +231,11 @@ workflow DnaAln {
         alignedSeqQC(pGenDnaAln.out.alignment_files.flatten().first(), file(ref_genome_fa + '.gz'),
             Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect())
 
-        // prepare intervals for oxog
+        // prepare oxog_scatter intervals
         splitItvls(gatkCollectOxogMetrics_params.oxog_scatter, file(ref_genome_fa),
             Channel.fromPath(getSIIdx(ref_genome_fa), checkIfExists: true).collect(), file('NO_FILE'))
 
-        // perform gatkCollectOxogMetrics
+        // perform gatkCollectOxogMetrics in parallel tasks
         oxog(pGenDnaAln.out.alignment_files.flatten().first(), pGenDnaAln.out.alignment_files.flatten().last(),
             file(ref_genome_fa),
             Channel.fromPath(getOxogSecondaryFiles(ref_genome_fa), checkIfExists: true).collect(),
@@ -259,7 +259,7 @@ workflow DnaAln {
             cleanup(
                 dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
                     alignedSeqQC.out, oxog.out, rgQC.out).collect(),
-                upAln.out.analysis_id.concat(upQc.out.analysis_id).collect())
+                upAln.out.analysis_id.concat(upQc.out.analysis_id).collect())  // wait until upAln and upQc is done
         }
 
     emit:
