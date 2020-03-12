@@ -49,6 +49,6 @@ is resolved, we can run tests locally (where we have access to SONG/SCORE servic
 directory of this Git repository:
 
 ```
-export API_TOKEN=<your_api_token>
+export api_token=<your_api_token>
 pytest -v
 ```
