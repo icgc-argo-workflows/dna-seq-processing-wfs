@@ -1,16 +1,16 @@
 {
   "study_id": "TEST-PR",
-  "analysis_id": "cc3a86e9-162a-4d6c-ba86-e9162a4d6c7d",
-  "song_url": "https://song.qa.argo.cancercollaboratory.org",
-  "score_url": "https://score.qa.argo.cancercollaboratory.org",
+  "analysis_id": "2e46fd12-a5fc-4d72-86fd-12a5fcbd7216",
+  "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
+  "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
   "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 1,
   "mem": 1,
   "download": {
-    "song_url": "https://song.qa.argo.cancercollaboratory.org",
+    "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
     "song_cpus": 2,
     "song_mem": 2,
-    "score_url": "https://score.qa.argo.cancercollaboratory.org",
+    "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
     "score_cpus": 3,
     "score_mem": 8
   },
