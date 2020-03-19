@@ -23,7 +23,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '4.1.4.1-1.4'
+version = '4.1.4.1-1.5'
 
 params.seq = ""
 params.seq_idx = ""
