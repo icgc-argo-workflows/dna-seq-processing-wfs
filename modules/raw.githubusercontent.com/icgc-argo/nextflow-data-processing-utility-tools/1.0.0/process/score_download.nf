@@ -29,6 +29,7 @@ process scoreDownload {
         path analysis
         val study_id
         val analysis_id
+        env ACCESSTOKEN
 
     output:
         path analysis, emit: analysis_json
@@ -38,7 +39,6 @@ process scoreDownload {
     """
     export METADATA_URL=${params.song_url}
     export STORAGE_URL=${params.score_url}
-    export ACCESSTOKEN=${params.api_token}
     export TRANSPORT_PARALLEL=${params.cpus}
     export TRANSPORT_MEMORY=${params.transport_mem}
     

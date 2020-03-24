@@ -27,6 +27,7 @@ process scoreUpload {
         val analysis_id
         path manifest
         path upload
+        env ACCESSTOKEN
 
     output:
         val analysis_id, emit: ready_to_publish
@@ -34,7 +35,6 @@ process scoreUpload {
     """
     export METADATA_URL=${params.song_url}
     export STORAGE_URL=${params.score_url}
-    export ACCESSTOKEN=${params.api_token}
     export TRANSPORT_PARALLEL=${params.cpus}
     export TRANSPORT_MEMORY=${params.transport_mem}
     

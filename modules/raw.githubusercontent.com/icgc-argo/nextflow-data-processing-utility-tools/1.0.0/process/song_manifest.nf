@@ -12,8 +12,7 @@ params.container_version = '4.0.0'
 // --song_url         song url for download process (defaults to main song_url param)
 // --api_token        song/score API token for download process (defaults to main api_token param)
 
-// TODO: Replace curl with SONG command once it's fixed!
-process songGetAnalysis {
+process songManifest {
     
     cpus params.cpus
     memory "${params.mem} GB"
@@ -25,16 +24,16 @@ process songGetAnalysis {
     input:
         val study_id
         val analysis_id
-
+        path upload
+        env CLIENT_ACCESS_TOKEN
+    
     output:
-        path 'analysis.json', emit: json
-
+        path 'manifest.txt'
 
     """
     export CLIENT_SERVER_URL=${params.song_url}
-    export CLIENT_ACCESS_TOKEN=${params.api_token}
     export CLIENT_STUDY_ID=${study_id}
 
-    curl -X GET "${params.song_url}/studies/$study_id/analysis/$analysis_id" -H  "accept: */*" > analysis.json
+    sing manifest -a ${analysis_id} -d . -f manifest.txt
     """
 }

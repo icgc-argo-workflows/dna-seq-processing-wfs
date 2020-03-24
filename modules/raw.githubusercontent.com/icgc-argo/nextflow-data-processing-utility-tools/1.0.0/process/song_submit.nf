@@ -12,28 +12,28 @@ params.container_version = '4.0.0'
 // --song_url         song url for download process (defaults to main song_url param)
 // --api_token        song/score API token for download process (defaults to main api_token param)
 
-process songManifest {
+process songSubmit {
     
     cpus params.cpus
     memory "${params.mem} GB"
  
     container "overture/song-client:${params.container_version}"
-
-    tag "${analysis_id}"
-
+    
+    tag "${study_id}"
+    label "songSubmit"
+    
     input:
         val study_id
-        val analysis_id
-        path upload
+        path payload
+        env CLIENT_ACCESS_TOKEN
     
     output:
-        path 'manifest.txt'
+        path 'download_payload.json'
 
     """
     export CLIENT_SERVER_URL=${params.song_url}
-    export CLIENT_ACCESS_TOKEN=${params.api_token}
     export CLIENT_STUDY_ID=${study_id}
 
-    sing manifest -a ${analysis_id} -d . -f manifest.txt
+    sing submit -f ${payload} > download_payload.json
     """
 }
