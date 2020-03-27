@@ -22,7 +22,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.8.0'
+version = '0.1.10.0'
 
 params.aligned_lane_bams = ""
 params.ref_genome_gz = ""
@@ -33,6 +33,7 @@ params.lossy = false
 params.container_version = ""
 params.cpus = 1
 params.mem = 2  // in GB
+params.tempdir = ""
 
 
 def getMdupSecondaryFile(main_file){  //this is kind of like CWL's secondary files
@@ -53,21 +54,23 @@ process bamMergeSortMarkdup {
     path aligned_lane_bams
     path ref_genome_gz
     path ref_genome_gz_secondary_file
+    path tempdir
 
   output:
     path "${params.aligned_basename}.{bam,cram}", emit: merged_seq
     path "${params.aligned_basename}.{bam.bai,cram.crai}", emit: merged_seq_idx
-    path "${params.aligned_basename}.duplicates_metrics.tgz", emit: duplicates_metrics
+    path "${params.aligned_basename}.duplicates_metrics.tgz", optional: true, emit: duplicates_metrics
 
   script:
     arg_markdup = params.markdup ? "-d" : ""
     arg_lossy = params.lossy ? "-l" : ""
+    arg_tempdir = tempdir.name != 'NO_DIR' ? "-t ${tempdir}" : ""
     """
     bam-merge-sort-markdup.py \
       -i ${aligned_lane_bams} \
       -r ${ref_genome_gz} \
       -n ${params.cpus} \
       -b ${params.aligned_basename} ${arg_markdup} \
-      -o ${params.output_format} ${arg_lossy}
+      -o ${params.output_format} ${arg_lossy} ${arg_tempdir}
     """
 }

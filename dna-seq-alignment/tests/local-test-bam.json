@@ -6,6 +6,7 @@
   "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 1,
   "mem": 1,
+  "tempdir": "/tmp",
   "download": {
     "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
     "song_cpus": 2,
