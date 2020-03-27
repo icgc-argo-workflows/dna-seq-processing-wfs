@@ -19,6 +19,7 @@
     "mem": 2
   },
   "bwaMemAligner": {
+    "tempdir": "/Users/junjun",
     "cpus": 2,
     "mem": 2
   },
@@ -40,7 +41,7 @@
   },
   "gatkCollectOxogMetrics": {
     "cpus": 2,
-    "mem": 2
+    "mem": 4
   },
   "payloadGenDnaSeqQc": {
     "cpus": 1,

@@ -22,7 +22,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.8.0'
+version = '0.1.9.0'
 
 params.input_bam = "tests/input/?????_?.lane.bam"
 params.aligned_lane_prefix = 'grch38-aligned'
@@ -31,6 +31,7 @@ params.container_version = ""
 params.cpus = 1
 params.mem = 1  // GB
 params.sequencing_experiment_analysis = "NO_FILE"
+params.tempdir = "NO_DIR"
 
 def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
   def all_files = []
@@ -53,17 +54,19 @@ process bwaMemAligner {
     path ref_genome_gz
     path ref_genome_gz_secondary_files
     path sequencing_experiment_analysis
+    path tempdir
 
   output:
     path "${params.aligned_lane_prefix}.${input_bam.baseName}.bam", emit: aligned_bam
 
   script:
     metadata = sequencing_experiment_analysis ? "-m " + sequencing_experiment_analysis : ""
+    arg_tempdir = tempdir.name != 'NO_DIR' ? "-t ${tempdir}": ""
     """
     bwa-mem-aligner.py \
       -i ${input_bam} \
       -r ${ref_genome_gz} \
       -o ${params.aligned_lane_prefix} \
-      -n ${task.cpus} ${metadata}
+      -n ${task.cpus} ${metadata} ${arg_tempdir}
     """
 }

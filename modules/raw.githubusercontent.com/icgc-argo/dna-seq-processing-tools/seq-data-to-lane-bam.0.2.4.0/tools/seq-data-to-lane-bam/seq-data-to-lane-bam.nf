@@ -22,7 +22,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.2.3.0'
+version = '0.2.4.0'
 
 params.metadata_json = ""
 params.seq_files = ""
