@@ -42,7 +42,6 @@ process scoreDownload {
     export TRANSPORT_PARALLEL=${params.cpus}
     export TRANSPORT_MEMORY=${params.transport_mem}
     
-    mkdir out
     score-client download --analysis-id ${analysis_id} --study-id ${study_id} --output-dir ./out 
     """
 }

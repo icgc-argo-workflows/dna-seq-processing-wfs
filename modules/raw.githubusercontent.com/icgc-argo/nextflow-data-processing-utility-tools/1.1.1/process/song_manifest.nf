@@ -28,12 +28,12 @@ process songManifest {
         env CLIENT_ACCESS_TOKEN
     
     output:
-        path 'manifest.txt'
+        path 'out/manifest.txt'
 
     """
     export CLIENT_SERVER_URL=${params.song_url}
     export CLIENT_STUDY_ID=${study_id}
 
-    sing manifest -a ${analysis_id} -d . -f manifest.txt
+    sing manifest -a ${analysis_id} -d . -f ./out/manifest.txt
     """
 }

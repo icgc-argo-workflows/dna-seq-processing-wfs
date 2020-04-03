@@ -28,12 +28,12 @@ process songSubmit {
         env CLIENT_ACCESS_TOKEN
     
     output:
-        path 'download_payload.json'
+        stdout()
 
     """
     export CLIENT_SERVER_URL=${params.song_url}
     export CLIENT_STUDY_ID=${study_id}
 
-    sing submit -f ${payload} > download_payload.json
+    sing submit -f ${payload} | grep analysisId | sed 's/.*\\s\\+\\|"\\|,//g' | tr -d '\\n'
     """
 }
