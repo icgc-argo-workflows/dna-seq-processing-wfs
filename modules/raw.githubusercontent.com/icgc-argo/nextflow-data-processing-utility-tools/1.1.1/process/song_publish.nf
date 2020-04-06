@@ -6,7 +6,7 @@ params.cpus = 1
 params.mem = 1
 
 // required params w/ default
-params.container_version = '4.0.0'
+params.container_version = '4.1.1'
 
 // required params, no default
 // --song_url         song url for download process (defaults to main song_url param)
