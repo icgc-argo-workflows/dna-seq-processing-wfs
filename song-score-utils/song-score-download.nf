@@ -12,7 +12,7 @@ params.score_api_token = ''
 
 // required params w/ default
 params.song_container_version = '4.2.0'
-params.score_container_version = '3.1.1'
+params.score_container_version = '5.0.0'
 
 // required params, no default
 // --song_url         song url for download process (defaults to main song_url param)
