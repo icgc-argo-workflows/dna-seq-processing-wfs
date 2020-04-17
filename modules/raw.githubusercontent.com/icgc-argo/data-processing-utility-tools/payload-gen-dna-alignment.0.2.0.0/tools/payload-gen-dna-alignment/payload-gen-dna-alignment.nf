@@ -24,7 +24,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.6.1'
+version = '0.2.0.0'
 
 params.files_to_upload = ""
 params.seq_experiment_analysis = ""

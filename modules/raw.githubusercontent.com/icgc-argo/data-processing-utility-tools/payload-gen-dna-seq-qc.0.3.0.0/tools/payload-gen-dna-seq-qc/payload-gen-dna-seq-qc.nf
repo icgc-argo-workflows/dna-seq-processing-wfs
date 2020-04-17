@@ -23,7 +23,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.2.4.1'
+version = '0.3.0.0'
 
 params.seq_experiment_analysis = ""
 params.qc_files = []

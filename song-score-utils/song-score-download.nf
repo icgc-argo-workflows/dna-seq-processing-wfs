@@ -12,7 +12,7 @@ params.score_api_token = ''
 
 // required params w/ default
 params.song_container_version = '4.2.0'
-params.score_container_version = '3.1.1'
+params.score_container_version = '5.0.0'
 
 // required params, no default
 // --song_url         song url for download process (defaults to main song_url param)
@@ -38,8 +38,8 @@ score_params = [
 
 // import modules
 // TODO: change import for score_download after it's updated on the other git repo
-include songGetAnalysis as songGet from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.2/process/song_get_analysis' params(song_params)
-include scoreDownload as scoreDn from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.2/process/score_download' params(score_params)
+include songGetAnalysis as songGet from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.3/process/song_get_analysis' params(song_params)
+include scoreDownload as scoreDn from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.3/process/score_download' params(score_params)
 
 workflow songScoreDownload {
     take:
