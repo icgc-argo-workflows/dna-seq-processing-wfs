@@ -18,32 +18,44 @@
  */
 
 /*
- * authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * Authors:
+ *   Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
+version = '0.4.0.0'
 
-params.study_id = ""
-params.analysis_id = ""
-params.ref_genome_fa = ""
-params.analysis_metadata = "NO_FILE"
-params.sequencing_files = []
+params.seq_experiment_analysis = ""
+params.qc_files = []
+params.wf_name = ""
+params.wf_version = ""
+params.container_version = ""
+params.cpus = 1
+params.mem = 1  // GB
 
-include DnaAln from "../main" params(params)
 
-workflow {
-  main:
-    DnaAln(
-        params.study_id,
-        params.analysis_id,
-        params.ref_genome_fa,
-        params.analysis_metadata,
-        params.sequencing_files
-    )
+process payloadGenDnaSeqQc {
+  container "quay.io/icgc-argo/payload-gen-dna-seq-qc:payload-gen-dna-seq-qc.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
 
-  publish:
-    DnaAln.out.alignment_payload to: "outdir", overwrite: true
-    DnaAln.out.alignment_files to: "outdir", overwrite: true
-    DnaAln.out.qc_metrics_payload to: "outdir", overwrite: true
-    DnaAln.out.qc_metrics_files to: "outdir", overwrite: true
+  input:
+    path seq_experiment_analysis
+    path qc_files
+    val wf_name
+    val wf_version
+
+  output:
+    path "*.dna_seq_qc.payload.json", emit: payload
+    path "out/*.tgz", emit: qc_files
+
+  script:
+    """
+    payload-gen-dna-seq-qc.py \
+      -a ${seq_experiment_analysis} \
+      -f ${qc_files} \
+      -w "${wf_name}" \
+      -r ${workflow.runName} \
+      -v ${wf_version}
+    """
 }

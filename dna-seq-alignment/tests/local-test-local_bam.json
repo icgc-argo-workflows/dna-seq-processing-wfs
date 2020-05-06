@@ -1,0 +1,63 @@
+{
+  "study_id": "TEST-PR",
+  "analysis_metadata": "data/2e46fd12-a5fc-4d72-86fd-12a5fcbd7216.sequencing_experiment.json",
+  "sequencing_files": [ "data/test_rg_3.v2.bam" ],
+  "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
+  "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
+  "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
+  "cpus": 1,
+  "mem": 1,
+  "tempdir": "/tmp",
+  "download": {
+    "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
+    "song_cpus": 2,
+    "song_mem": 2,
+    "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
+    "score_cpus": 3,
+    "score_mem": 8
+  },
+  "seqDataToLaneBam": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "bwaMemAligner": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "bamMergeSortMarkdup": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "payloadGenDnaAlignment": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "readGroupUBamQC": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "alignedSeqQC": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "gatkCollectOxogMetrics": {
+    "cpus": 2,
+    "mem": 2
+  },
+  "payloadGenDnaSeqQc": {
+    "cpus": 1,
+    "mem": 1
+  },
+  "uploadAlignment": {
+    "song_cpus": 2,
+    "song_mem": 2,
+    "score_cpus": 3,
+    "score_mem": 8
+  },
+  "uploadQc": {
+    "song_cpus": 1,
+    "song_mem": 1,
+    "score_cpus": 1,
+    "score_mem": 1
+  }
+}

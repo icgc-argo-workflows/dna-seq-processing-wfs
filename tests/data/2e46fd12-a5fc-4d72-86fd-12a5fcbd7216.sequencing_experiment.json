@@ -1,0 +1,95 @@
+{
+  "analysisId": "2e46fd12-a5fc-4d72-86fd-12a5fcbd7216",
+  "studyId": "TEST-PR",
+  "analysisState": "PUBLISHED",
+  "samples": [
+    {
+      "sampleId": "SA610149",
+      "specimenId": "SP210129",
+      "submitterSampleId": "HCC1143_BAM_INPUT",
+      "matchedNormalSubmitterSampleId": null,
+      "sampleType": "Total DNA",
+      "specimen": {
+        "specimenId": "SP210129",
+        "donorId": "DO250122",
+        "submitterSpecimenId": "HCC1143_BAM_INPUT",
+        "tumourNormalDesignation": "Normal",
+        "specimenTissueSource": "Blood derived",
+        "specimenType": "Cell line - derived from normal"
+      },
+      "donor": {
+        "donorId": "DO250122",
+        "studyId": "TEST-PR",
+        "gender": "Female",
+        "submitterDonorId": "HCC1143"
+      }
+    }
+  ],
+  "files": [
+    {
+      "objectId": "130b257a-65be-5167-a44e-7cd49c31758a",
+      "studyId": "TEST-PR",
+      "analysisId": "2e46fd12-a5fc-4d72-86fd-12a5fcbd7216",
+      "fileName": "test_rg_3.v2.bam",
+      "fileSize": 14935,
+      "fileType": "BAM",
+      "fileMd5sum": "3f160ccdb1eae97337b42018bf141f7c",
+      "fileAccess": "controlled",
+      "dataType": "UnalignedReads"
+    }
+  ],
+  "analysisType": {
+    "name": "sequencing_experiment",
+    "version": 1
+  },
+  "experiment": {
+    "platform": "ILLUMINA",
+    "platform_model": "HiSeq 2000",
+    "sequencing_date": "2014-12-12",
+    "library_strategy": "WGS",
+    "sequencing_center": "EXT",
+    "submitter_sequencing_experiment_id": "TEST_EXP"
+  },
+  "read_groups": [
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8a",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "read_group_id_in_bam": "C0HVY.2",
+      "submitter_read_group_id": "C0HVY_2"
+    },
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8b",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "read_group_id_in_bam": "D0RE2.1",
+      "submitter_read_group_id": "D0RE2_1"
+    },
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8c",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "read_group_id_in_bam": "D0RH0.2",
+      "submitter_read_group_id": "D0RH0_2"
+    }
+  ],
+  "read_group_count": 3
+}
