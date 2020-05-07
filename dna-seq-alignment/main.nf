@@ -116,8 +116,24 @@ params.mem = 1
 params.tempdir = "NO_DIR"
 params.analysis_metadata = "NO_FILE"
 params.sequencing_files = []
+params.song_url = ""
+params.score_url = ""
+params.download = [:]
+params.seqDataToLaneBam = [:]
+params.bwaMemAligner = [:]
+params.bamMergeSortMarkdup = [:]
+params.uploadAlignment = [:]
+params.readGroupUBamQC = [:]
+params.payloadGenDnaAlignment = [:]
+params.alignedSeqQC = [:]
+params.payloadGenDnaSeqQc = [:]
+params.uploadQc = [:]
+params.gatkCollectOxogMetrics = [:]
+
 
 download_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -125,16 +141,22 @@ download_params = [
 ]
 
 seqDataToLaneBam_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'reads_max_discard_fraction': -1,
     *:(params.seqDataToLaneBam ?: [:])
 ]
 
 bwaMemAligner_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'tempdir': params.tempdir ?: 'NO_DIR',
     *:(params.bwaMemAligner ?: [:])
 ]
 
 bamMergeSortMarkdup_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'output_format': 'cram',
     'markdup': true,
     'lossy': false,
@@ -143,22 +165,32 @@ bamMergeSortMarkdup_params = [
 ]
 
 readGroupUBamQC_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.readGroupUBamQC ?: [:])
 ]
 
 payloadGenDnaAlignment_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.payloadGenDnaAlignment ?: [:])
 ]
 
 alignedSeqQC_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.alignedSeqQC ?: [:])
 ]
 
 payloadGenDnaSeqQc_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.payloadGenDnaSeqQc ?: [:])
 ]
 
 uploadAlignment_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -166,6 +198,8 @@ uploadAlignment_params = [
 ]
 
 uploadQc_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -173,6 +207,8 @@ uploadQc_params = [
 ]
 
 gatkCollectOxogMetrics_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'oxog_scatter': 8,  // default, may be overwritten by params file
     *:(params.gatkCollectOxogMetrics ?: [:])
 ]
