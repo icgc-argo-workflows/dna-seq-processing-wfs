@@ -19,6 +19,8 @@ process cleanupWorkdir {
 
     script:
         """
+        set -euxo pipefail
+
         IFS=" "
         read -a files <<< "${files_to_delete}"
         for f in "\${files[@]}"
