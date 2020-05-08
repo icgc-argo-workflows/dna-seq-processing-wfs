@@ -3,7 +3,6 @@ import sys
 from glob import glob
 import shutil
 import subprocess
-import git
 
 is_travis = os.environ.get('TRAVIS')
 
