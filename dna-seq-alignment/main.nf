@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.preview.dsl = 2
 name = 'dna-seq-alignment'
-version = '1.1.1'
+version = '1.2.0-dev'
 
 /*
 ========================================================================================
@@ -114,8 +114,26 @@ params.cleanup = true
 params.cpus = 1
 params.mem = 1
 params.tempdir = "NO_DIR"
+params.analysis_metadata = "NO_FILE"
+params.sequencing_files = []
+params.song_url = ""
+params.score_url = ""
+params.download = [:]
+params.seqDataToLaneBam = [:]
+params.bwaMemAligner = [:]
+params.bamMergeSortMarkdup = [:]
+params.uploadAlignment = [:]
+params.readGroupUBamQC = [:]
+params.payloadGenDnaAlignment = [:]
+params.alignedSeqQC = [:]
+params.payloadGenDnaSeqQc = [:]
+params.uploadQc = [:]
+params.gatkCollectOxogMetrics = [:]
+
 
 download_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -123,16 +141,22 @@ download_params = [
 ]
 
 seqDataToLaneBam_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'reads_max_discard_fraction': -1,
     *:(params.seqDataToLaneBam ?: [:])
 ]
 
 bwaMemAligner_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'tempdir': params.tempdir ?: 'NO_DIR',
     *:(params.bwaMemAligner ?: [:])
 ]
 
 bamMergeSortMarkdup_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'output_format': 'cram',
     'markdup': true,
     'lossy': false,
@@ -141,22 +165,32 @@ bamMergeSortMarkdup_params = [
 ]
 
 readGroupUBamQC_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.readGroupUBamQC ?: [:])
 ]
 
 payloadGenDnaAlignment_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.payloadGenDnaAlignment ?: [:])
 ]
 
 alignedSeqQC_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.alignedSeqQC ?: [:])
 ]
 
 payloadGenDnaSeqQc_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     *:(params.payloadGenDnaSeqQc ?: [:])
 ]
 
 uploadAlignment_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -164,6 +198,8 @@ uploadAlignment_params = [
 ]
 
 uploadQc_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -171,6 +207,8 @@ uploadQc_params = [
 ]
 
 gatkCollectOxogMetrics_params = [
+    'cpus': params.cpus,
+    'mem': params.mem,
     'oxog_scatter': 8,  // default, may be overwritten by params file
     *:(params.gatkCollectOxogMetrics ?: [:])
 ]
@@ -183,13 +221,13 @@ include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercont
 include readGroupUBamQC as rgQC from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
 include {bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.10.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include {alignedSeqQC; getAlignedQCSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.0/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
-include payloadGenDnaAlignment as pGenDnaAln from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.2.0.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
-include payloadGenDnaSeqQc as pGenDnaSeqQc from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.3.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
+include payloadGenDnaAlignment as pGenDnaAln from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.3.0.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
+include payloadGenDnaSeqQc as pGenDnaSeqQc from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.4.0.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
 include {gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
 include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.5/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include songScoreUpload as upAln from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include songScoreUpload as upQc from './song-score-utils/song-score-upload' params(uploadQc_params)
-include cleanupWorkdir as cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.1/process/cleanup-workdir'
+include cleanupWorkdir as cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/cleanup-workdir'
 
 
 workflow DnaAln {
@@ -197,18 +235,33 @@ workflow DnaAln {
         study_id
         analysis_id
         ref_genome_fa
+        analysis_metadata
+        sequencing_files
 
     main:
-        // download files and metadata from song/score (analysis type: sequencing_experiment)
-        dnld(study_id, analysis_id)
+        // detect local mode or not
+        local_mode = false
+        if (analysis_metadata != "NO_FILE" && sequencing_files.size() > 0){
+            local_mode = true
+            if (params.cleanup == true) {
+                log.info "Will not perform 'cleanup' step when running in local mode."
+            }
+            analysis_metadata = file(analysis_metadata)
+            sequencing_files = Channel.fromPath(sequencing_files)
+        } else {
+            // download files and metadata from song/score (analysis type: sequencing_experiment)
+            dnld(study_id, analysis_id)
+            analysis_metadata = dnld.out.song_analysis
+            sequencing_files = dnld.out.files
+        }
 
         // preprocessing input data (BAM or FASTQ) into read group level unmapped BAM (uBAM)
-        toLaneBam(dnld.out.song_analysis, dnld.out.files.collect())
+        toLaneBam(analysis_metadata, sequencing_files.collect())
 
         // use scatter to run BWA alignment for each ubam in parallel
         bwaMemAligner(toLaneBam.out.lane_bams.flatten(), file(ref_genome_fa + '.gz'),
             Channel.fromPath(getBwaSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect(),
-            dnld.out.song_analysis, file(bwaMemAligner_params.tempdir))
+            analysis_metadata, file(bwaMemAligner_params.tempdir))
 
         // perform ubam QC
         rgQC(toLaneBam.out.lane_bams.flatten())
@@ -220,10 +273,12 @@ workflow DnaAln {
 
         // generate payload for aligned seq (analysis type: sequencing_alignment)
         pGenDnaAln(merSorMkdup.out.merged_seq.concat(merSorMkdup.out.merged_seq_idx).collect(),
-            dnld.out.song_analysis, [], name, version)
+            analysis_metadata, [], name, version)
 
         // upload aligned file and metadata to song/score
-        upAln(study_id, pGenDnaAln.out.payload, pGenDnaAln.out.alignment_files.collect())
+        if (!local_mode) {
+            upAln(study_id, pGenDnaAln.out.payload, pGenDnaAln.out.alignment_files.collect())
+        }
 
         // perform aligned seq QC
         alignedSeqQC(pGenDnaAln.out.alignment_files.flatten().first(), file(ref_genome_fa + '.gz'),
@@ -243,7 +298,7 @@ workflow DnaAln {
         gatherOM(oxog.out.oxog_metrics.collect())
 
         // prepare song payload for qc metrics
-        pGenDnaSeqQc(dnld.out.song_analysis,
+        pGenDnaSeqQc(analysis_metadata,
             alignedSeqQC.out.metrics.concat(
                 merSorMkdup.out.duplicates_metrics,
                 gatherOM.out.oxog_metrics,
@@ -251,18 +306,22 @@ workflow DnaAln {
             name, version)
 
         // upload aligned file and metadata to song/score
-        upQc(study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
+        if (!local_mode) {
+            upQc(study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
+        }
 
-        if (params.cleanup) {
+        if (params.cleanup && !local_mode) {
             cleanup(
-                dnld.out.files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
+                sequencing_files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
                     alignedSeqQC.out, oxog.out, rgQC.out).collect(),
                 upAln.out.analysis_id.concat(upQc.out.analysis_id).collect())  // wait until upAln and upQc is done
         }
 
     emit:
-        analysis_id = upAln.out.analysis_id
+        alignment_payload = pGenDnaAln.out.payload
         alignment_files = pGenDnaAln.out.alignment_files
+        qc_metrics_payload = pGenDnaSeqQc.out.payload
+        qc_metrics_files = pGenDnaSeqQc.out.qc_files
 }
 
 
@@ -270,6 +329,8 @@ workflow {
     DnaAln(
         params.study_id,
         params.analysis_id,
-        params.ref_genome_fa
+        params.ref_genome_fa,
+        params.analysis_metadata,
+        params.sequencing_files
     )
 }

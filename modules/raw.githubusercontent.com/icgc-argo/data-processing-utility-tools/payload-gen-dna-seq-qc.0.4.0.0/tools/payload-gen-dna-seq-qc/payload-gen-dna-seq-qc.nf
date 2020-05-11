@@ -19,42 +19,43 @@
 
 /*
  * Authors:
- *   Linda Xiang <linda.xiang@oicr.on.ca>
  *   Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
 nextflow.preview.dsl=2
-version = '0.2.0.0'
+version = '0.4.0.0'
 
-params.files_to_upload = ""
 params.seq_experiment_analysis = ""
-params.read_group_ubam_analysis = ""
+params.qc_files = []
 params.wf_name = ""
 params.wf_version = ""
-params.container_version = ''
+params.container_version = ""
+params.cpus = 1
+params.mem = 1  // GB
 
-process payloadGenDnaAlignment {
-  container "quay.io/icgc-argo/payload-gen-dna-alignment:payload-gen-dna-alignment.${params.container_version ?: version}"
+
+process payloadGenDnaSeqQc {
+  container "quay.io/icgc-argo/payload-gen-dna-seq-qc:payload-gen-dna-seq-qc.${params.container_version ?: version}"
+  cpus params.cpus
+  memory "${params.mem} GB"
 
   input:
-    path files_to_upload
     path seq_experiment_analysis
-    path read_group_ubam_analysis
+    path qc_files
     val wf_name
     val wf_version
 
   output:
-    path "*.dna_alignment.payload.json", emit: payload
-    path "out/*", emit: alignment_files
+    path "*.dna_seq_qc.payload.json", emit: payload
+    path "out/*.tgz", emit: qc_files
 
   script:
-    args_read_group_ubam_analysis = read_group_ubam_analysis.size() > 0 ? "-u ${read_group_ubam_analysis}" : ""
     """
-    payload-gen-dna-alignment.py \
-      -f ${files_to_upload} \
+    payload-gen-dna-seq-qc.py \
       -a ${seq_experiment_analysis} \
-      -w ${wf_name} \
+      -f ${qc_files} \
+      -w "${wf_name}" \
       -r ${workflow.runName} \
-      -v ${wf_version} ${args_read_group_ubam_analysis}
+      -v ${wf_version}
     """
 }

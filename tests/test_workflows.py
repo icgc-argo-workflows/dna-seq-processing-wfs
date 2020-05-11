@@ -3,9 +3,7 @@ import sys
 from glob import glob
 import shutil
 import subprocess
-import git
 
-repo = git.Repo(search_parent_directories=True)
 is_travis = os.environ.get('TRAVIS')
 
 

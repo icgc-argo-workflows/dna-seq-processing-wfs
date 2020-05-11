@@ -51,4 +51,7 @@ directory of this Git repository:
 ```
 export api_token=<your_api_token>
 pytest -v
+
+# or perform test without using SONG/SCORE
+TRAVIS=true pytest -v
 ```
