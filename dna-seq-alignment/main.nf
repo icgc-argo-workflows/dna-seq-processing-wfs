@@ -243,6 +243,9 @@ workflow DnaAln {
         local_mode = false
         if (analysis_metadata != "NO_FILE" && sequencing_files.size() > 0){
             local_mode = true
+            if (params.cleanup == true) {
+                log.info "Will not perform 'cleanup' step when running in local mode."
+            }
             analysis_metadata = file(analysis_metadata)
             sequencing_files = Channel.fromPath(sequencing_files)
         } else {
