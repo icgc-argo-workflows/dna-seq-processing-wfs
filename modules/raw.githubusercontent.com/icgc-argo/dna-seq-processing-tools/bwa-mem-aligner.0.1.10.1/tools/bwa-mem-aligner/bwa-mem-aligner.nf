@@ -22,7 +22,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.1.10.0'
+version = '0.1.10.1'
 
 params.input_bam = "tests/input/?????_?.lane.bam"
 params.aligned_lane_prefix = 'grch38-aligned'
@@ -55,6 +55,7 @@ process bwaMemAligner {
     path ref_genome_gz_secondary_files
     path sequencing_experiment_analysis
     path tempdir
+    val dependencies
 
   output:
     path "${params.aligned_lane_prefix}.${input_bam.baseName}.bam", emit: aligned_bam

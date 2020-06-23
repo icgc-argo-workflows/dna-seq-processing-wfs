@@ -23,7 +23,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '4.1.4.1-1.5'
+version = '4.1.4.1-1.6'
 
 params.seq = ""
 params.seq_idx = ""
@@ -51,7 +51,7 @@ process gatkCollectOxogMetrics {
     path ref_genome_fa
     path ref_genome_secondary_file
     path interval_file
-
+    val dependencies
 
   output:
     path "*.oxog_metrics.tgz", emit: oxog_metrics

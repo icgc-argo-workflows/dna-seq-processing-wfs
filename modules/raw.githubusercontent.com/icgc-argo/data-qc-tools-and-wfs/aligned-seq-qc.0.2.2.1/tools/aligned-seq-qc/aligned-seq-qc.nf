@@ -23,7 +23,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.2.2.0'
+version = '0.2.2.1'
 
 params.seq = ""
 params.container_version = ""
@@ -49,6 +49,7 @@ process alignedSeqQC {
     path seq
     path ref_genome_gz
     path ref_genome_gz_secondary_file
+    val dependencies
 
   output:
     path "*.qc_metrics.tgz", emit: metrics
