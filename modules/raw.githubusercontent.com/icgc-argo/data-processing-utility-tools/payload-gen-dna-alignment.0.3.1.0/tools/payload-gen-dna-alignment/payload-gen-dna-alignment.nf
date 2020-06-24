@@ -24,7 +24,7 @@
  */
 
 nextflow.preview.dsl=2
-version = '0.3.0.0'
+version = '0.3.1.0'
 
 params.files_to_upload = ""
 params.seq_experiment_analysis = ""
@@ -55,6 +55,7 @@ process payloadGenDnaAlignment {
       -a ${seq_experiment_analysis} \
       -w "${wf_name}" \
       -r ${workflow.runName} \
+      -s ${workflow.sessionId} \
       -v ${wf_version} ${args_read_group_ubam_analysis}
     """
 }
