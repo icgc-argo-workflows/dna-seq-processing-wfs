@@ -264,7 +264,7 @@ workflow DnaAln {
         // use scatter to run BWA alignment for each ubam in parallel
         bwaMemAligner(toLaneBam.out.lane_bams.flatten(), file(ref_genome_fa + '.gz'),
             Channel.fromPath(getBwaSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect(),
-            analysis_metadata, file(bwaMemAligner_params.tempdir), rgQC.out.count())
+            analysis_metadata, file(bwaMemAligner_params.tempdir), rgQC.out.count())  // just to run after rgQC
 
         // collect aligned lane bams for merge and markdup
         merSorMkdup(bwaMemAligner.out.aligned_bam.collect(), file(ref_genome_fa + '.gz'),
@@ -287,7 +287,7 @@ workflow DnaAln {
         // perform aligned seq QC
         alignedSeqQC(pGenDnaAln.out.alignment_files.flatten().first(), file(ref_genome_fa + '.gz'),
             Channel.fromPath(getAlignedQCSecondaryFiles(ref_genome_fa + '.gz'), checkIfExists: true).collect(),
-            alnAnalysisId)
+            alnAnalysisId)  // run after upAln
 
         // prepare oxog_scatter intervals
         splitItvls(gatkCollectOxogMetrics_params.oxog_scatter, file(ref_genome_fa),
@@ -297,7 +297,7 @@ workflow DnaAln {
         oxog(pGenDnaAln.out.alignment_files.flatten().first(), pGenDnaAln.out.alignment_files.flatten().last(),
             file(ref_genome_fa),
             Channel.fromPath(getOxogSecondaryFiles(ref_genome_fa), checkIfExists: true).collect(),
-            splitItvls.out.interval_files.flatten(), alignedSeqQC.out.count())
+            splitItvls.out.interval_files.flatten(), alignedSeqQC.out.count())  // run after alignedSeqQC
 
         // gatherOxogMatrics
         gatherOM(oxog.out.oxog_metrics.collect())
