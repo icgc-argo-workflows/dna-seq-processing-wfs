@@ -1,7 +1,0 @@
-type	name	size	submitter_read_group_id	checksum	checksum_type	path	format
-file	C0HVY.2_r1.fq	5381	C0HVY.2	6584ebb05edfbd6f59be6307556bd871	md5	C0HVY.2_r1.fq	FASTQ
-file	C0HVY.2_r2.fq	5381	C0HVY.2	d649696f346eb75b95b68e8ecd45f44f	md5	C0HVY.2_r2.fq	FASTQ
-file	D0RE2.1_r1.fq	6148	D0RE2.1	058510bbdab2dccc14a2d7402a21248d	md5	D0RE2.1_r1.fq	FASTQ
-file	D0RE2.1_r2.fq	6148	D0RE2.1	5fb35647198666b6a06e8539074282fd	md5	D0RE2.1_r2.fq	FASTQ
-file	D0RH0.2_r1.fq	4784	D0RH0.2	eb109b8774df03084024bc09a86721be	md5	D0RH0.2_r1.fq	FASTQ
-file	D0RH0.2_r2.fq	4784	D0RH0.2	ed209fda15a5928087104253a6bfb42d	md5	D0RH0.2_r2.fq	FASTQ

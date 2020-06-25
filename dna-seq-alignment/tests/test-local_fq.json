@@ -1,0 +1,16 @@
+{
+  "study_id": "TEST-PR",
+  "analysis_metadata": "data/83185fe5-71cc-4515-bc75-e94d15ba291a.sequencing_experiment.json",
+  "sequencing_files": [
+    "data/D0RE2.1_r2.fq.gz",
+    "data/D0RH0.2_r1.fq.gz",
+    "data/D0RE2.1_r1.fq.gz",
+    "data/D0RH0.2_r2.fq.gz",
+    "data/C0HVY.2_r2.fq.gz",
+    "data/C0HVY.2_r1.fq.gz"
+  ],
+  "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
+  "cpus": 2,
+  "mem": 2,
+  "tempdir": "NO_DIR"
+}

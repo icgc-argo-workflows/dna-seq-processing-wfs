@@ -1,4 +1,0 @@
-type	submitter_read_group_id	submitter_sequencing_experiment_id	platform_unit	is_paired_end	file_r1	file_r2	read_length_r1	read_length_r2	insert_size	sample_barcode	library_name
-read_group	C0HVY.2	TEST_EXP1	74_8a	true	C0HVY.2_r1.fq	C0HVY.2_r2.fq	150	150	298		Pond-147580
-read_group	D0RE2.1	TEST_EXP1	74_8b	true	D0RE2.1_r1.fq	D0RE2.1_r2.fq	150	150	298		Pond-147580
-read_group	D0RH0.2	TEST_EXP1	74_8c	true	D0RH0.2_r1.fq	D0RH0.2_r2.fq	150	150	298		Pond-147580
