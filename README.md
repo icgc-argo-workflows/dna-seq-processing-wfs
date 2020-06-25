@@ -32,26 +32,26 @@ which specific version of a module is to be imported.
 
 To run the pipeline, please follow instruction [here](https://www.nextflow.io/docs/latest/getstarted.html#installation) to install Nextflow (version `20.01.0` or higher) first.
 
-Run `1.0.0` version of the pipeline:
+Run `1.3.0` version of the pipeline:
 ```
-nextflow run icgc-argo/dna-seq-processing-wfs -r 1.0.0 -params-file <your_params_file.json>
+nextflow run icgc-argo/dna-seq-processing-wfs -r 1.3.0 -params-file <your_params_file.json>
 ```
 
-You may need to run `nextflow pull icgc-argo/dna-seq-processing-wfs` if the version `1.0.0` is new since last time the pipeline was run.
+You may need to run `nextflow pull icgc-argo/dna-seq-processing-wfs` if the version `1.3.0` is new since last time the pipeline was run.
 
 Please note that SONG/SCORE services need to be available and you have appropriate API token.
 
 ## Testing
 
-Automated Travis CI testing has been set up. However, tests will be skipped when CI is triggered on a Travis server due to reliance on SONG/SCORE services which are not available. A possible solution is to spin up
-SONG/SCORE services running use Docker at Travis, this will require some work but should be doable. Before this
-is resolved, we can run tests locally (where we have access to SONG/SCORE services) with the following commands under the root
-directory of this Git repository:
+Automated Travis CI testing has been set up. However, tests relying on SONG/SCORE will be skipped when CI is triggered
+on a Travis server where SONG/SCORE services are not available. When running tests locally (where SONG/SCORE services may be
+available) please use the following commands under the root directory of this Git repository:
 
 ```
+# perform all tests when SONG/SCORE is available
 export api_token=<your_api_token>
 pytest -v
 
-# or perform test without using SONG/SCORE
+# or perform tests that do not need SONG/SCORE
 TRAVIS=true pytest -v
 ```
