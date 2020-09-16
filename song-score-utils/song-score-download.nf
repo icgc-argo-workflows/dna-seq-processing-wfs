@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 
 // processes resources
 params.song_cpus = 1
@@ -38,8 +38,8 @@ score_params = [
 
 // import modules
 // TODO: change import for score_download after it's updated on the other git repo
-include songGetAnalysis as songGet from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/song_get_analysis' params(song_params)
-include scoreDownload as scoreDn from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/score_download' params(score_params)
+include songGetAnalysis as songGet from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.2.0/process/song_get_analysis' params(song_params)
+include scoreDownload as scoreDn from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.2.0/process/score_download' params(score_params)
 
 workflow songScoreDownload {
     take:

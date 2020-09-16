@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl = 2
+nextflow.enable.dsl = 2
 name = 'dna-seq-alignment'
-version = '1.3.0'
+version = '1.4.0-dev'
 
 /*
 ========================================================================================
@@ -137,6 +137,7 @@ download_params = [
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
+    'rdpc_secret_name': params.rdpc_secret_name,
     *:(params.download ?: [:])
 ]
 
@@ -194,6 +195,7 @@ uploadAlignment_params = [
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
+    'rdpc_secret_name': params.rdpc_secret_name,
     *:(params.uploadAlignment ?: [:])
 ]
 
@@ -203,6 +205,7 @@ uploadQc_params = [
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
+    'rdpc_secret_name': params.rdpc_secret_name,
     *:(params.uploadQc ?: [:])
 ]
 
@@ -227,7 +230,7 @@ include {gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx} from "
 include {gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM} from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.4.1-1.6/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include songScoreUpload as upAln from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include songScoreUpload as upQc from './song-score-utils/song-score-upload' params(uploadQc_params)
-include cleanupWorkdir as cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/cleanup-workdir'
+include cleanupWorkdir as cleanup from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.2.0/process/cleanup-workdir'
 
 
 workflow DnaAln {
