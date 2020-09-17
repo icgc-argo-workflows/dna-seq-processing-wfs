@@ -60,16 +60,16 @@ workflow songScoreUpload {
 
     main:
         // Create new analysis
-        songSub(study_id, payload, song_params.api_token)
+        songSub(study_id, payload)
 
         // Generate file manifest for upload
-        songMan(study_id, songSub.out, upload, song_params.api_token)
+        songMan(study_id, songSub.out, upload)
 
         // Upload to SCORE
-        scoreUp(songSub.out, songMan.out, upload, song_params.api_token)
+        scoreUp(songSub.out, songMan.out, upload)
 
         // Publish the analysis
-        songPub(study_id, scoreUp.out.ready_to_publish, song_params.api_token)
+        songPub(study_id, scoreUp.out.ready_to_publish)
 
     emit:
         analysis_id = songPub.out.analysis_id
