@@ -47,10 +47,10 @@ extract_params = [
 
 // import modules
 // TODO: change import for song_manifest after it's updated (use non-root docker image) on the other git repo
-include songSubmit as songSub from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_submit' params(song_params)
-include songManifest as songMan from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_manifest' params(song_params)
-include scoreUpload as scoreUp from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/score_upload' params(score_params)
-include songPublish as songPub from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_publish' params(song_params)
+include { songSubmit as songSub } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_submit' params(song_params)
+include { songManifest as songMan } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_manifest' params(song_params)
+include { scoreUpload as scoreUp } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/score_upload' params(score_params)
+include { songPublish as songPub } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_publish' params(song_params)
 
 workflow songScoreUpload {
     take:
