@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 
 // processes resources
 params.song_cpus = 1
@@ -47,10 +47,10 @@ extract_params = [
 
 // import modules
 // TODO: change import for song_manifest after it's updated (use non-root docker image) on the other git repo
-include songSubmit as songSub from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/song_submit' params(song_params)
-include songManifest as songMan from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/song_manifest' params(song_params)
-include scoreUpload as scoreUp from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/score_upload' params(score_params)
-include songPublish as songPub from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/1.1.5/process/song_publish' params(song_params)
+include { songSubmit as songSub } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_submit' params(song_params)
+include { songManifest as songMan } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_manifest' params(song_params)
+include { scoreUpload as scoreUp } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/score_upload' params(score_params)
+include { songPublish as songPub } from '../modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/song_publish' params(song_params)
 
 workflow songScoreUpload {
     take:
@@ -60,16 +60,16 @@ workflow songScoreUpload {
 
     main:
         // Create new analysis
-        songSub(study_id, payload, song_params.api_token)
+        songSub(study_id, payload)
 
         // Generate file manifest for upload
-        songMan(study_id, songSub.out, upload, song_params.api_token)
+        songMan(study_id, songSub.out, upload)
 
         // Upload to SCORE
-        scoreUp(songSub.out, songMan.out, upload, song_params.api_token)
+        scoreUp(songSub.out, songMan.out, upload)
 
         // Publish the analysis
-        songPub(study_id, scoreUp.out.ready_to_publish, song_params.api_token)
+        songPub(study_id, scoreUp.out.ready_to_publish)
 
     emit:
         analysis_id = songPub.out.analysis_id

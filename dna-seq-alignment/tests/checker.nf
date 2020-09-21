@@ -21,7 +21,7 @@
  * authors: Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 
 params.study_id = ""
 params.analysis_id = ""
@@ -29,7 +29,7 @@ params.ref_genome_fa = ""
 params.analysis_metadata = "NO_FILE"
 params.sequencing_files = []
 
-include DnaAln from "../main" params(params)
+include { DnaAln } from "../main" params(params)
 
 workflow {
   main:
@@ -40,10 +40,4 @@ workflow {
         params.analysis_metadata,
         params.sequencing_files
     )
-
-  publish:
-    DnaAln.out.alignment_payload to: "outdir", overwrite: true
-    DnaAln.out.alignment_files to: "outdir", overwrite: true
-    DnaAln.out.qc_metrics_payload to: "outdir", overwrite: true
-    DnaAln.out.qc_metrics_files to: "outdir", overwrite: true
 }
