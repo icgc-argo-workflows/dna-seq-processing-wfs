@@ -21,22 +21,23 @@
  * author Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
-version = '0.2.4.0'
+nextflow.enable.dsl=2
+version = '0.3.0.0'
 
 params.metadata_json = ""
 params.seq_files = ""
 params.reads_max_discard_fraction = 0.05
 params.container_version = ""
-params.tool = "samtools"
 params.cpus = 1
 params.mem = 2  // in GB
+params.publish_dir = ""
 
 
 process seqDataToLaneBam {
   container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
+  publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", enabled: "${params.publish_dir ? true : ''}"
 
   input:
     path metadata_json
@@ -52,7 +53,6 @@ process seqDataToLaneBam {
       -s ${seq_files} \
       -d ${params.reads_max_discard_fraction} \
       -n ${params.cpus} \
-      -m ${(int) (params.mem * 1000)} \
-      -t ${params.tool}
+      -m ${(int) (params.mem * 1000)}
     """
 }
