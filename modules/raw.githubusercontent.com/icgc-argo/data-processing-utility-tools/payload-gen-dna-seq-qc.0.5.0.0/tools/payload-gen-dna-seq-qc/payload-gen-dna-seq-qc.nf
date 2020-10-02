@@ -22,8 +22,8 @@
  *   Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
-version = '0.4.1.0'
+nextflow.enable.dsl=2
+version = '0.5.0.0'
 
 params.seq_experiment_analysis = ""
 params.qc_files = []
@@ -32,12 +32,14 @@ params.wf_version = ""
 params.container_version = ""
 params.cpus = 1
 params.mem = 1  // GB
+params.publish_dir = ""
 
 
 process payloadGenDnaSeqQc {
   container "quay.io/icgc-argo/payload-gen-dna-seq-qc:payload-gen-dna-seq-qc.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
+  publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", enabled: "${params.publish_dir ? true : ''}"
 
   input:
     path seq_experiment_analysis
