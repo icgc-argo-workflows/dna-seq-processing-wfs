@@ -216,7 +216,7 @@ gatkCollectOxogMetrics_params = [
 // Include all modules and pass params
 include { songScoreDownload as dnld } from './song-score-utils/song-score-download' params(download_params)
 include { seqDataToLaneBam as toLaneBam } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.3.3.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(seqDataToLaneBam_params)
-include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.11.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
+include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.12.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
 include { readGroupUBamQC as rgQC } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
 include { bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.10.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include { alignedSeqQC; getAlignedQCSecondaryFiles } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.1/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
