@@ -21,7 +21,7 @@
  * author Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 version = '0.1.12.0'
 
 params.input_bam = "tests/input/?????_?.lane.bam"
@@ -30,6 +30,7 @@ params.ref_genome_gz = "tests/reference/tiny-grch38-chr11-530001-537000.fa.gz"
 params.container_version = ""
 params.cpus = 1
 params.mem = 1  // GB
+params.publish_dir = ""
 params.sequencing_experiment_analysis = "NO_FILE"
 params.tempdir = "NO_DIR"
 
@@ -43,6 +44,7 @@ def getBwaSecondaryFiles(main_file){  //this is kind of like CWL's secondary fil
 
 process bwaMemAligner {
   container "quay.io/icgc-argo/bwa-mem-aligner:bwa-mem-aligner.${params.container_version ?: version}"
+  publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", enabled: "${params.publish_dir ? true : ''}"
 
   cpus params.cpus
   memory "${params.mem} GB"
