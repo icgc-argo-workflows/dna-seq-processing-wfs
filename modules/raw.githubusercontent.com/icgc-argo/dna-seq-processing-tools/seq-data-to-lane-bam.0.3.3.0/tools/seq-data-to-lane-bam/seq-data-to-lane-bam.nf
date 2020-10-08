@@ -18,45 +18,41 @@
  */
 
 /*
- * Authors:
- *   Junjun Zhang <junjun.zhang@oicr.on.ca>
+ * author Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
-version = '0.4.1.0'
+nextflow.enable.dsl=2
+version = '0.3.3.0'
 
-params.seq_experiment_analysis = ""
-params.qc_files = []
-params.wf_name = ""
-params.wf_version = ""
+params.metadata_json = ""
+params.seq_files = ""
+params.reads_max_discard_fraction = 0.05
 params.container_version = ""
 params.cpus = 1
-params.mem = 1  // GB
+params.mem = 2  // in GB
+params.publish_dir = ""
 
 
-process payloadGenDnaSeqQc {
-  container "quay.io/icgc-argo/payload-gen-dna-seq-qc:payload-gen-dna-seq-qc.${params.container_version ?: version}"
+process seqDataToLaneBam {
+  container "quay.io/icgc-argo/seq-data-to-lane-bam:seq-data-to-lane-bam.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
+  publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", enabled: "${params.publish_dir ? true : ''}"
 
   input:
-    path seq_experiment_analysis
-    path qc_files
-    val wf_name
-    val wf_version
+    path metadata_json
+    path seq_files
 
   output:
-    path "*.dna_seq_qc.payload.json", emit: payload
-    path "out/*.tgz", emit: qc_files
+    path "*.lane.bam", emit: lane_bams
 
   script:
     """
-    payload-gen-dna-seq-qc.py \
-      -a ${seq_experiment_analysis} \
-      -f ${qc_files} \
-      -w "${wf_name}" \
-      -r ${workflow.runName} \
-      -s ${workflow.sessionId} \
-      -v ${wf_version}
+    seq-data-to-lane-bam.py \
+      -p ${metadata_json} \
+      -s ${seq_files} \
+      -d ${params.reads_max_discard_fraction} \
+      -n ${params.cpus} \
+      -m ${(int) (params.mem * 1000)}
     """
 }
