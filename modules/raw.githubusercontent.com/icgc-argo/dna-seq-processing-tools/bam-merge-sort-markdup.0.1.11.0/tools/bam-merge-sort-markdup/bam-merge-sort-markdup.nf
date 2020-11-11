@@ -21,8 +21,8 @@
  * author Junjun Zhang <junjun.zhang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
-version = '0.1.10.0'
+nextflow.enable.dsl=2
+version = '0.1.11.0'
 
 params.aligned_lane_bams = ""
 params.ref_genome_gz = ""

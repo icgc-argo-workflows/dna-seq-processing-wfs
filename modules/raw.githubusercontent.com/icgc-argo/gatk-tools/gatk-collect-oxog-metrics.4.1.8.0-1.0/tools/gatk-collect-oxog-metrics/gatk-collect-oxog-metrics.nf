@@ -22,8 +22,8 @@
  *        Linda Xiang <linda.xiang@oicr.on.ca>
  */
 
-nextflow.preview.dsl=2
-version = '4.1.4.1-1.6'
+nextflow.enable.dsl=2
+version = '4.1.8.0-1.0'
 
 params.seq = ""
 params.seq_idx = ""

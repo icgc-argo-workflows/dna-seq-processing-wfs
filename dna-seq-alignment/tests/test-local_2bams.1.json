@@ -1,0 +1,18 @@
+{
+  "study_id": "TEST-PR",
+  "analysis_metadata": "data/3e46fd12-a5fc-4d72-86fd-12a5fcbd7216.sequencing_experiment.json",
+  "sequencing_files": [
+    "data/test_rg_3.v2.bam",
+    "data/test_rg_3_2.v2.bam"
+  ],
+  "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
+  "bamMergeSortMarkdup": {
+    "cpus": 2,
+    "mem": 2,
+    "output_format": "bam",
+    "markdup": false
+  },
+  "cpus": 2,
+  "mem": 2,
+  "tempdir": "NO_DIR"
+}
