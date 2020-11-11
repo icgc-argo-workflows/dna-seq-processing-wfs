@@ -113,10 +113,12 @@ params.cleanup = true
 params.cpus = 1
 params.mem = 1
 params.tempdir = "NO_DIR"
+params.publish_dir = ""
 params.analysis_metadata = "NO_FILE"
 params.sequencing_files = []
 params.song_url = ""
 params.score_url = ""
+params.api_token = ""
 params.download = [:]
 params.seqDataToLaneBam = [:]
 params.bwaMemAligner = [:]
@@ -172,6 +174,7 @@ readGroupUBamQC_params = [
 payloadGenDnaAlignment_params = [
     'cpus': params.cpus,
     'mem': params.mem,
+    'publish_dir': params.publish_dir,
     *:(params.payloadGenDnaAlignment ?: [:])
 ]
 
@@ -184,6 +187,7 @@ alignedSeqQC_params = [
 payloadGenDnaSeqQc_params = [
     'cpus': params.cpus,
     'mem': params.mem,
+    'publish_dir': params.publish_dir,
     *:(params.payloadGenDnaSeqQc ?: [:])
 ]
 
