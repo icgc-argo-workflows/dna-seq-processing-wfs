@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 name = 'dna-seq-alignment'
-version = '1.5.4'
+version = '1.5.5-dev'
 
 /*
 ========================================================================================
@@ -225,7 +225,7 @@ include { readGroupUBamQC as rgQC } from "./modules/raw.githubusercontent.com/ic
 include { bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.11.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include { alignedSeqQC; getAlignedQCSecondaryFiles } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.1/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
 include { payloadGenDnaAlignment as pGenDnaAln } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.3.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
-include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.5.2.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
+include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.5.3.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
 include { gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
 include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.8.0-1.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include { songScoreUpload as upAln } from './song-score-utils/song-score-upload' params(uploadAlignment_params)
@@ -246,16 +246,21 @@ workflow DnaAln {
         local_mode = false
         if (analysis_metadata != "NO_FILE" && sequencing_files.size() > 0){
             local_mode = true
-            if (params.cleanup == true) {
-                log.info "Will not perform 'cleanup' step when running in local mode."
+            if (!params.publish_dir) {
+                exit 1, "You specified local sequencing data as input, please also set `params.publish_dir` to keep the output."
             }
+            log.info "Run the workflow using local input sequencing data, alignment results will be in: ${params.publish_dir}"
             analysis_metadata = file(analysis_metadata)
             sequencing_files = Channel.fromPath(sequencing_files)
-        } else {
+        } else if (study_id && analysis_id) {
             // download files and metadata from song/score (analysis type: sequencing_experiment)
+            log.info "Run the workflow using input sequencing data from SONG/SCORE, alignment results will be uploaded to SONG/SCORE as well"
             dnld(study_id, analysis_id)
             analysis_metadata = dnld.out.song_analysis
             sequencing_files = dnld.out.files
+        } else {
+            exit 1, "To use sequencing data from SONG/SCORE as input, please provide `params.study_id`, `params.analysis_id` and other SONG/SCORE params.\n" +
+                "Or please provide `params.analysis_metadata` and `params.sequencing_files` from local files as input."
         }
 
         // preprocessing input data (BAM or FASTQ) into read group level unmapped BAM (uBAM)
@@ -323,6 +328,10 @@ workflow DnaAln {
                 sequencing_files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
                     alignedSeqQC.out, oxog.out, rgQC.out).collect(),
                 upAln.out.analysis_id.concat(upQc.out.analysis_id).collect())  // wait until upAln and upQc is done
+        } else if (params.cleanup && local_mode) {
+            cleanup(
+                sequencing_files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
+                    alignedSeqQC.out, oxog.out, rgQC.out).collect())
         }
 
     emit:
