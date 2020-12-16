@@ -326,12 +326,12 @@ workflow DnaAln {
         if (params.cleanup && !local_mode) {
             cleanup(
                 sequencing_files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
-                    alignedSeqQC.out, oxog.out, rgQC.out, pGenDnaAln.out, pGenDnaSeqQc.out).collect(),
+                    alignedSeqQC.out, oxog.out, rgQC.out).collect(),
                 upAln.out.analysis_id.concat(upQc.out.analysis_id).collect())  // wait until upAln and upQc is done
         } else if (params.cleanup && local_mode) {
             cleanup(
                 sequencing_files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
-                    alignedSeqQC.out, oxog.out, rgQC.out, pGenDnaAln.out, pGenDnaSeqQc.out).collect(), 1)
+                    alignedSeqQC.out, oxog.out, rgQC.out).collect(), pGenDnaSeqQc.out.payload)
         }
 
     emit:
