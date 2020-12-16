@@ -331,7 +331,7 @@ workflow DnaAln {
         } else if (params.cleanup && local_mode) {
             cleanup(
                 sequencing_files.concat(toLaneBam.out, bwaMemAligner.out, merSorMkdup.out,
-                    alignedSeqQC.out, oxog.out, rgQC.out).collect())
+                    alignedSeqQC.out, oxog.out, rgQC.out).collect(), 1)
         }
 
     emit:
