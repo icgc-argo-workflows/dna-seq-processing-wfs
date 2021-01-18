@@ -1,0 +1,102 @@
+{
+  "analysisType": {
+    "name": "sequencing_experiment"
+  },
+  "studyId": "TEST-PR",
+  "experiment": {
+    "submitter_sequencing_experiment_id": "TEST_EXP1",
+    "sequencing_center": "EXT",
+    "platform": "ILLUMINA",
+    "platform_model": "HiSeq 2000",
+    "experimental_strategy": "WGS",
+    "sequencing_date": "2014-12-12"
+  },
+  "read_group_count": 3,
+  "read_groups": [
+    {
+      "submitter_read_group_id": "C0HVY.2",
+      "platform_unit": "74_8a",
+      "is_paired_end": false,
+      "file_r1": "C0HVY.2_r1.fq.gz",
+      "file_r2": null,
+      "read_length_r1": 150,
+      "read_length_r2": null,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "Pond-147580"
+    },
+    {
+      "submitter_read_group_id": "D0RE2.1",
+      "platform_unit": "74_8b",
+      "is_paired_end": false,
+      "file_r1": "D0RE2.1_r1.fq.gz",
+      "file_r2": null,
+      "read_length_r1": 150,
+      "read_length_r2": null,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "Pond-147580"
+    },
+    {
+      "submitter_read_group_id": "D0RH0.2",
+      "platform_unit": "74_8c",
+      "is_paired_end": false,
+      "file_r1": "D0RH0.2_r1.fq.gz",
+      "file_r2": null,
+      "read_length_r1": 150,
+      "read_length_r2": null,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "Pond-147580"
+    }
+  ],
+  "samples": [
+    {
+      "sampleId": "SA610149",
+      "specimenId": "SP210129",
+      "submitterSampleId": "HCC1143_BAM_INPUT",
+      "matchedNormalSubmitterSampleId": null,
+      "sampleType": "Total DNA",
+      "specimen": {
+        "specimenId": "SP210129",
+        "donorId": "DO250122",
+        "submitterSpecimenId": "HCC1143_BAM_INPUT",
+        "tumourNormalDesignation": "Normal",
+        "specimenTissueSource": "Blood derived",
+        "specimenType": "Cell line - derived from normal"
+      },
+      "donor": {
+        "donorId": "DO250122",
+        "studyId": "TEST-PR",
+        "gender": "Female",
+        "submitterDonorId": "HCC1143"
+      }
+    }
+  ],
+  "files": [
+    {
+      "fileName": "C0HVY.2_r1.fq.gz",
+      "fileSize": 2040,
+      "fileMd5sum": "64cf635dbc54f53cae2cb03ec8e8471b",
+      "fileType": "FASTQ",
+      "fileAccess": "controlled",
+      "dataType": "Submitted Reads"
+    },
+    {
+      "fileName": "D0RE2.1_r1.fq.gz",
+      "fileSize": 2309,
+      "fileMd5sum": "44bea7aa32a1afb68eec24496b608545",
+      "fileType": "FASTQ",
+      "fileAccess": "controlled",
+      "dataType": "Submitted Reads"
+    },
+    {
+      "fileName": "D0RH0.2_r1.fq.gz",
+      "fileSize": 1872,
+      "fileMd5sum": "b90a3c9750db29406f31e9488d5b7e2b",
+      "fileType": "FASTQ",
+      "fileAccess": "controlled",
+      "dataType": "Submitted Reads"
+    }
+  ]
+}
