@@ -306,7 +306,6 @@ workflow DnaAln {
         // get single/paired end info
         mParser(analysis_metadata)
      
-        println(mParser.out.paired)
         // perform gatkCollectOxogMetrics in parallel tasks
         oxog(pGenDnaAln.out.alignment_files.flatten().first(), pGenDnaAln.out.alignment_files.flatten().last(),
             file(ref_genome_fa),
