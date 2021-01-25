@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 name = 'dna-seq-alignment'
-version = '1.5.5'
+version = '1.5.6'
 
 /*
 ========================================================================================
@@ -212,6 +212,7 @@ uploadQc_params = [
 gatkCollectOxogMetrics_params = [
     'cpus': params.cpus,
     'mem': params.mem,
+    'publish_dir': params.publish_dir,
     'oxog_scatter': 8,  // default, may be overwritten by params file
     *:(params.gatkCollectOxogMetrics ?: [:])
 ]
@@ -227,7 +228,8 @@ include { alignedSeqQC; getAlignedQCSecondaryFiles } from "./modules/raw.githubu
 include { payloadGenDnaAlignment as pGenDnaAln } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.3.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
 include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.5.3.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
 include { gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
-include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.8.0-1.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
+include { metadataParser as mParser } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/metadata-parser.0.1.0.0/tools/metadata-parser/metadata-parser.nf"
+include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.8.0-3.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
 include { songScoreUpload as upAln } from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include { songScoreUpload as upQc } from './song-score-utils/song-score-upload' params(uploadQc_params)
 include { cleanupWorkdir as cleanup } from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/cleanup-workdir'
@@ -301,11 +303,14 @@ workflow DnaAln {
         splitItvls(gatkCollectOxogMetrics_params.oxog_scatter, file(ref_genome_fa),
             Channel.fromPath(getSIIdx(ref_genome_fa), checkIfExists: true).collect(), file('NO_FILE'))
 
+        // get single/paired end info
+        mParser(analysis_metadata)
+     
         // perform gatkCollectOxogMetrics in parallel tasks
         oxog(pGenDnaAln.out.alignment_files.flatten().first(), pGenDnaAln.out.alignment_files.flatten().last(),
             file(ref_genome_fa),
             Channel.fromPath(getOxogSecondaryFiles(ref_genome_fa), checkIfExists: true).collect(),
-            splitItvls.out.interval_files.flatten(), alignedSeqQC.out.count())  // run after alignedSeqQC
+            splitItvls.out.interval_files.flatten(), mParser.out.paired, alignedSeqQC.out.count())  // run after alignedSeqQC
 
         // gatherOxogMatrics
         gatherOM(oxog.out.oxog_metrics.collect())

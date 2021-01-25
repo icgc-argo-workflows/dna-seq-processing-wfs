@@ -23,15 +23,17 @@
  */
 
 nextflow.enable.dsl=2
-version = '4.1.8.0-1.0'
+version = '4.1.8.0-3.0'
 
 params.seq = ""
 params.seq_idx = ""
 params.interval_file = "NO_FILE"
 params.container_version = ""
 params.ref_genome_fa = ""
+params.paired = "true"
 params.cpus = 1
 params.mem = 2  // in GB
+params.publish_dir = ""
 
 def getOxogSecondaryFiles(main_file){  //this is kind of like CWL's secondary files
   def all_files = []
@@ -44,6 +46,7 @@ process gatkCollectOxogMetrics {
   container "quay.io/icgc-argo/gatk-collect-oxog-metrics:gatk-collect-oxog-metrics.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
+  publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: "${params.publish_dir ? true : ''}"
 
   input:
     path seq
@@ -51,6 +54,7 @@ process gatkCollectOxogMetrics {
     path ref_genome_fa
     path ref_genome_secondary_file
     path interval_file
+    val paired
     val dependencies
 
   output:
@@ -58,10 +62,11 @@ process gatkCollectOxogMetrics {
 
   script:
     arg_interval_file = interval_file.name == 'NO_FILE' ? "" : "-i ${interval_file}"
+    arg_paired = paired == "true" ? "-p" : ""
     """
     gatk-collect-oxog-metrics.py -s ${seq} \
                       -r ${ref_genome_fa} \
-                      -m ${(int) (params.mem * 1000)} ${arg_interval_file}
+                      -m ${(int) (params.mem * 1000)} ${arg_interval_file} ${arg_paired}
     """
 }
 
@@ -70,6 +75,7 @@ process gatherOxogMetrics {
   container "quay.io/icgc-argo/gatk-collect-oxog-metrics:gatk-collect-oxog-metrics.${params.container_version ?: version}"
   cpus params.cpus
   memory "${params.mem} GB"
+  publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: "${params.publish_dir ? true : ''}"
 
   input:
     path oxog_metrics_files
