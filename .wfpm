@@ -1,0 +1,5 @@
+project_name: dna-seq-processing-wfs
+license: GNU Affero General Public License v3
+repo_type: git
+repo_server: github.com
+repo_account: icgc-argo
