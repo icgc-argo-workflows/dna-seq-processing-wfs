@@ -109,13 +109,19 @@ Upload Parameters (object):
 params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
+
 params.cleanup = true
 params.cpus = 1
 params.mem = 1
 params.tempdir = "NO_DIR"
 params.publish_dir = ""
+
 params.analysis_metadata = "NO_FILE"
+params.experiment_info_tsv = "NO_FILE1"
+params.read_group_info_tsv = "NO_FILE2"
+params.file_info_tsv = "NO_FILE3"
 params.sequencing_files = []
+
 params.song_url = ""
 params.score_url = ""
 params.api_token = ""
@@ -233,6 +239,7 @@ include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetri
 include { songScoreUpload as upAln } from './song-score-utils/song-score-upload' params(uploadAlignment_params)
 include { songScoreUpload as upQc } from './song-score-utils/song-score-upload' params(uploadQc_params)
 include { cleanupWorkdir as cleanup } from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/cleanup-workdir'
+include { payloadGenSeqExperiment as pGenExp } from './wfpr_modules/github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.3.0/main.nf'
 
 
 workflow DnaAln {
@@ -241,18 +248,38 @@ workflow DnaAln {
         analysis_id
         ref_genome_fa
         analysis_metadata
+        experiment_info_tsv
+        read_group_info_tsv
+        file_info_tsv
         sequencing_files
 
     main:
         // detect local mode or not
         local_mode = false
-        if (analysis_metadata != "NO_FILE" && sequencing_files.size() > 0){
+        if ((analysis_metadata != "NO_FILE" || experiment_info_tsv != "NO_FILE1") && sequencing_files.size() > 0){
             local_mode = true
             if (!params.publish_dir) {
                 exit 1, "You specified local sequencing data as input, please also set `params.publish_dir` to keep the output."
             }
             log.info "Run the workflow using local input sequencing data, alignment results will be in: ${params.publish_dir}"
-            analysis_metadata = file(analysis_metadata)
+
+            if (analysis_metadata != "NO_FILE") {
+                if (experiment_info_tsv != "NO_FILE1" || read_group_info_tsv != "NO_FILE2" || file_info_tsv != "NO_FILE3") {
+                    log.info "Use analysis metadata JSON as input, will ignore input: 'experiment_info_tsv', 'read_group_info_tsv', 'file_info_tsv'"
+                }
+                analysis_metadata = file(analysis_metadata)
+            } else if (experiment_info_tsv != "NO_FILE1" && read_group_info_tsv != "NO_FILE1" && file_info_tsv != "NO_FILE1") {
+                pGenExp(
+                    file("NO_FILE1"),
+                    file(experiment_info_tsv),
+                    file(read_group_info_tsv),
+                    file(file_info_tsv)
+                )
+                analysis_metadata = pGenExp.out.payload
+            } else {
+                exit 1, "To run the workflow using local inputs, please specify metadata in JSON using params.analysis_metadata or metadata in TSVs using params.experiment_info_tsv, params.read_group_info_tsv and params.file_info_tsv."
+            }
+
             sequencing_files = Channel.fromPath(sequencing_files)
         } else if (study_id && analysis_id) {
             // download files and metadata from song/score (analysis type: sequencing_experiment)
@@ -262,7 +289,7 @@ workflow DnaAln {
             sequencing_files = dnld.out.files
         } else {
             exit 1, "To use sequencing data from SONG/SCORE as input, please provide `params.study_id`, `params.analysis_id` and other SONG/SCORE params.\n" +
-                "Or please provide `params.analysis_metadata` and `params.sequencing_files` from local files as input."
+                "Or please provide `params.analysis_metadata` (or `params.experiment_info_tsv`, `params.read_group_info_tsv` and `params.file_info_tsv`) and `params.sequencing_files` from local files as input."
         }
 
         // preprocessing input data (BAM or FASTQ) into read group level unmapped BAM (uBAM)
@@ -353,6 +380,9 @@ workflow {
         params.analysis_id,
         params.ref_genome_fa,
         params.analysis_metadata,
+        params.experiment_info_tsv,
+        params.read_group_info_tsv,
+        params.file_info_tsv,
         params.sequencing_files
     )
 }

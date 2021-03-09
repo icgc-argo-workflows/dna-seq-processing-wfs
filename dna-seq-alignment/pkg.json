@@ -1,0 +1,31 @@
+{
+    "name": "dna-seq-alignment",
+    "version": "1.6.0",
+    "description": "DNA Seq Alignment Workflow",
+    "main": "main.nf",
+    "deprecated": false,
+    "keywords": [
+        "bioinformatics",
+        "dna",
+        "alignment"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/icgc-argo/dna-seq-processing-wfs.git"
+    },
+    "dependencies": [
+        "github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.3.0"
+    ],
+    "devDependencies": [],
+    "contributors": [
+        {
+            "name": "Junjun Zhang"
+        },
+        {
+            "name": "Linda Xiang"
+        }
+    ],
+    "license": "GNU Affero General Public License v3",
+    "bugReport": "https://github.com/icgc-argo/dna-seq-processing-wfs/issues",
+    "homepage": "https://github.com/icgc-argo/dna-seq-processing-wfs#readme"
+}

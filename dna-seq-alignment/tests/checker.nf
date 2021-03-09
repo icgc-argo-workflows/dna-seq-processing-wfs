@@ -26,8 +26,13 @@ nextflow.enable.dsl=2
 params.study_id = ""
 params.analysis_id = ""
 params.ref_genome_fa = ""
+
 params.analysis_metadata = "NO_FILE"
+params.experiment_info_tsv = "NO_FILE1"
+params.read_group_info_tsv = "NO_FILE2"
+params.file_info_tsv = "NO_FILE3"
 params.sequencing_files = []
+
 
 include { DnaAln } from "../main" params(params)
 
@@ -38,6 +43,9 @@ workflow {
         params.analysis_id,
         params.ref_genome_fa,
         params.analysis_metadata,
+        params.experiment_info_tsv,
+        params.read_group_info_tsv,
+        params.file_info_tsv,
         params.sequencing_files
     )
 }
