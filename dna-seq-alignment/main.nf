@@ -299,7 +299,7 @@ workflow DnaAln {
             sequencing_files = dnld.out.files
         } else {
             exit 1, "To use sequencing data from SONG/SCORE as input, please provide `params.study_id`, `params.analysis_id` and other SONG/SCORE params.\n" +
-                "Or please provide `params.analysis_metadata` (or `params.experiment_info_tsv`, `params.read_group_info_tsv` and `params.file_info_tsv`) and `params.sequencing_files` from local files as input."
+                "Or please provide `params.analysis_metadata` (or `params.experiment_info_tsv`, `params.read_group_info_tsv`, `params.file_info_tsv` and `params.extra_info_tsv`) and `params.sequencing_files` from local files as input."
         }
 
         // preprocessing input data (BAM or FASTQ) into read group level unmapped BAM (uBAM)
