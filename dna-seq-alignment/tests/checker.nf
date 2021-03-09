@@ -31,6 +31,7 @@ params.analysis_metadata = "NO_FILE"
 params.experiment_info_tsv = "NO_FILE1"
 params.read_group_info_tsv = "NO_FILE2"
 params.file_info_tsv = "NO_FILE3"
+params.extra_info_tsv = "NO_FILE4"
 params.sequencing_files = []
 
 
@@ -46,6 +47,7 @@ workflow {
         params.experiment_info_tsv,
         params.read_group_info_tsv,
         params.file_info_tsv,
+        params.extra_info_tsv,
         params.sequencing_files
     )
 }

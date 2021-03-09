@@ -25,7 +25,7 @@
 /* this block is auto-generated based on info from pkg.json where   */
 /* changes can be made if needed, do NOT modify this block manually */
 nextflow.enable.dsl = 2
-version = '0.3.0'  // package version
+version = '0.4.0'
 
 container = [
     'ghcr.io': 'ghcr.io/icgc-argo/data-processing-utility-tools.payload-gen-seq-experiment'
@@ -45,10 +45,10 @@ params.publish_dir = ""  // set to empty string will disable publishDir
 
 
 // tool specific parmas go here, add / change as needed
-params.metadata_json = "NO_FILE1"
-params.experiment_info_tsv = "NO_FILE2"
-params.read_group_info_tsv = "NO_FILE3"
-params.file_info_tsv = "NO_FILE4"
+params.experiment_info_tsv = "NO_FILE1"
+params.read_group_info_tsv = "NO_FILE2"
+params.file_info_tsv = "NO_FILE3"
+params.extra_info_tsv = "NO_FILE4"
 
 
 process payloadGenSeqExperiment {
@@ -59,26 +59,26 @@ process payloadGenSeqExperiment {
   memory "${params.mem} GB"
 
   input:
-    path metadata_json
     path experiment_info_tsv
     path read_group_info_tsv
     path file_info_tsv
+    path extra_info_tsv
 
   output:
     path "*.sequencing_experiment.payload.json", emit: payload
 
   script:
-    args_metadata_json = !metadata_json.name.startsWith("NO_FILE") ? "-m ${metadata_json}" : ""
     args_experiment_info_tsv = !experiment_info_tsv.name.startsWith("NO_FILE") ? "-x ${experiment_info_tsv}" : ""
     args_read_group_info_tsv = !read_group_info_tsv.name.startsWith("NO_FILE") ? "-r ${read_group_info_tsv}" : ""
     args_file_info_tsv = !file_info_tsv.name.startsWith("NO_FILE") ? "-f ${file_info_tsv}" : ""
+    args_extra_info_tsv = !extra_info_tsv.name.startsWith("NO_FILE") ? "-e ${extra_info_tsv}" : ""
 
     """
     main.py \
-         ${args_metadata_json} \
          ${args_experiment_info_tsv} \
          ${args_read_group_info_tsv} \
-         ${args_file_info_tsv}
+         ${args_file_info_tsv} \
+         ${args_extra_info_tsv}
     """
 }
 
@@ -87,9 +87,9 @@ process payloadGenSeqExperiment {
 // using this command: nextflow run <git_acc>/<repo>/<pkg_name>/<main_script>.nf -r <pkg_name>.v<pkg_version> --params-file xxx
 workflow {
   payloadGenSeqExperiment(
-    file(params.metadata_json),
     file(params.experiment_info_tsv),
     file(params.read_group_info_tsv),
-    file(params.file_info_tsv)
+    file(params.file_info_tsv),
+    file(params.extra_info_tsv)
   )
 }

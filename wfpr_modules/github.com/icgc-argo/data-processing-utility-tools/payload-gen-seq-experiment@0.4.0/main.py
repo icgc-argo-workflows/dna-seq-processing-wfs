@@ -159,7 +159,7 @@ def validate_args(args):
         ))
 
 
-def main(metadata):
+def main(metadata, extra_info=dict()):
     empty_str_to_null(metadata)
 
     payload = {
@@ -198,6 +198,24 @@ def main(metadata):
         }
     }
 
+    if extra_info:
+        if extra_info['sample'].get(sample['submitterSampleId']):
+            sample['sampleId'] = extra_info['sample'][sample['submitterSampleId']]
+        else:
+            sys.exit(f"Provided extra_info_tsv misses mapping for submitter sample ID: {sample['submitterSampleId']}")
+
+        if extra_info['specimen'].get(sample['specimen']['submitterSpecimenId']):
+            sample['specimenId'] = extra_info['specimen'][sample['specimen']['submitterSpecimenId']]
+            sample['specimen']['specimenId'] = sample["specimenId"]
+        else:
+            sys.exit(f"Provided extra_info_tsv misses mapping for submitter specimen ID: {sample['specimen']['submitterSpecimenId']}")
+
+        if extra_info['donor'].get(sample['donor']['submitterDonorId']):
+            sample['donor']['donorId'] = extra_info['donor'][sample['donor']['submitterDonorId']]
+            sample['specimen']['donorId'] = sample['donor']['donorId']
+        else:
+            sys.exit(f"Provided extra_info_tsv misses mapping for submitter donor ID: {sample['donor']['submitterDonorId']}")
+
     payload['samples'].append(sample)
 
     # get file of the payload
@@ -235,6 +253,8 @@ if __name__ == "__main__":
                         help="tsv file containing read_group information submitted from user")
     parser.add_argument("-f", "--file-info-tsv",
                         help="tsv file containing file information submitted from user")
+    parser.add_argument("-e", "--extra-info-tsv",
+                        help="tsv file containing file information submitted from user")
     args = parser.parse_args()
 
     validate_args(args)
@@ -258,4 +278,24 @@ if __name__ == "__main__":
         # all TSV are well-formed, let's load them
         metadata = load_all_tsvs(args.experiment_info_tsv, args.read_group_info_tsv, args.file_info_tsv)
 
-    main(metadata)
+    extra_info = dict()
+    if args.extra_info_tsv:
+        with open(args.extra_info_tsv, 'r') as f:
+            for row in csv.DictReader(f, delimiter='\t'):
+                type = row['type']
+                submitter_id = row['submitter_id']
+                uniform_id = row['uniform_id']
+                if type in extra_info:
+                    sys.exit(f"Values in 'type' field duplicated. Offending value: {type}, in file: {args.extra_info_tsv}")
+                else:
+                    extra_info[type] = dict()
+
+                if submitter_id in extra_info[type]:
+                    sys.exit(f"Values in 'submitter_id' field duplicated. Offending value: {submitter_id}, for type: {type}, in file: {args.extra_info_tsv}" )
+                else:
+                    extra_info[type][submitter_id] = uniform_id
+
+        if 'donor' not in extra_info or 'specimen' not in extra_info or 'sample' not in extra_info:
+            sys.exit(f"Provided extra_info_tsv file '{args.extra_info_tsv}' is required to have ID mappings for 'donor', 'specimen' and 'sample'")
+
+    main(metadata, extra_info)

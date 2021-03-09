@@ -3,6 +3,7 @@
   "experiment_info_tsv": "data/experiment.tsv",
   "read_group_info_tsv": "data/read_group.tsv",
   "file_info_tsv": "data/file.tsv",
+  "extra_info_tsv": "data/extra_info.tsv",
   "sequencing_files": [ "data/test_rg_3.v2.bam" ],
   "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 2,
