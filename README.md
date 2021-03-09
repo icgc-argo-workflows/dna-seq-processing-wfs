@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/icgc-argo/dna-seq-processing-wfs.svg?branch=master)](https://travis-ci.org/icgc-argo/dna-seq-processing-wfs)
-# ICGC ARGO DNA Seq Processing Pipeline
+# ICGC ARGO DNA Seq Processing Workflow
 
 
 ## Introduction
