@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 name = 'dna-seq-alignment'
-version = '1.5.6'
+version = '1.6.0'
 
 /*
 ========================================================================================
