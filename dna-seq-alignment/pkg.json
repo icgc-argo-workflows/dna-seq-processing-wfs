@@ -15,7 +15,8 @@
     },
     "dependencies": [
         "github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.4.0",
-        "github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-download@2.6.1"
+        "github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-download@2.6.1",
+        "github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.0"
     ],
     "devDependencies": [],
     "contributors": [

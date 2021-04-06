@@ -242,8 +242,8 @@ include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./modules/raw.githubusercon
 include { gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
 include { metadataParser as mParser } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/metadata-parser.0.1.0.0/tools/metadata-parser/metadata-parser.nf"
 include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.8.0-3.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
-include { songScoreUpload as upAln } from './song-score-utils/song-score-upload' params(uploadAlignment_params)
-include { songScoreUpload as upQc } from './song-score-utils/song-score-upload' params(uploadQc_params)
+include { SongScoreUpload as upAln } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.0/main.nf' params(uploadAlignment_params)
+include { SongScoreUpload as upQc } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.0/main.nf' params(uploadQc_params)
 include { cleanupWorkdir as cleanup } from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/cleanup-workdir'
 include { payloadGenSeqExperiment as pGenExp } from './wfpr_modules/github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.4.0/main.nf'
 
