@@ -204,6 +204,8 @@ payloadGenDnaSeqQc_params = [
 ]
 
 uploadAlignment_params = [
+    'max_retries': params.max_retries,
+    'first_retry_wait_time': params.first_retry_wait_time,
     'cpus': params.cpus,
     'mem': params.mem,
     'song_url': params.song_url,
@@ -213,6 +215,8 @@ uploadAlignment_params = [
 ]
 
 uploadQc_params = [
+    'max_retries': params.max_retries,
+    'first_retry_wait_time': params.first_retry_wait_time,
     'cpus': params.cpus,
     'mem': params.mem,
     'song_url': params.song_url,
