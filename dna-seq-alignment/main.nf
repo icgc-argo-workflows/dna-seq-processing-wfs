@@ -113,6 +113,9 @@ params.ref_genome_fa = ""
 params.cleanup = true
 params.cpus = 1
 params.mem = 1
+params.max_retries = 5  // set to 0 will disable retry
+params.first_retry_wait_time = 1  // in seconds
+
 params.tempdir = "NO_DIR"
 params.publish_dir = ""
 
@@ -142,6 +145,8 @@ params.gatkCollectOxogMetrics = [:]
 download_params = [
     'cpus': params.cpus,
     'mem': params.mem,
+    'max_retries': params.max_retries,
+    'first_retry_wait_time': params.first_retry_wait_time,
     'song_url': params.song_url,
     'score_url': params.score_url,
     'api_token': params.api_token,
@@ -226,7 +231,7 @@ gatkCollectOxogMetrics_params = [
 
 
 // Include all modules and pass params
-include { songScoreDownload as dnld } from './song-score-utils/song-score-download' params(download_params)
+include { SongScoreDownload as dnld } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-download@2.6.1/main.nf' params(download_params)
 include { seqDataToLaneBam as toLaneBam } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.3.3.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(seqDataToLaneBam_params)
 include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.12.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
 include { readGroupUBamQC as rgQC } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
@@ -295,7 +300,7 @@ workflow DnaAln {
             // download files and metadata from song/score (analysis type: sequencing_experiment)
             log.info "Run the workflow using input sequencing data from SONG/SCORE, alignment results will be uploaded to SONG/SCORE as well"
             dnld(study_id, analysis_id)
-            analysis_metadata = dnld.out.song_analysis
+            analysis_metadata = dnld.out.analysis_json
             sequencing_files = dnld.out.files
         } else {
             exit 1, "To use sequencing data from SONG/SCORE as input, please provide `params.study_id`, `params.analysis_id` and other SONG/SCORE params.\n" +
