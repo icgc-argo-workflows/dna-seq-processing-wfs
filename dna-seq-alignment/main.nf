@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 2
 name = 'dna-seq-alignment'
-version = '1.7.0'
+version = '1.8.0'
 
 /*
 ========================================================================================
@@ -235,19 +235,19 @@ gatkCollectOxogMetrics_params = [
 
 
 // Include all modules and pass params
-include { SongScoreDownload as dnld } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-download@2.6.1/main.nf' params(download_params)
+include { SongScoreDownload as dnld } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-download@2.6.2/main.nf' params(download_params)
 include { seqDataToLaneBam as toLaneBam } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.3.3.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(seqDataToLaneBam_params)
 include {bwaMemAligner; getBwaSecondaryFiles} from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner.0.1.12.0/tools/bwa-mem-aligner/bwa-mem-aligner.nf" params(bwaMemAligner_params)
 include { readGroupUBamQC as rgQC } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
 include { bamMergeSortMarkdup as merSorMkdup; getMdupSecondaryFile } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup.0.1.11.0/tools/bam-merge-sort-markdup/bam-merge-sort-markdup.nf" params(bamMergeSortMarkdup_params)
 include { alignedSeqQC; getAlignedQCSecondaryFiles } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/aligned-seq-qc.0.2.2.1/tools/aligned-seq-qc/aligned-seq-qc" params(alignedSeqQC_params)
-include { payloadGenDnaAlignment as pGenDnaAln } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment.0.3.3.0/tools/payload-gen-dna-alignment/payload-gen-dna-alignment.nf" params(payloadGenDnaAlignment_params)
-include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc.0.5.3.0/tools/payload-gen-dna-seq-qc/payload-gen-dna-seq-qc.nf" params(payloadGenDnaSeqQc_params)
+include { payloadGenDnaAlignment as pGenDnaAln } from "./wfpr_modules/github.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment@0.4.0/main.nf" params(payloadGenDnaAlignment_params)
+include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./wfpr_modules/github.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc@0.6.0/main.nf" params(payloadGenDnaSeqQc_params)
 include { gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
 include { metadataParser as mParser } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/metadata-parser.0.1.0.0/tools/metadata-parser/metadata-parser.nf"
 include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.8.0-3.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
-include { SongScoreUpload as upAln } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.0/main.nf' params(uploadAlignment_params)
-include { SongScoreUpload as upQc } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.0/main.nf' params(uploadQc_params)
+include { SongScoreUpload as upAln } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.1/main.nf' params(uploadAlignment_params)
+include { SongScoreUpload as upQc } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.1/main.nf' params(uploadQc_params)
 include { cleanupWorkdir as cleanup } from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/cleanup-workdir'
 include { payloadGenSeqExperiment as pGenExp } from './wfpr_modules/github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.4.0/main.nf'
 

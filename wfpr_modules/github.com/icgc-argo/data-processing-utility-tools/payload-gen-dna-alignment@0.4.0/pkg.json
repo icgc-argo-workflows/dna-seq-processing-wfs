@@ -1,0 +1,40 @@
+{
+    "name": "payload-gen-dna-alignment",
+    "version": "0.4.0",
+    "description": "SONG payload generation for DNA alignment",
+    "main": "main.nf",
+    "deprecated": false,
+    "keywords": [
+        "bioinformatics",
+        "dna-seq",
+        "alignment",
+        "metadata"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/icgc-argo/data-processing-utility-tools.git"
+    },
+    "container": {
+        "registries": [
+            {
+                "registry": "ghcr.io",
+                "type": "docker",
+                "org": "icgc-argo",
+                "default": true
+            }
+        ]
+    },
+    "dependencies": [],
+    "devDependencies": [],
+    "contributors": [
+        {
+            "name": "Linda Xiang"
+        },
+        {
+            "name": "Junjun Zhang"
+        }
+    ],
+    "license": "GNU Affero General Public License v3",
+    "bugReport": "https://github.com/icgc-argo/data-processing-utility-tools/issues",
+    "homepage": "https://github.com/icgc-argo/data-processing-utility-tools#readme"
+}
