@@ -1,6 +1,6 @@
 {
     "name": "song-score-download",
-    "version": "2.6.1",
+    "version": "2.6.2",
     "description": "SONG/SCORE download",
     "main": "main.nf",
     "deprecated": false,

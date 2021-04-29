@@ -5,6 +5,8 @@ nextflow.enable.dsl=2
 params.cpus = 1
 params.mem = 1
 
+params.publish_dir = ""
+
 params.max_retries = 5  // set to 0 will disable retry
 params.first_retry_wait_time = 1  // in seconds
 
@@ -24,6 +26,8 @@ process songManifest {
         sleep(Math.pow(2, task.attempt) * params.first_retry_wait_time * 1000 as long);  // backoff time doubles before each retry
         return params.max_retries ? 'retry' : 'finish'
     }
+
+    publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: params.publish_dir
 
     pod = [secret: workflow.runName + "-secret", mountPath: "/tmp/rdpc_secret"]
     
