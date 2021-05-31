@@ -1,6 +1,6 @@
 {
     "name": "payload-gen-seq-experiment",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "SONG payload generation for sequencing experiment",
     "main": "main.nf",
     "deprecated": false,
@@ -26,8 +26,10 @@
     "devDependencies": [],
     "contributors": [
         {
-            "name": "Junjun Zhang",
-            "email": "junjun.ca@gmail.com"
+            "name": "Junjun Zhang"
+        },
+        {
+            "name": "Hillary Elrick"
         }
     ],
     "license": "GNU Affero General Public License v3",
