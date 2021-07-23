@@ -14,6 +14,6 @@
   },
   "cpus": 2,
   "mem": 2,
-  "tempdir": "NO_DIR",
+  "tempdir": "/tmp",
   "publish_dir": "outdir"
 }
