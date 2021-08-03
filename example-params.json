@@ -5,10 +5,10 @@
   "sequencing_files": [],
   "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
   "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
-  "api_token": "INSERT-TOKEN-HERE",
-  "ref_genome_fa": "tests/reference/tiny-grch38-chr11-530001-537000.fa",
+  "ref_genome_fa": "/nfs-dev-1-vol-qa-1/reference/tiny-grch38-chr11-530001-537000/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 1,
   "mem": 1,
+  "tempdir": "/icgc-argo-scratch",
   "download": {
     "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
     "song_cpus": 2,

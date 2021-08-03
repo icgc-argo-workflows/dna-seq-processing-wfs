@@ -12,6 +12,6 @@
   "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 2,
   "mem": 2,
-  "tempdir": "NO_DIR",
+  "tempdir": "/tmp",
   "publish_dir": "outdir"
 }
