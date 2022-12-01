@@ -1,6 +1,6 @@
 {
     "name": "dna-seq-alignment",
-    "version": "1.9.0",
+    "version": "1.9.1",
     "description": "ICGC ARGO DNA Seq Processing Workflow",
     "main": "main.nf",
     "deprecated": false,
