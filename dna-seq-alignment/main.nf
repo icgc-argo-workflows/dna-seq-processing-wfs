@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-nextflow.enable.dsl = 2
+nextflow.enable.dsl=2
 name = 'dna-seq-alignment'
 version = '1.9.1'
 
@@ -127,7 +127,11 @@ params.extra_info_tsv = "NO_FILE4"
 params.sequencing_files = []
 
 params.song_url = ""
+params.song_container = ""
+params.song_container_version = ""
 params.score_url = ""
+params.score_container = ""
+params.score_container_version = ""
 params.api_token = ""
 params.download = [:]
 params.seqDataToLaneBam = [:]
@@ -148,7 +152,11 @@ download_params = [
     'max_retries': params.max_retries,
     'first_retry_wait_time': params.first_retry_wait_time,
     'song_url': params.song_url,
+    'song_container': params.song_container,
+    'song_container_version': params.song_container_version,
     'score_url': params.score_url,
+    'score_container': params.score_container,
+    'score_container_version': params.score_container_version,    
     'api_token': params.api_token,
     *:(params.download ?: [:])
 ]
@@ -209,7 +217,11 @@ uploadAlignment_params = [
     'cpus': params.cpus,
     'mem': params.mem,
     'song_url': params.song_url,
+    'song_container': params.song_container,
+    'song_container_version': params.song_container_version,
     'score_url': params.score_url,
+    'score_container': params.score_container,
+    'score_container_version': params.score_container_version,
     'api_token': params.api_token,
     *:(params.uploadAlignment ?: [:])
 ]
@@ -220,7 +232,11 @@ uploadQc_params = [
     'cpus': params.cpus,
     'mem': params.mem,
     'song_url': params.song_url,
+    'song_container': params.song_container,
+    'song_container_version': params.song_container_version,
     'score_url': params.score_url,
+    'score_container': params.score_container,
+    'score_container_version': params.score_container_version,
     'api_token': params.api_token,
     *:(params.uploadQc ?: [:])
 ]
@@ -235,7 +251,7 @@ gatkCollectOxogMetrics_params = [
 
 
 // Include all modules and pass params
-include { SongScoreDownload as dnld } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-download@2.6.2/main.nf' params(download_params)
+include { SongScoreDownload as dnld } from './wfpr_modules/github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-download@2.8.0/main.nf' params(download_params)
 include { seqDataToLaneBam as toLaneBam } from "./modules/raw.githubusercontent.com/icgc-argo/dna-seq-processing-tools/seq-data-to-lane-bam.0.3.3.0/tools/seq-data-to-lane-bam/seq-data-to-lane-bam.nf" params(seqDataToLaneBam_params)
 include { bwaMemAligner } from "./wfpr_modules/github.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner@0.2.0/main.nf" params(bwaMemAligner_params)
 include { readGroupUBamQC as rgQC } from "./modules/raw.githubusercontent.com/icgc-argo/data-qc-tools-and-wfs/read-group-ubam-qc.0.1.2.0/tools/read-group-ubam-qc/read-group-ubam-qc.nf" params(readGroupUBamQC_params)
@@ -247,8 +263,8 @@ include { payloadGenDnaSeqQc as pGenDnaSeqQc } from "./wfpr_modules/github.com/i
 include { gatkSplitIntervals as splitItvls; getSecondaryFiles as getSIIdx } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-split-intervals.4.1.4.1-1.0/tools/gatk-split-intervals/gatk-split-intervals"
 include { metadataParser as mParser } from "./modules/raw.githubusercontent.com/icgc-argo/data-processing-utility-tools/metadata-parser.0.1.0.0/tools/metadata-parser/metadata-parser.nf"
 include { gatkCollectOxogMetrics as oxog; getOxogSecondaryFiles; gatherOxogMetrics as gatherOM } from "./modules/raw.githubusercontent.com/icgc-argo/gatk-tools/gatk-collect-oxog-metrics.4.1.8.0-3.0/tools/gatk-collect-oxog-metrics/gatk-collect-oxog-metrics" params(gatkCollectOxogMetrics_params)
-include { SongScoreUpload as upAln } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.1/main.nf' params(uploadAlignment_params)
-include { SongScoreUpload as upQc } from './wfpr_modules/github.com/icgc-argo/nextflow-data-processing-utility-tools/song-score-upload@2.6.1/main.nf' params(uploadQc_params)
+include { SongScoreUpload as upAln } from './wfpr_modules/github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-upload@2.9.0/main.nf' params(uploadAlignment_params)
+include { SongScoreUpload as upQc } from './wfpr_modules/github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-upload@2.9.0/main.nf' params(uploadQc_params)
 include { cleanupWorkdir as cleanup } from './modules/raw.githubusercontent.com/icgc-argo/nextflow-data-processing-utility-tools/2.3.0/process/cleanup-workdir'
 include { payloadGenSeqExperiment as pGenExp } from './wfpr_modules/github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.5.0/main.nf'
 
@@ -335,7 +351,7 @@ workflow DnaAln {
         // upload aligned file and metadata to song/score
         def alnAnalysisId
         if (!local_mode) {
-            upAln(study_id, pGenDnaAln.out.payload, pGenDnaAln.out.alignment_files.collect())
+            upAln(study_id, pGenDnaAln.out.payload, pGenDnaAln.out.alignment_files.collect(), '')
             alnAnalysisId = upAln.out.analysis_id
         } else {
             alnAnalysisId = 'Unknown'
@@ -372,7 +388,7 @@ workflow DnaAln {
 
         // upload aligned file and metadata to song/score
         if (!local_mode) {
-            upQc(study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect())
+            upQc(study_id, pGenDnaSeqQc.out.payload, pGenDnaSeqQc.out.qc_files.collect(), '')
         }
 
         if (params.cleanup && !local_mode) {

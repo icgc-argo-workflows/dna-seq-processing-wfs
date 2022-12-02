@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/icgc-argo/dna-seq-processing-wfs.svg?branch=master)](https://travis-ci.org/icgc-argo/dna-seq-processing-wfs)
+[![Build Status](https://travis-ci.org/icgc-argo-workflows/dna-seq-processing-wfs.svg?branch=master)](https://travis-ci.org/icgc-argo-workflows/dna-seq-processing-wfs)
 # ICGC ARGO DNA Seq Processing Workflow
 
 
@@ -8,10 +8,10 @@ This repository maintains the source code of the ICGC ARGO DNA Seq Processing Pi
 in [Nextflow](https://www.nextflow.io/) workflow language using DSLv2, with modules imported from other ICGC
 ARGO GitHub repositories. Specifically, here are repositories maintaining various of tools/modules:
 
-* https://github.com/icgc-argo/dna-seq-processing-tools
-* https://github.com/icgc-argo/data-processing-utility-tools
-* https://github.com/icgc-argo/nextflow-dna-seq-processing-tools
-* and https://github.com/icgc-argo/data-qc-tools-and-wfs
+* https://github.com/icgc-argo-workflows/dna-seq-processing-tools
+* https://github.com/icgc-argo-workflows/data-processing-utility-tools
+* https://github.com/icgc-argo-workflows/nextflow-dna-seq-processing-tools
+* https://github.com/icgc-argo-workflows/data-qc-tools-and-wfs
 
 Each Nextflow module (including associated container image which is registered in Quay.io) is strictly
 version controlled and released independently. To ensure reproducibility the pipeline declares explicitly
@@ -32,12 +32,12 @@ which specific version of a module is to be imported.
 
 To run the pipeline, please follow instruction [here](https://www.nextflow.io/docs/latest/getstarted.html#installation) to install Nextflow (version `20.01.0` or higher) first.
 
-Run `1.3.0` version of the pipeline:
+Run `1.9.1` version of the pipeline:
 ```
-nextflow run icgc-argo/dna-seq-processing-wfs -r 1.3.0 -params-file <your_params_file.json>
+nextflow run icgc-argo-workflows/dna-seq-processing-wfs -r 1.9.1 -params-file <your_params_file.json>
 ```
 
-You may need to run `nextflow pull icgc-argo/dna-seq-processing-wfs` if the version `1.3.0` is new since last time the pipeline was run.
+You may need to run `nextflow pull icgc-argo-workflows/dna-seq-processing-wfs` if the version `1.9.1` is new since last time the pipeline was run.
 
 Please note that SONG/SCORE services need to be available and you have appropriate API token.
 

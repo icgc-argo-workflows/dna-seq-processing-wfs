@@ -1,6 +1,6 @@
 {
     "name": "song-score-upload",
-    "version": "2.6.1",
+    "version": "2.9.0",
     "description": "SONG/SCORE upload",
     "main": "main.nf",
     "deprecated": false,
@@ -12,7 +12,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/icgc-argo/nextflow-data-processing-utility-tools.git"
+        "url": "https://github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools.git"
     },
     "dependencies": [],
     "devDependencies": [],
@@ -22,9 +22,12 @@
         },
         {
             "name": "Junjun Zhang"
+        },
+        {
+            "name": "Linda Xiang"
         }
     ],
     "license": "Apache License 2.0",
-    "bugReport": "https://github.com/icgc-argo/nextflow-data-processing-utility-tools/issues",
-    "homepage": "https://github.com/icgc-argo/nextflow-data-processing-utility-tools#readme"
+    "bugReport": "https://github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/issues",
+    "homepage": "https://github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools#readme"
 }

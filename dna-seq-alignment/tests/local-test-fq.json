@@ -1,16 +1,17 @@
 {
-  "study_id": "TEST-PR",
-  "analysis_id": "328ebe1e-28a1-4670-8ebe-1e28a16670d9",
+  "study_id": "TEST-QA",
+  "analysis_id": "026e7dbd-8a7b-4ee1-ae7d-bd8a7b0ee120",
   "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
   "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
   "ref_genome_fa": "reference/tiny-grch38-chr11-530001-537000.fa",
   "cpus": 1,
   "mem": 1,
+  "tempdir": "/tmp",
   "download": {
-    "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
+    "song_url": "https://submission-song.rdpc-qa.cancercollaboratory.org",
     "song_cpus": 2,
     "song_mem": 2,
-    "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
+    "score_url": "https://submission-score.rdpc-qa.cancercollaboratory.org",
     "score_cpus": 3,
     "score_mem": 8
   },
@@ -19,7 +20,6 @@
     "mem": 2
   },
   "bwaMemAligner": {
-    "tempdir": "/tmp",
     "cpus": 2,
     "mem": 2
   },
