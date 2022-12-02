@@ -1,6 +1,6 @@
 {
-  "study_id": "TEST-PR",
-  "analysis_id": "fb4c8462-ebe7-471c-8c84-62ebe7671c91",
+  "study_id": "TEST-QA",
+  "analysis_id": "026e7dbd-8a7b-4ee1-ae7d-bd8a7b0ee120",
   "analysis_metadata": "NO_FILE",
   "sequencing_files": [],
   "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
@@ -10,10 +10,10 @@
   "mem": 1,
   "tempdir": "/icgc-argo-scratch",
   "download": {
-    "song_url": "https://song.rdpc-qa.cancercollaboratory.org",
+    "song_url": "https://submission-song.rdpc-qa.cancercollaboratory.org",
     "song_cpus": 2,
     "song_mem": 2,
-    "score_url": "https://score.rdpc-qa.cancercollaboratory.org",
+    "score_url": "https://submission-score.rdpc-qa.cancercollaboratory.org",
     "score_cpus": 3,
     "score_mem": 8
   },
