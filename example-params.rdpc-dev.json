@@ -1,0 +1,73 @@
+{
+	"first_retry_wait_time": 5,
+  "max_retries": 5,
+	"alignedSeqQC": {
+		"mem": 10,
+		"cpus": 4
+	},
+	"ref_genome_fa": "/nfs-dev-1-vol-dev-2/reference/GRCh38_hla_decoy_ebv/GRCh38_hla_decoy_ebv.fa",
+	"aligned-seq-QC": {
+		"mem": 10,
+		"cpus": 4
+	},
+	"uploadAlignment": {
+		"score_mem": 10,
+		"song_mem": 2,
+		"score_cpus": 4,
+		"song_cpus": 2
+	},
+	"cpus": 2,
+	"payloadGenDnaSeqQc": {
+		"mem": 2,
+		"cpus": 2
+	},
+	"score_url": "https://score.rdpc-dev.cancercollaboratory.org",
+	"gatkCollectOxogMetrics": {
+		"mem": 6,
+		"cpus": 3
+	},
+	"study_id": "TEST-INTL",
+	"uploadQc": {
+		"score_mem": 4,
+		"song_mem": 2,
+		"score_cpus": 2,
+		"song_cpus": 2
+	},
+	"song_url": "https://song.rdpc-dev.cancercollaboratory.org",
+	"analysis_id": "bfd5a1e4-aa41-4f17-95a1-e4aa412f1721",
+	"download": {
+		"score_mem": 10,
+		"song_mem": 2,
+		"score_cpus": 4,
+		"score_url": "https://submission-score.rdpc-dev.cancercollaboratory.org",
+		"song_url": "https://submission-song.rdpc-dev.cancercollaboratory.org",
+		"song_cpus": 2
+	},
+	"mem": 4,
+	"cleanup": true,
+	"readGroupUBamQC": {
+		"mem": 6,
+		"cpus": 3
+	},
+	"tempdir": "/icgc-argo-scratch",
+	"bwaMemAligner": {
+		"mem": 18,
+		"cpus": 6
+	},
+	"seqDataToLaneBam": {
+		"mem": 12,
+		"cpus": 4
+	},
+	"bamMergeSortMarkdup": {
+		"mem": 18,
+		"cpus": 4
+	},
+	"read-group-UBam-QC": {
+		"mem": 6,
+		"cpus": 3
+	},
+	"payloadGenDnaAlignment": {
+		"mem": 4,
+		"cpus": 2
+	}
+}

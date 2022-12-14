@@ -11,7 +11,8 @@ params.max_retries = 5  // set to 0 will disable retry
 params.first_retry_wait_time = 1  // in seconds
 
 // required params w/ default
-params.container_version = "5.0.0"
+params.container = "ghcr.io/overture-stack/score"
+params.container_version = "5.8.1"
 params.transport_mem = 2 // Transport memory is in number of GBs
 
 // optional if secret mounted from pod else required
@@ -34,8 +35,8 @@ process scoreDownload {
     cpus params.cpus
     memory "${params.mem} GB"
  
-    container "overture/score:${params.container_version}"
-    publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: params.publish_dir
+    container "${ params.score_container ?: params.container}:${params.score_container_version ?: params.container_version}"
+    publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: params.publish_dir ? true : false
 
     label "scoreDownload"
     tag "${analysis_id}"
