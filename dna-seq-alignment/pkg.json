@@ -1,6 +1,6 @@
 {
     "name": "dna-seq-alignment",
-    "version": "1.9.1",
+    "version": "1.9.2",
     "description": "ICGC ARGO DNA Seq Processing Workflow",
     "main": "main.nf",
     "deprecated": false,
@@ -14,14 +14,14 @@
         "url": "https://github.com/icgc-argo-workflows/dna-seq-processing-wfs.git"
     },
     "dependencies": [
-      "github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-download@2.8.0",
-      "github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-upload@2.9.0",
-      "github.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner@0.2.0",
-      "github.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup@0.2.0",
-      "github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.5.0",
-      "github.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment@0.4.0",
-      "github.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc@0.6.0",
-      "github.com/icgc-argo/data-processing-utility-tools/helper-functions@1.0.1"
+        "github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-download@2.8.0",
+        "github.com/icgc-argo-workflows/nextflow-data-processing-utility-tools/song-score-upload@2.9.0",
+        "github.com/icgc-argo/dna-seq-processing-tools/bwa-mem-aligner@0.2.0",
+        "github.com/icgc-argo/dna-seq-processing-tools/bam-merge-sort-markdup@0.2.0",
+        "github.com/icgc-argo/data-processing-utility-tools/payload-gen-seq-experiment@0.5.0",
+        "github.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-alignment@0.4.0",
+        "github.com/icgc-argo/data-processing-utility-tools/payload-gen-dna-seq-qc@0.6.0",
+        "github.com/icgc-argo/data-processing-utility-tools/helper-functions@1.0.1"
     ],
     "devDependencies": [],
     "contributors": [
