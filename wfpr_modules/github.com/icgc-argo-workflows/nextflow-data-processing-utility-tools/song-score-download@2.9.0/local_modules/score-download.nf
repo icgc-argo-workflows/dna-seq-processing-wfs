@@ -5,6 +5,8 @@ nextflow.enable.dsl=2
 params.cpus = 8
 params.mem = 20
 
+params.publish_dir = ""
+
 params.max_retries = 5  // set to 0 will disable retry
 params.first_retry_wait_time = 1  // in seconds
 
@@ -20,10 +22,11 @@ params.api_token = "" // song/score API token for download process
 // --song_url         song url for download process
 // --score_url        score url for download process
 
-process scoreUpload {
+// TODO: Replace with score container once it can download files via analysis_id
+process scoreDownload {
     maxRetries params.max_retries
     errorStrategy {
-        sleep(Math.pow(2, task.attempt) * params.first_retry_wait_time * 1000 as long);  // backoff time doubles before each retry
+        sleep(Math.pow(2, task.attempt) * params.first_retry_wait_time * 1000 as long);  // backoff time increases exponentially before each retry
         return params.max_retries ? 'retry' : 'finish'
     }
 
@@ -31,18 +34,28 @@ process scoreUpload {
     
     cpus params.cpus
     memory "${params.mem} GB"
-  
+ 
     container "${ params.score_container ?: params.container}:${params.score_container_version ?: params.container_version}"
+    publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: params.publish_dir ? true : false
 
+    label "scoreDownload"
     tag "${analysis_id}"
 
+    if (workflow.containerEngine == "singularity") {
+        containerOptions "--bind \$(pwd):/score-client/logs"
+    } else if (workflow.containerEngine == "docker") {
+        containerOptions "-v \$(pwd):/score-client/logs"
+    }
+
     input:
+        path analysis
+        val study_id
         val analysis_id
-        path manifest
-        path upload
 
     output:
-        val analysis_id, emit: ready_to_publish
+        path analysis, emit: analysis_json
+        path 'out/*', emit: files
+
 
     script:
         accessToken = params.api_token ? params.api_token : "`cat /tmp/rdpc_secret/secret`"
@@ -53,6 +66,6 @@ process scoreUpload {
         export TRANSPORT_MEMORY=${params.transport_mem}
         export ACCESSTOKEN=${accessToken}
         
-        score-client upload --manifest ${manifest}
+        score-client download --analysis-id ${analysis_id} --study-id ${study_id} --output-dir ./out 
         """
 }

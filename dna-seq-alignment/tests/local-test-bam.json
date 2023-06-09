@@ -13,7 +13,9 @@
     "song_mem": 2,
     "score_url": "https://submission-score.rdpc-qa.cancercollaboratory.org",
     "score_cpus": 3,
-    "score_mem": 8
+    "score_mem": 8,
+    "score_transport_mem" : 8,
+    "score_container_version": "latest"
   },
   "seqDataToLaneBam": {
     "cpus": 2,
@@ -51,12 +53,15 @@
     "song_cpus": 2,
     "song_mem": 2,
     "score_cpus": 3,
-    "score_mem": 8
+    "score_mem": 8,
+    "score_transport_mem" : 8,
+    "score_force": true
   },
   "uploadQc": {
     "song_cpus": 1,
     "song_mem": 1,
     "score_cpus": 1,
-    "score_mem": 1
+    "score_mem": 4,
+    "score_transport_mem" : 4
   }
 }

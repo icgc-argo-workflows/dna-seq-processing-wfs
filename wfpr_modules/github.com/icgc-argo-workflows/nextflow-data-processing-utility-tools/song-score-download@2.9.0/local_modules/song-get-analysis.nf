@@ -2,8 +2,8 @@
 nextflow.enable.dsl=2
 
 // processes resources
-params.cpus = 8
-params.mem = 20
+params.cpus = 1
+params.mem = 1
 
 params.publish_dir = ""
 
@@ -11,9 +11,8 @@ params.max_retries = 5  // set to 0 will disable retry
 params.first_retry_wait_time = 1  // in seconds
 
 // required params w/ default
-params.container = "ghcr.io/overture-stack/score"
-params.container_version = "5.8.1"
-params.transport_mem = 2 // Transport memory is in number of GBs
+params.container = "ghcr.io/overture-stack/song-client"
+params.container_version = "5.0.2"
 
 // optional if secret mounted from pod else required
 params.api_token = "" // song/score API token for download process
@@ -22,8 +21,7 @@ params.api_token = "" // song/score API token for download process
 // --song_url         song url for download process
 // --score_url        score url for download process
 
-// TODO: Replace with score container once it can download files via analysis_id
-process scoreDownload {
+process songGetAnalysis {
     maxRetries params.max_retries
     errorStrategy {
         sleep(Math.pow(2, task.attempt) * params.first_retry_wait_time * 1000 as long);  // backoff time increases exponentially before each retry
@@ -34,32 +32,33 @@ process scoreDownload {
     
     cpus params.cpus
     memory "${params.mem} GB"
- 
-    container "${ params.score_container ?: params.container}:${params.score_container_version ?: params.container_version}"
+    
+    container "${ params.song_container ?: params.container}:${params.song_container_version ?: params.container_version}"
     publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: params.publish_dir ? true : false
 
-    label "scoreDownload"
     tag "${analysis_id}"
 
+    if (workflow.containerEngine == "singularity") {
+        containerOptions "--bind \$(pwd):/song-client/logs"
+    } else if (workflow.containerEngine == "docker") {
+        containerOptions "-v \$(pwd):/song-client/logs"
+    }
+
     input:
-        path analysis
         val study_id
         val analysis_id
 
     output:
-        path analysis, emit: analysis_json
-        path 'out/*', emit: files
+        path "*.analysis.json", emit: json
 
 
     script:
         accessToken = params.api_token ? params.api_token : "`cat /tmp/rdpc_secret/secret`"
         """
-        export METADATA_URL=${params.song_url}
-        export STORAGE_URL=${params.score_url}
-        export TRANSPORT_PARALLEL=${params.cpus}
-        export TRANSPORT_MEMORY=${params.transport_mem}
-        export ACCESSTOKEN=${accessToken}
-        
-        score-client download --analysis-id ${analysis_id} --study-id ${study_id} --output-dir ./out 
+        export CLIENT_SERVER_URL=${params.song_url}
+        export CLIENT_STUDY_ID=${study_id}
+        export CLIENT_ACCESS_TOKEN=${accessToken}
+
+        sing search -a ${analysis_id} > ${analysis_id}.analysis.json
         """
 }
