@@ -128,11 +128,11 @@ params.sequencing_files = []
 
 // song/score setting
 params.song_url = ""
-params.song_container = ""
-params.song_container_version = ""
+params.song_container = "ghcr.io/overture-stack/song-client"
+params.song_container_version = "5.0.2"
 params.score_url = ""
-params.score_container = ""
-params.score_container_version = ""
+params.score_container = "ghcr.io/overture-stack/score"
+params.score_container_version = "5.9.0"
 params.score_mem = 20
 params.score_cpus = 8
 params.score_force = false
