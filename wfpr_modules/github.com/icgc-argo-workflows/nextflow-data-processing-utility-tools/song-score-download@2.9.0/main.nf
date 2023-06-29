@@ -30,10 +30,8 @@ params.max_retries = 5  // set to 0 will disable retry
 params.first_retry_wait_time = 1  // in seconds
 
 // tool specific parmas go here, add / change as needed
-params.study_id = "TEST-PR"
-params.payload = "NO_FILE"
-params.upload = []
-params.analysis_id = ""  // optional, analysis must already exist and in UNPUBLISHED state if analysis_id provided
+params.study_id = ""
+params.analysis_id = ""
 
 params.api_token = ""
 
@@ -51,6 +49,7 @@ params.score_url = "https://score.rdpc-qa.cancercollaboratory.org"
 params.score_api_token = ""
 params.score_container = "ghcr.io/overture-stack/score"
 params.score_container_version = "5.8.1"
+
 
 song_params = [
     *:params,
@@ -74,48 +73,32 @@ score_params = [
     'api_token': params.score_api_token ?: params.api_token
 ]
 
-include { songSubmit as songSub } from './local_modules/song-submit' params(song_params)
-include { songManifest as songMan } from './local_modules/song-manifest' params(song_params)
-include { scoreUpload as scoreUp } from './local_modules/score-upload' params(score_params)
-include { songPublish as songPub } from './local_modules/song-publish' params(song_params)
+
+include { songGetAnalysis as songGet } from './local_modules/song-get-analysis' params(song_params)
+include { scoreDownload as scoreDn } from './local_modules/score-download' params(score_params)
 
 
-workflow SongScoreUpload {
-    take:
-        study_id
-        payload
-        upload
-        analysis_id
+// please update workflow code as needed
+workflow SongScoreDownload {
+  take:  // update as needed
+    study_id
+    analysis_id
 
-    main:
-        if (!analysis_id) {
-          // Create new analysis
-          songSub(study_id, payload)
-          analysis_id = songSub.out
-        }
+  main:
+    songGet(study_id, analysis_id)
+    scoreDn(songGet.out.json, study_id, analysis_id)
 
-        // Generate file manifest for upload
-        songMan(study_id, analysis_id, upload.collect())
-
-        // Upload to SCORE
-        scoreUp(analysis_id, songMan.out, upload.collect())
-
-        // Publish the analysis
-        songPub(study_id, scoreUp.out.ready_to_publish)
-
-    emit:
-        analysis_id = songPub.out.analysis_id
+  emit:
+    analysis_json = songGet.out.json
+    files = scoreDn.out.files
 }
 
 
 // this provides an entry point for this main script, so it can be run directly without clone the repo
 // using this command: nextflow run <git_acc>/<repo>/<pkg_name>/<main_script>.nf -r <pkg_name>.v<pkg_version> --params-file xxx
-
 workflow {
-  SongScoreUpload(
+  SongScoreDownload(
     params.study_id,
-    file(params.payload),
-    Channel.fromPath(params.upload),
     params.analysis_id
   )
 }

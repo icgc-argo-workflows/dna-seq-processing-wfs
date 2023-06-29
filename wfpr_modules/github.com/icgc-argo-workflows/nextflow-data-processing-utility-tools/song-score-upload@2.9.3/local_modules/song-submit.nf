@@ -5,14 +5,12 @@ nextflow.enable.dsl=2
 params.cpus = 1
 params.mem = 1
 
-params.publish_dir = ""
-
 params.max_retries = 5  // set to 0 will disable retry
 params.first_retry_wait_time = 1  // in seconds
 
 // required params w/ default
 params.container = "ghcr.io/overture-stack/song-client"
-params.container_version = "5.0.2"
+params.container_version = "latest"
 
 // optional if secret mounted from pod else required
 params.api_token = "" // song/score API token for download process
@@ -21,10 +19,10 @@ params.api_token = "" // song/score API token for download process
 // --song_url         song url for download process
 // --score_url        score url for download process
 
-process songGetAnalysis {
+process songSubmit {
     maxRetries params.max_retries
     errorStrategy {
-        sleep(Math.pow(2, task.attempt) * params.first_retry_wait_time * 1000 as long);  // backoff time increases exponentially before each retry
+        sleep(Math.pow(2, task.attempt) * params.first_retry_wait_time * 1000 as long);  // backoff time doubles before each retry
         return params.max_retries ? 'retry' : 'finish'
     }
 
@@ -32,19 +30,24 @@ process songGetAnalysis {
     
     cpus params.cpus
     memory "${params.mem} GB"
-    
+ 
     container "${ params.song_container ?: params.container}:${params.song_container_version ?: params.container_version}"
-    publishDir "${params.publish_dir}/${task.process.replaceAll(':', '_')}", mode: "copy", enabled: params.publish_dir ? true : false
-
-    tag "${analysis_id}"
-
+    
+    if (workflow.containerEngine == "singularity") {
+        containerOptions "--bind \$(pwd):/song-client/logs"
+    } else if (workflow.containerEngine == "docker") {
+        containerOptions "-v \$(pwd):/song-client/logs"
+    }
+        
+    tag "${study_id}"
+    label "songSubmit"
+    
     input:
         val study_id
-        val analysis_id
-
+        path payload
+    
     output:
-        path "*.analysis.json", emit: json
-
+        stdout()
 
     script:
         accessToken = params.api_token ? params.api_token : "`cat /tmp/rdpc_secret/secret`"
@@ -53,6 +56,7 @@ process songGetAnalysis {
         export CLIENT_STUDY_ID=${study_id}
         export CLIENT_ACCESS_TOKEN=${accessToken}
 
-        sing search -a ${analysis_id} > ${analysis_id}.analysis.json
+        set -euxo pipefail
+        sing submit -f ${payload} | jq -er .analysisId | tr -d '\\n'
         """
 }
