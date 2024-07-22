@@ -1,0 +1,13 @@
+{
+  "study_id": "TEST-PRO",
+  "experiment_info_tsv": "path/to/experiment.tsv",
+  "read_group_info_tsv": "path/to/read_group.tsv",
+  "file_info_tsv": "path/to/file.tsv",
+  "extra_info_tsv": "path/to/extra_info.tsv",
+  "sequencing_files": [ "path/to/test_rg_3.v2.bam" ],
+  "ref_genome_fa": "path/to/reference/tiny-grch38-chr11-530001-537000.fa",
+  "cpus": 2,
+  "mem": 2,
+  "tempdir": "/tmp",
+  "publish_dir": "outdir"
+}

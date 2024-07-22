@@ -1,0 +1,4 @@
+type	submitter_id	uniform_id
+donor	HCC1143	DO1111111111
+specimen	HCC1143_BAM_INPUT	SP2222222222
+sample	HCC1143_BAM_INPUT	SA3333333333
